@@ -30,7 +30,7 @@ public class ShooterSubsystem extends SubsystemBase {
         } 
         return (shooterSubsystem);
     }
-  public ShooterSubsystem() {
+  private ShooterSubsystem() {
     //TODO assign IDs 
     flywheelMaster = new TalonFX(0);
     flywheelFollower = new TalonFX(0);
