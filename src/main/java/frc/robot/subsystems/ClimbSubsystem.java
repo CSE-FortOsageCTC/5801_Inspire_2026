@@ -5,10 +5,12 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import com.ctre.phoenix6.controls.Follower;
 
 
-public class ClimbSubsystem {
+public class ClimbSubsystem extends SubsystemBase {
     private static TalonFX MasterClimb;
     private static TalonFX FollowerClimb;
     private static ClimbSubsystem climbSubsystem;
@@ -34,7 +36,7 @@ public class ClimbSubsystem {
 
         FollowerClimb.setControl(new Follower(MasterClimb.getDeviceID(), MotorAlignmentValue.Aligned));
   }
-  public double getExtensionEncoder() {
+    public double getExtensionEncoder() {
         return MasterClimb.getPosition().getValueAsDouble();
     }
     public void setClimbSpeed(double speed){
