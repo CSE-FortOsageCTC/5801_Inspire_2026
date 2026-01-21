@@ -20,6 +20,10 @@ public class ShooterSubsystem extends SubsystemBase {
   private TalonFX flywheelFollower;
   private TalonFX spindexerMaster;
   private TalonFX spindexerFollower;
+  private TalonFX turretHood;
+
+  public double swivelSetpoint = 0;
+  public double turretHoodSetpoint = 0;
 
 
   
@@ -37,6 +41,7 @@ public class ShooterSubsystem extends SubsystemBase {
     swivel = new TalonFX(0);
     spindexerMaster = new TalonFX(0);
     spindexerFollower = new TalonFX(0);
+    turretHood = new TalonFX(0);
     //Change configs as need be
     
     flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Aligned));
@@ -50,23 +55,32 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelMaster.set(speed);
   }
 
-  public void setSwivel(double speed){
+  public void privSetSwivel(double speed) {
     swivel.set(speed);
-
   }
 
-  public double getSwivelEncoder(){
+  public void setSwivelSetpoint(double setpoint) {
+    swivelSetpoint = setpoint;
+  }
+
+  public double getSwivelEncoder() {
     return swivel.getPosition().getValueAsDouble();
+  }
+
+  public void privSetHood(double speed) {
+    turretHood.set(speed);
+  }
+
+  public void setHoodSetpoint(double setpoint) {
+    turretHoodSetpoint = setpoint;
+  }
+
+  public double getHoodEncoder() {
+    return turretHood.getPosition().getValueAsDouble();
   }
 
   public void setSpindexer(double speed){
     spindexerMaster.set(speed);
   }
-
-
-
-    
-
-    
 
 }
