@@ -9,6 +9,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -25,7 +27,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public double swivelSetpoint = 0;
   public double turretHoodSetpoint = 0;
 
-
+  private PIDController swivelPID;
+  private PIDController hoodPID;
   
  
   public static ShooterSubsystem getInstance(){
@@ -47,7 +50,8 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Aligned));
     spindexerFollower.setControl(new Follower(spindexerMaster.getDeviceID(), MotorAlignmentValue.Aligned));
 
-
+    swivelPID = new PIDController(0, 0, 0);
+    hoodPID = new PIDController(0, 0, 0);
 
   }
 
@@ -55,28 +59,42 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelMaster.set(speed);
   }
 
-  public void privSetSwivel(double speed) {
+  private void privSetSwivel(double speed) {
     swivel.set(speed);
   }
 
   public void setSwivelSetpoint(double setpoint) {
     swivelSetpoint = setpoint;
+
+    double calculation = swivelPID.calculate(getSwivelEncoder(), setpoint);
+    privSetSwivel(MathUtil.clamp(calculation, -1, 1)); // TODO: adjust clamps as needed
   }
 
   public double getSwivelEncoder() {
     return swivel.getPosition().getValueAsDouble();
   }
 
-  public void privSetHood(double speed) {
+  public boolean isSwivelReadyToShoot() {
+    return Math.abs(getSwivelEncoder() - swivelSetpoint) <= 1;
+  }
+
+  private void privSetHood(double speed) {
     turretHood.set(speed);
   }
 
   public void setHoodSetpoint(double setpoint) {
     turretHoodSetpoint = setpoint;
+
+    double calculation = hoodPID.calculate(getSwivelEncoder(), setpoint);
+    privSetHood(MathUtil.clamp(calculation, -1, 1)); // TODO: adjust clamps as needed
   }
 
   public double getHoodEncoder() {
     return turretHood.getPosition().getValueAsDouble();
+  }
+
+  public boolean isHoodReadyToShoot() {
+    return Math.abs(getHoodEncoder() - turretHoodSetpoint) <= 1;
   }
 
   public void setSpindexer(double speed){
