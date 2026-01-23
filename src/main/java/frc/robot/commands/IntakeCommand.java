@@ -8,7 +8,7 @@ public class IntakeCommand extends Command{
     
     private IntakeSubsystem intakeSubsystem;
     public boolean intaking;
-    public double speed;
+    public double speed=1;
 
     public IntakeCommand(boolean intaking) {
         this.intaking = intaking;
