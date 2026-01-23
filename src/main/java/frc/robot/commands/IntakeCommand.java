@@ -20,7 +20,13 @@ public class IntakeCommand extends Command{
 
     @Override
     public void execute(){
-        intakeSubsystem.setIntakeSpeed(speed);
+        if (intaking) {
+            intakeSubsystem.setIntakeSpeed(speed);
+        }
+        else {
+            intakeSubsystem.setIntakeSpeed(-speed);
+        }
+        
     }
 
     @Override
