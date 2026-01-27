@@ -44,6 +44,8 @@ public final class Constants {
     public static final double totalSwivelRange = 180; // In Degrees TODO: Find this out :)
     public static final Pose2d turretPoseRobotReletive = new Pose2d(0, 0, Rotation2d.fromDegrees(0)); // TODO: find x and y meters offset that the robot is from the center of the robot
 
+    public static final double stickDeadband = 0.125;
+    
   public static class OperatorConstants {
     
 }
