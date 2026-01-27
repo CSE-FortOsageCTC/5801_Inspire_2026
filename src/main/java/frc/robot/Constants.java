@@ -116,13 +116,7 @@ public static final class Swerve {
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
-        public static final double minElevatorValue = 0;
-        public static final double maxElevatorValue = -62.5;
 
-        public static final double minElevatorAngle = 29.2;
-        public static final double maxElevatorAngle = 61.2;
-
-        public static final double degreesToEncoderValue = maxElevatorValue / (maxElevatorAngle - minElevatorAngle);
                     // max Distance from robot - wrist angle shenanigans
         public static final double XLimit = 38 - 10;
 
