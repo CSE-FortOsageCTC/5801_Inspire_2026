@@ -15,10 +15,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
-public class TeleopCommand extends Command {
+public class TeleopDrive extends Command {
 
     private Swerve s_Swerve;
-    //private AutoRotateUtil s_AutoRotateUtil;
+  //  private AutoRotateUtil s_AutoRotateUtil;
 
     private int translationSup;
     private int strafeSup;
@@ -34,9 +34,9 @@ public class TeleopCommand extends Command {
     private Pose2d alignPose;
     private boolean isAprilAligning = false;
 
-    public TeleopCommand(Joystick driver, Joystick operator) {
+    public TeleopDrive(Joystick driver, Joystick operator) {
         s_Swerve = Swerve.getInstance();
-       // s_AutoRotateUtil = new AutoRotateUtil(0);
+        //s_AutoRotateUtil = new AutoRotateUtil(0);
         this.driver = driver;
         this.operator = operator;
         throttle = XboxController.Axis.kRightTrigger.value;
@@ -82,7 +82,7 @@ public class TeleopCommand extends Command {
         double throttleCalc = throttleLimiter.calculate(throttleAxis);
 
         Translation2d translation = new Translation2d(translationVal, strafeVal)
-                .times(-Constants.Swerve.maxSpeed * (throttleCalc * 1));
+                .times(-Constants.Swerve.maxSpeed * throttleCalc);
 
         s_Swerve.teleopDrive(translation, rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
 
