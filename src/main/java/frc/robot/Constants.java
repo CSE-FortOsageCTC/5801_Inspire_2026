@@ -30,6 +30,11 @@ public final class Constants {
     public static final String limelightRight = "limelight-right";
     public static final String limelightLeft = "limelight-left";
     public static final String limelightSky = "limelight-sky";
+    
+    public static final double feedForwardAngle = 30;
+
+    public static final double climbingDx = Units.inchesToMeters(16.125); //TODO: adjust values as needed
+    public static final double climbingDy = Units.inchesToMeters(39); //TODO: adjust values as needed
 
     // position (x and y) of the hub from a top down perspective. height (z) of target of the hub
     public static final Pose3d hubPosition = new Pose3d(4.625594, 4.034536, 1.8288, null);
