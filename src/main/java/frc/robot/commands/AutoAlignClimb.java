@@ -61,7 +61,6 @@ public class AutoAlignClimb extends Command {
 
     @Override
     public void end(boolean isFinished) {
-        AlignPosition.setIsScoring(true);
         s_Swerve.drive(new Translation2d(0, 0), 0, true, false);
         s_Swerve.resetAlignApril();
 
