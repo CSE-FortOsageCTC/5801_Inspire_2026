@@ -15,9 +15,7 @@ import frc.robot.subsystems.Swerve;
 
 public enum AlignPosition {
     LeftOffset(),
-    CenterOffset(),
     RightOffset(),
-    L1Offset(),
     NoPos();
 
     private static AlignPosition alignPosition;
@@ -34,8 +32,6 @@ public enum AlignPosition {
     // private static LimeLightSubsystem s_LimeLightSubsystem =
     // LimeLightSubsystem.getRightInstance();
     private static Swerve s_Swerve = Swerve.getInstance();
-
-    private static boolean scoring = true;
 
     public static AlignPosition getPosition() {
 
@@ -125,14 +121,6 @@ public enum AlignPosition {
             closestPose = tagPose;
         }
         return closestPose;
-    }
-
-    public static boolean getIsScoring() {
-        return scoring;
-    }
-
-    public static void setIsScoring(boolean isScoring) {
-        scoring = isScoring;
     }
 
     AlignPosition() {
