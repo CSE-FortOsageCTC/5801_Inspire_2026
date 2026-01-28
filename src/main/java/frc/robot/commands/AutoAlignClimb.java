@@ -1,0 +1,70 @@
+package frc.robot.commands;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.AlignPosition;
+import frc.robot.Constants;
+import frc.robot.subsystems.Swerve;
+
+public class AutoAlignClimb extends Command {
+
+    private AlignPosition alignPos;
+    private Swerve s_Swerve;
+
+    private Translation2d translation;
+    private double rotation;
+
+    private int waitFor;
+    private int counter = 0;
+
+    private boolean isRed;
+
+    public AutoAlignClimb(AlignPosition alignPos, int waitFor) {
+
+        this.waitFor = waitFor;
+
+        this.alignPos = alignPos;
+        s_Swerve = Swerve.getInstance();
+
+        isRed = DriverStation.getAlliance().get().equals(Alliance.Red);
+
+        addRequirements(s_Swerve);
+
+    }
+
+    @Override
+    public void initialize() {
+        s_Swerve.alignAprilTag(alignPos);
+    }
+
+    @Override
+    public void execute() {
+        if (counter >= waitFor) {
+            Rotation2d rotationTag = AlignPosition.getAlignOffset().getRotation();
+            translation = s_Swerve.translateToApril().times(Constants.Swerve.maxSpeed);
+            rotation = s_Swerve.rotateToApril(rotationTag.getDegrees()) * Constants.Swerve.maxAngularVelocity;
+            s_Swerve.drive(translation, rotation, true, false);
+        }
+
+        counter++;
+
+    }
+
+    @Override
+    public boolean isFinished() {
+        return s_Swerve.alignAprilFinished();
+    }
+
+    @Override
+    public void end(boolean isFinished) {
+        s_Swerve.drive(new Translation2d(0, 0), 0, true, false);
+        s_Swerve.resetAlignApril();
+
+        counter = 0;
+    }
+
+}
