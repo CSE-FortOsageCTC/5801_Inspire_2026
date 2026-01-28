@@ -29,7 +29,7 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import choreo.trajectory.*;
 
-public class ChoreoManager extends SubsystemBase {
+public class ChoreoManager {
 
     private Swerve s_Swerve;
     private AutoFactory autoFactory;
@@ -38,18 +38,18 @@ public class ChoreoManager extends SubsystemBase {
     private PIDController autoYPID = new PIDController(Constants.AutoConstants.kPYController, 0, 0);
     private PIDController autoThetaPID = new PIDController(Constants.AutoConstants.kPThetaController, 0, 0);
 
-    private static ChoreoManager s_ChoreoSubsystem;
+    private static ChoreoManager choreoManager;
 
     private Trajectory<SwerveSample> trajectory;
 
     public static ChoreoManager getInstance() {
-        if (s_ChoreoSubsystem == null) {
-            s_ChoreoSubsystem = new ChoreoManager();
+        if (choreoManager == null) {
+            choreoManager = new ChoreoManager();
         }
-        return s_ChoreoSubsystem;
+        return choreoManager;
     }
 
-    public ChoreoManager() {
+    private ChoreoManager() {
 
         s_Swerve = Swerve.getInstance();
 
