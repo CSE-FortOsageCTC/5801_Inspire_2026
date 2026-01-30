@@ -5,8 +5,16 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ShooterDefault;
+import frc.robot.commands.TeleopDrive;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.Swerve;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -16,6 +24,49 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private Swerve s_Swerve = Swerve.getInstance();
+  private ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
+
+  private final Joystick driver = new Joystick(0);
+  private final Joystick operator = new Joystick(1);
+
+  private final JoystickButton driver_A_Function = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton driver_B_Function = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final JoystickButton driver_X_Function = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton driver_Y_Function = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton driver_Start_Function = new JoystickButton(driver,
+      XboxController.Button.kStart.value);
+  private final JoystickButton driver_Back_Function = new JoystickButton(driver, XboxController.Button.kBack.value);
+  private final JoystickButton driver_LeftBumper_Function = new JoystickButton(driver,
+      XboxController.Button.kLeftBumper.value);
+  private final JoystickButton driver_RightBumper_Function = new JoystickButton(driver,
+      XboxController.Button.kRightBumper.value);
+  private final POVButton driverLeftDpad = new POVButton(driver, 270);
+  private final POVButton driverRightDpad = new POVButton(driver, 90);
+  private final POVButton driverUpDpad = new POVButton(driver, 0);
+  private final POVButton driverDownDpad = new POVButton(driver, 180);
+  private final JoystickButton driverStartButton = new JoystickButton(driver, XboxController.Button.kStart.value);
+
+
+  private final JoystickButton operatorX = new JoystickButton(operator, XboxController.Button.kX.value);
+  private final JoystickButton operatorY = new JoystickButton(operator, XboxController.Button.kY.value);
+  private final JoystickButton operatorA = new JoystickButton(operator, XboxController.Button.kA.value);
+  private final JoystickButton operatorB = new JoystickButton(operator, XboxController.Button.kB.value);
+  private final JoystickButton operatorStart = new JoystickButton(operator, XboxController.Button.kStart.value);
+  private final JoystickButton operatorLeftStickDown = new JoystickButton(operator,
+      XboxController.Button.kLeftStick.value);
+  private final JoystickButton operatorRightStickDown = new JoystickButton(operator,
+      XboxController.Button.kRightStick.value);
+
+  private final JoystickButton operatorLeftBumper = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton operatorRightBumper = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+  private final POVButton operatorUpDPad = new POVButton(operator, 0);
+  private final POVButton operatorRightDPad = new POVButton(operator, 90);
+  private final POVButton operatorDownDPad = new POVButton(operator, 180);
+  private final POVButton operatorLeftDPad = new POVButton(operator, 270);
+
+  
   // The robot's subsystems and commands are defined here...
   // Replace with CommandPS4Controller or CommandJoystick if needed
   // private final CommandXboxController m_driverController = FIXED FOR ERRORS
@@ -37,7 +88,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
+    s_Swerve.setDefaultCommand(new TeleopDrive(driver, operator));
+    s_ShooterSubsystem.setDefaultCommand(new ShooterDefault());
   }
 
   /**
