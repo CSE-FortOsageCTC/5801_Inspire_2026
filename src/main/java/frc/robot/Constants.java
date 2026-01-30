@@ -58,9 +58,9 @@ public static final class Swerve {
                 COTSTalonFXSwerveConstants.SDS.MK4i.KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(21.5); // TODO: This must be tuned to specific
+        public static final double trackWidth = Units.inchesToMeters(30); // TODO: This must be tuned to specific
                                                                             // robot
-        public static final double wheelBase = Units.inchesToMeters(21.5); // TODO: This must be tuned to specific robot
+        public static final double wheelBase = Units.inchesToMeters(24); // TODO: This must be tuned to specific robot
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
         /*
