@@ -9,9 +9,8 @@ import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Pigeon2Configurator;
 import com.ctre.phoenix6.controls.MusicTone;
 import com.ctre.phoenix6.hardware.Pigeon2;
-
-// import choreo.trajectory.SwerveSample;
-// import choreo.trajectory.Trajectory;
+import choreo.trajectory.SwerveSample;
+import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -162,10 +161,10 @@ public class Swerve extends SubsystemBase {
         // getGyroYaw(), getModPos);
     }
 
-    // public void setTrajectory(Trajectory<SwerveSample> traj) {
-    //     field.getObject("traj").setTrajectory(
-    //             TrajectoryGenerator.generateTrajectory(List.of(traj.getPoses()), new TrajectoryConfig(10000, 10000)));
-    // } FIXED FOR ERROR
+    public void setTrajectory(Trajectory<SwerveSample> traj) {
+        field.getObject("traj").setTrajectory(
+                TrajectoryGenerator.generateTrajectory(List.of(traj.getPoses()), new TrajectoryConfig(10000, 10000)));
+    } 
 
     public Pose2d getEstimatedPosition() {
         return swerveEstimator.getEstimatedPosition();
@@ -236,26 +235,26 @@ public class Swerve extends SubsystemBase {
         }
     }
 
-    // public void autoDrive(SwerveSample sample) {
-    //     // Get the current pose of the robot
-    //     Pose2d pose = getPose();
+    public void autoDrive(SwerveSample sample) {
+        // Get the current pose of the robot
+        Pose2d pose = getPose();
 
-    //     // Generate the next speeds for the robot
-    //     ChassisSpeeds speeds = new ChassisSpeeds(
-    //             sample.vx + autoXController.calculate(pose.getX(), sample.x),
-    //             sample.vy + autoYController.calculate(pose.getY(), sample.y),
-    //             sample.omega + autoHeadingController.calculate(MathUtil.angleModulus(pose.getRotation().getRadians()),
-    //                     MathUtil.angleModulus(sample.heading)));
+        // Generate the next speeds for the robot
+        ChassisSpeeds speeds = new ChassisSpeeds(
+                sample.vx + autoXController.calculate(pose.getX(), sample.x),
+                sample.vy + autoYController.calculate(pose.getY(), sample.y),
+                sample.omega + autoHeadingController.calculate(MathUtil.angleModulus(pose.getRotation().getRadians()),
+                        MathUtil.angleModulus(sample.heading)));
 
-    //     // SmartDashboard.putNumber("auto Measurement",
-    //     // MathUtil.angleModulus(pose.getRotation().getRadians()));
-    //     // SmartDashboard.putNumber("auto Setpoint",
-    //     // MathUtil.angleModulus(sample.heading));
+        // SmartDashboard.putNumber("auto Measurement",
+        // MathUtil.angleModulus(pose.getRotation().getRadians()));
+        // SmartDashboard.putNumber("auto Setpoint",
+        // MathUtil.angleModulus(sample.heading));
 
-    //     // Apply the generated speeds
-    //     drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), -speeds.omegaRadiansPerSecond,
-    //             true, true);
-    // } FIXED FOR ERROR
+        // Apply the generated speeds
+        drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), -speeds.omegaRadiansPerSecond,
+                true, true);
+    } 
 
     public void setAutoDriveParams(Translation2d translation, double rotation, boolean fieldRelative,
             boolean isOpenLoop) {
@@ -420,7 +419,7 @@ public class Swerve extends SubsystemBase {
             mSwerveMods[i].setDesiredState(setpointStates[i], false);
         }
     }
-
+  
     public Translation2d translateToApril() {
         double speedX;
         double speedY;
