@@ -45,8 +45,8 @@ public final class Constants {
     public static final double stickDeadband = 0.125;
 
     //Set Points
-    public static double maxClimbExtension = 0; //TODO: find this
-    public static double minClimbExtension = 0; //TODO: find this
+    public static double primaryL1ClimbSetpoint = 0; //TODO: find this
+    public static double secondaryL1ClimbSetpoint = 0; //TODO: find this
 
     
 

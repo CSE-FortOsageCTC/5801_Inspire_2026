@@ -7,14 +7,12 @@ import frc.robot.subsystems.ClimbSubsystem;
 public class L1Climb extends Command{
     
     private ClimbSubsystem climbSubsystem;
-    private double setPoint;
+    private boolean extensionUp = false;
     
 
     
-    public L1Climb(double setPoint){
+    public L1Climb(){
         climbSubsystem = climbSubsystem.getInstance();
-
-        this.setPoint = setPoint;
 
         addRequirements(climbSubsystem);
     }
@@ -27,12 +25,16 @@ public class L1Climb extends Command{
     @Override
     public void execute(){
         
-        if (climbSubsystem.getExtensionEncoder() - setPoint < 0){ //below setpoint
-            climbSubsystem.setPosition(Constants.maxClimbExtension);
+        if (!extensionUp && climbSubsystem.getExtensionEncoder() >= Constants.primaryL1ClimbSetpoint){ //past setpoint, ready to go down
+            extensionUp = true;
         }
 
-        else { //above setpoint
-            climbSubsystem.setPosition(Constants.minClimbExtension);
+        if (!extensionUp){ //extend
+            climbSubsystem.setPosition(Constants.primaryL1ClimbSetpoint);
+        }
+
+        else { //retract
+            climbSubsystem.setPosition(Constants.secondaryL1ClimbSetpoint);
         }
     }
 
