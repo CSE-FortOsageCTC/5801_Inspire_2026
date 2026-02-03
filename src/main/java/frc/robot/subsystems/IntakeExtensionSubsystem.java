@@ -4,10 +4,15 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+
 public class IntakeExtensionSubsystem {
     //probably two motors
-    private static TalonFX extensionMaster;
-    private static TalonFX extensionFollower;
+    // private static TalonFX extensionMaster;
+    // private static TalonFX extensionFollower;
+
+    private static DoubleSolenoid intakeExtentionSolenoid;
 
     private static IntakeExtensionSubsystem intakeExtensionSubsystem;
 
@@ -17,19 +22,24 @@ public class IntakeExtensionSubsystem {
         }
         return intakeExtensionSubsystem;
     }
+    public static Object setExtension;
 
     private IntakeExtensionSubsystem() {
 
         
         //TODO assign IDs
-        extensionMaster = new TalonFX(0);
-        extensionFollower = new TalonFX(0);
+        // extensionMaster = new TalonFX(0);
+        // extensionFollower = new TalonFX(0);
         
         //invert if needed
-        extensionFollower.setControl(new Follower(extensionMaster.getDeviceID(), MotorAlignmentValue.Aligned));
+       // extensionFollower.setControl(new Follower(extensionMaster.getDeviceID(), MotorAlignmentValue.Aligned));
     }
 
-    public void setExtensionSpeed(double speed){
-        extensionMaster.set(speed);
+    public static void setExtension(){
+        //extensionMaster.set(speed);
+        intakeExtentionSolenoid.set(DoubleSolenoid.Value.kForward);
+    }
+    public void resetExtension(){
+        intakeExtentionSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 }
