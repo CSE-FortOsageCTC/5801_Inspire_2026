@@ -12,6 +12,7 @@ import frc.robot.subsystems.Swerve;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -66,7 +67,7 @@ public class RobotContainer {
   private final POVButton operatorDownDPad = new POVButton(operator, 180);
   private final POVButton operatorLeftDPad = new POVButton(operator, 270);
 
-  
+
   // The robot's subsystems and commands are defined here...
   // Replace with CommandPS4Controller or CommandJoystick if needed
   // private final CommandXboxController m_driverController = FIXED FOR ERRORS
@@ -89,7 +90,10 @@ public class RobotContainer {
    */
   private void configureBindings() {
     s_Swerve.setDefaultCommand(new TeleopDrive(driver, operator));
-    s_ShooterSubsystem.setDefaultCommand(new ShooterDefault());
+    s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(driver));
+
+    driver_A_Function.onTrue(new InstantCommand(() -> ShooterSubsystem.toggleIsShooting()));
+
   }
 
   /**
