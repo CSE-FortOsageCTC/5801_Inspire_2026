@@ -40,8 +40,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import frc.robot.AlignPosition;
-// import frc.robot.AutoRotateUtil;
+import frc.robot.AlignPosition;
+import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.SwerveModule;
@@ -58,7 +58,7 @@ public class Swerve extends SubsystemBase {
     public PIDController yTranslationPidController;
     public PIDController xTranslationPidController;
     public LimeLightSubsystem f_Limelight;
-    // public AutoRotateUtil s_AutoRotateUtil;
+    public AutoRotateUtil s_AutoRotateUtil;
     public Debouncer pieceSeenDebouncer;
     public Field2d field;
     public StructPublisher<Pose3d> publisher;
@@ -104,7 +104,7 @@ public class Swerve extends SubsystemBase {
         gyro.reset();
         //gyro.setYaw(isRed? 180:0);
         f_Limelight = LimeLightSubsystem.getRightInstance();
-        // s_AutoRotateUtil = new AutoRotateUtil(0);
+        s_AutoRotateUtil = new AutoRotateUtil(0);
         field = new Field2d();
 
         autoHeadingController.enableContinuousInput(-Math.PI, Math.PI);
@@ -419,49 +419,49 @@ public class Swerve extends SubsystemBase {
             mSwerveMods[i].setDesiredState(setpointStates[i], false);
         }
     }
+  
+    public Translation2d translateToApril() {
+        double speedX;
+        double speedY;
+        if (!translationXController.atGoal()) {
+            speedX = translationXController.calculate(swerveEstimator.getEstimatedPosition().getX(),
+                    AlignPosition.getAlignOffset().getX());
 
-    // public Translation2d translateToApril() {
-    //     double speedX;
-    //     double speedY;
-    //     if (!translationXController.atGoal()) {
-    //          speedX = translationXController.calculate(swerveEstimator.getEstimatedPosition().getX(),
-    //                  AlignPosition.getAlignOffset().getX());
+        } else {
+            speedX = 0;
+        }
 
-    //     } else {
-    //         speedX = 0;
-    //     }
+        if (!translationYController.atGoal()) {
+            speedY = translationYController.calculate(swerveEstimator.getEstimatedPosition().getY(),
+                    AlignPosition.getAlignOffset().getY());
+        } else {
+            speedY = 0;
+        }
+        // Added clamps
+        speedX = MathUtil.clamp(speedX, -0.17, 0.17);
+        speedY = MathUtil.clamp(speedY, -0.17, 0.17);
+        return new Translation2d(speedX, speedY);
 
-    //     if (!translationYController.atGoal()) {
-    //          speedY = translationYController.calculate(swerveEstimator.getEstimatedPosition().getY(),
-    //                  AlignPosition.getAlignOffset().getY());
-    //     } else {
-    //         speedY = 0;
-    //     }
-    //      Added clamps
-    //     speedX = MathUtil.clamp(speedX, -0.17, 0.17);
-    //     speedY = MathUtil.clamp(speedY, -0.17, 0.17);
-    //     return new Translation2d(speedX, speedY);
+    }
 
-    // } FIXED FOR ERROR
+    public double rotateToApril(double angle) {
 
-    // public double rotateToApril(double angle) {
+        double output = (((angle - swerveEstimator.getEstimatedPosition().getRotation().getDegrees())) + 360) % 360;
+        s_AutoRotateUtil.updateTargetAngle(output);
 
-    //     double output = (((angle - swerveEstimator.getEstimatedPosition().getRotation().getDegrees())) + 360) % 360;
-    //     // s_AutoRotateUtil.updateTargetAngle(output);
+        SmartDashboard.putNumber("Auto Rotate Output", output);
 
-    //     SmartDashboard.putNumber("Auto Rotate Output", output);
-
-    //     // return s_AutoRotateUtil.calculateRotationSpeed();
-    // }
+        return s_AutoRotateUtil.calculateRotationSpeed();
+    }
 
     // public double rotateToAmp() {
     // double headingError =
     // AlignPosition.getAlignOffset().getRotation().getDegrees() - correctedYaw();
 
-    // s_AutoRotateUtil.updateTargetAngle(headingError);
+    // // s_AutoRotateUtil.updateTargetAngle(headingError);
 
-    // return s_AutoRotateUtil.calculateRotationSpeed();
-    // } FIXED FOR ERROR
+    // // return s_AutoRotateUtil.calculateRotationSpeed();
+    // }
 
     public double rotateToNote() {
         boolean noteInView = f_Limelight.pieceDetected();
@@ -503,11 +503,11 @@ public class Swerve extends SubsystemBase {
         }
     }
 
-    // public void alignAprilTag(AlignPosition alignPos, boolean isScoring) {
+    public void alignAprilTag(AlignPosition alignPos) {
 
-    //     AlignPosition.setPosition(alignPos, isScoring);
+        AlignPosition.setPosition(alignPos);
 
-    // } FIXED FOR ERROR
+    } 
 
     public void resetAlignApril() {
         Pose2d postion=swerveEstimator.getEstimatedPosition();
