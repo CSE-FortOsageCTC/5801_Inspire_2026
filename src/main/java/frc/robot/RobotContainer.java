@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterDefault;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -93,7 +94,7 @@ public class RobotContainer {
     s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(driver));
 
     driver_A_Function.onTrue(new InstantCommand(() -> ShooterSubsystem.toggleIsShooting()));
-
+    driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
   }
 
   /**
