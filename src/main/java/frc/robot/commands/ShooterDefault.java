@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Rotation;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -15,8 +16,12 @@ public class ShooterDefault extends Command {
 
     private Pose2d botPose;
 
-    public ShooterDefault() {
+    private Joystick driver;
+
+    public ShooterDefault(Joystick driver) {
         s_ShooterSubsystem = ShooterSubsystem.getInstance();
+        this.driver = driver;
+        
     }
 
     @Override
@@ -60,7 +65,7 @@ public class ShooterDefault extends Command {
         
         s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees);
 
-        if (s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
+        if (ShooterSubsystem.getIsShooting() && s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
             s_ShooterSubsystem.setFlywheels(motorSpeed);
         } else {
             s_ShooterSubsystem.setFlywheels(0);

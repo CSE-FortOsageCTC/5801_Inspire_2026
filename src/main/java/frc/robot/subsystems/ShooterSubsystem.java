@@ -30,6 +30,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private PIDController swivelPID;
   private PIDController hoodPID;
   
+  private static boolean isShooting = false;
  
   public static ShooterSubsystem getInstance(){
         if (shooterSubsystem == null){
@@ -100,5 +101,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setSpindexer(double speed){
     spindexerMaster.set(speed);
   }
+  public static boolean getIsShooting(){
+    return isShooting;
+  }
 
+  public static void toggleIsShooting(){
+    isShooting = !isShooting;
+  }
 }
