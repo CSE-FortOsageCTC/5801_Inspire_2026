@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoAlignClimb;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterDefault;
 import frc.robot.commands.TeleopDrive;
@@ -95,7 +96,10 @@ public class RobotContainer {
 
     driver_A_Function.onTrue(new InstantCommand(() -> ShooterSubsystem.toggleIsShooting()));
     driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
+    driverLeftDpad.whileTrue(new AutoAlignClimb(AlignPosition.LeftOffset, 0));
+    driverRightDpad.whileTrue(new AutoAlignClimb(AlignPosition.RightOffset, 0));
   }
+  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
