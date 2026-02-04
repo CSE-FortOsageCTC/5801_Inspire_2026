@@ -106,7 +106,7 @@ public class ChoreoManager {
         // System.out.println("this is the top of the auto code");
 
         // Load the routine's trajectories
-        AutoTrajectory traj_SweepAuto = routine.trajectory("NonNeutral");
+        AutoTrajectory traj_NonNeutralAuto = routine.trajectory("NonNeutral");
         AlignPosition alignPosition = isRightClimb ? AlignPosition.RightOffset : AlignPosition.LeftOffset;
         if (!willClimb)
         {
@@ -119,7 +119,7 @@ public class ChoreoManager {
                 // new InstantCommand(() ->
                 // ArmPosition.setPosition(ArmPosition.StartingConfig)),
                 new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
-                traj_SweepAuto.cmd().withTimeout(10),
+                traj_NonNeutralAuto.cmd().withTimeout(10),
                 new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
                 new AutoAlignClimb(alignPosition, 0)
 
