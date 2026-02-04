@@ -149,7 +149,7 @@ public class ChoreoManager {
                 new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
                 traj_SweepAuto.cmd().withTimeout(10),
                 new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
-                new AutoAlignClimb(AlignPosition.LeftOffset, 0)
+                new AutoAlignClimb(alignPosition, 0)
 
 
         ));
