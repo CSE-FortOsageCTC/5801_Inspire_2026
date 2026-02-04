@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import frc.robot.AlignPosition; Error
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.commands.AutoAlignClimb;
 // import frc.robot.Constants.ArmPosition; Error
 // import frc.robot.commands.AlignToApril; Error
 import frc.robot.commands.IntakeCommand;
@@ -61,7 +62,8 @@ public class ChoreoManager {
                 s_Swerve);
 
         // autoFactory.bind("ArmGround", new InstantCommand(() -> ArmPosition.setPosition(ArmPosition.Ground)));
-        autoFactory.bind("GroundIntake", new InstantCommand(() -> IntakeSubsystem.getInstance().setIntakeSpeed(-1)));
+        autoFactory.bind("Intake", new InstantCommand(() -> IntakeSubsystem.getInstance().setIntakeSpeed(-1)));
+        autoFactory.bind("IntakeEnd", new InstantCommand(() -> IntakeSubsystem.getInstance().setIntakeSpeed(0)));
     }
 
     private void switchPipelines(int pipeline) {
@@ -125,19 +127,14 @@ public class ChoreoManager {
     }
 
     // MARK: Lollipop EF Pickup
-    public AutoRoutine lollipopEFAutoPickup() {
+    public AutoRoutine sweepAuto() {
         // System.out.println("this is before the auto routine");
-        AutoRoutine routine = autoFactory.newRoutine("lollipopEF");
+        AutoRoutine routine = autoFactory.newRoutine("SweepAuto");
 
         // System.out.println("this is the top of the auto code");
 
         // Load the routine's trajectories
-        AutoTrajectory traj_startToEF = routine.trajectory("startToEF");
-        AutoTrajectory traj_EFto3 = routine.trajectory("EFtoThree");
-        
-        AutoTrajectory traj_3ToAB = routine.trajectory("threeToAB");
-        AutoTrajectory traj_ABto2 = routine.trajectory("ABtoTwoEF");
-        AutoTrajectory traj_2ToAB = routine.trajectory("twoToAB");
+        AutoTrajectory traj_SweepAuto = routine.trajectory("SweepAuto");
 
         // When the routine begins, reset odometry and start the first trajectory
         routine.active().onTrue(
@@ -146,8 +143,9 @@ public class ChoreoManager {
                 // new InstantCommand(() ->
                 // ArmPosition.setPosition(ArmPosition.StartingConfig)),
                 new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
-                traj_startToEF.cmd().withTimeout(1),
-                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true))
+                traj_SweepAuto.cmd().withTimeout(10),
+                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
+                new AutoAlignClimb(AlignPosition.LeftOffset, 0)
 
 
         ));
