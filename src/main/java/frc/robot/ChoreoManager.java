@@ -126,7 +126,7 @@ public class ChoreoManager {
         return routine;
     }
 
-    // MARK: Lollipop EF Pickup
+    // MARK: Sweep Auto
     public AutoRoutine sweepAuto() {
         // System.out.println("this is before the auto routine");
         AutoRoutine routine = autoFactory.newRoutine("SweepAuto");
@@ -152,20 +152,15 @@ public class ChoreoManager {
         return routine;
     }
 
-    // MARK: Lollipop IJ Pickup
-    public AutoRoutine lollipopIJAutoPickup() {
+    // MARK: Right Half Auto
+    public AutoRoutine rightHalfAuto() {
         // System.out.println("this is before the auto routine");
-        AutoRoutine routine = autoFactory.newRoutine("lollipopIJ");
+        AutoRoutine routine = autoFactory.newRoutine("RightHalfAuto");
 
         // System.out.println("this is the top of the auto code");
 
         // Load the routine's trajectories
-        AutoTrajectory traj_startToIJ = routine.trajectory("startToIJ");
-        AutoTrajectory traj_IJto1 = routine.trajectory("IJtoOne");
-        
-        AutoTrajectory traj_1ToAB = routine.trajectory("oneToAB");
-        AutoTrajectory traj_ABto2 = routine.trajectory("ABtoTwo");
-        AutoTrajectory traj_2ToAB = routine.trajectory("twoToAB");
+        AutoTrajectory traj_RightHalfAuto = routine.trajectory("RightHalfAuto");
 
         // When the routine begins, reset odometry and start the first trajectory
         routine.active().onTrue(
@@ -174,9 +169,9 @@ public class ChoreoManager {
                 // new InstantCommand(() ->
                 // ArmPosition.setPosition(ArmPosition.StartingConfig)),
                 new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
-                traj_startToIJ.cmd().withTimeout(1),
-                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true))
-                
+                traj_RightHalfAuto.cmd().withTimeout(10),
+                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
+                new AutoAlignClimb(AlignPosition.LeftOffset, 0)
 
         ));
         return routine;
