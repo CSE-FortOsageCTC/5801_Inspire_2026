@@ -6,8 +6,9 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class IntakeExtensionSubsystem {
+public class IntakeExtensionSubsystem extends SubsystemBase {
     //probably two motors
     // private static TalonFX extensionMaster;
     // private static TalonFX extensionFollower;
@@ -22,11 +23,12 @@ public class IntakeExtensionSubsystem {
         }
         return intakeExtensionSubsystem;
     }
-    public static Object setExtension;
 
+    
     private IntakeExtensionSubsystem() {
 
-        
+        intakeExtentionSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
+
         //TODO assign IDs
         // extensionMaster = new TalonFX(0);
         // extensionFollower = new TalonFX(0);
@@ -39,7 +41,7 @@ public class IntakeExtensionSubsystem {
         //extensionMaster.set(speed);
         intakeExtentionSolenoid.set(DoubleSolenoid.Value.kForward);
     }
-    public void resetExtension(){
+    public static void resetExtension(){
         intakeExtentionSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 }

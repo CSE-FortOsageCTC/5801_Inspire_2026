@@ -11,16 +11,31 @@ public class IntakeExtensionCommand extends Command {
 
     private IntakeExtensionSubsystem intakeExtensionSubsystem;
 
-    public IntakeExtensionCommand() {
+    private boolean isExtending;
+
+    private boolean hasRun = false;
+
+    public IntakeExtensionCommand(boolean isExtending) {
+        this.isExtending = isExtending;
+
         intakeExtensionSubsystem = IntakeExtensionSubsystem.getInstance();
+
+        addRequirements(intakeExtensionSubsystem);
     }
 
+    @Override
+    public void execute() {
+        if (isExtending) {
+            IntakeExtensionSubsystem.setExtension();
+        }
+        else {
+            IntakeExtensionSubsystem.resetExtension();
+        }
+        hasRun = true;
+    }
     
-    public void open() {
-        IntakeExtensionSubsystem.setExtension();
-    }
-
-    public void close() {
-        intakeExtensionSubsystem.resetExtension();
+    @Override
+    public boolean isFinished() {
+        return hasRun;
     }
 }
