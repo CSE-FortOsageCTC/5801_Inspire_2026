@@ -98,31 +98,33 @@ public class ChoreoManager {
 
     }
 
-    // MARK: One Piece Auto
-    public AutoRoutine onePieceAuto() {
-        System.out.println("this is before the auto routine");
-        AutoRoutine routine = autoFactory.newRoutine("onePiece");
+    // MARK: Non Neutral Auto
+    public AutoRoutine nonNeutralAuto(boolean willClimb, boolean isRightClimb) {
+        // System.out.println("this is before the auto routine");
+        AutoRoutine routine = autoFactory.newRoutine("NonNeutral");
 
-        System.out.println("this is the top of the auto code");
+        // System.out.println("this is the top of the auto code");
 
         // Load the routine's trajectories
-        AutoTrajectory traj_startToHG = routine.trajectory("startToHG");
-        AutoTrajectory traj_ABToNet = routine.trajectory("ABToNet");
-        AutoTrajectory traj_NettoIJ = routine.trajectory("NetToIJ");
-        AutoTrajectory traj_IJtoNet = routine.trajectory("IJtoNet");
-        AutoTrajectory traj_GetRP = routine.trajectory("GetRP");
-
+        AutoTrajectory traj_SweepAuto = routine.trajectory("NonNeutral");
+        AlignPosition alignPosition = isRightClimb ? AlignPosition.RightOffset : AlignPosition.LeftOffset;
+        if (!willClimb)
+        {
+            alignPosition = AlignPosition.NoPos;
+        }
         // When the routine begins, reset odometry and start the first trajectory
         routine.active().onTrue(
-                Commands.sequence(
-                        // traj_startToIJ.resetOdometry(),
-                        // new InstantCommand(() ->
-                        // ArmPosition.setPosition(ArmPosition.StartingConfig)),
-                        new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))) // rotateBy(180);
-                  
-                )
-            );
+            Commands.sequence(
+                // traj_startToIJ.resetOdometry(),
+                // new InstantCommand(() ->
+                // ArmPosition.setPosition(ArmPosition.StartingConfig)),
+                new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
+                traj_SweepAuto.cmd().withTimeout(10),
+                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
+                new AutoAlignClimb(alignPosition, 0)
 
+
+        ));
         return routine;
     }
 
