@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoAlignClimb;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.L1Climb;
 import frc.robot.commands.ShooterDefault;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -98,6 +99,7 @@ public class RobotContainer {
     driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
     driverLeftDpad.whileTrue(new AutoAlignClimb(AlignPosition.LeftOffset, 0));
     driverRightDpad.whileTrue(new AutoAlignClimb(AlignPosition.RightOffset, 0));
+    driver_Y_Function.whileTrue(new L1Climb());
   }
   
 
