@@ -127,7 +127,7 @@ public class ChoreoManager {
     }
 
     // MARK: Sweep Auto
-    public AutoRoutine sweepAuto() {
+    public AutoRoutine sweepAuto(boolean willClimb, boolean isRightClimb) {
         // System.out.println("this is before the auto routine");
         AutoRoutine routine = autoFactory.newRoutine("SweepAuto");
 
@@ -135,7 +135,11 @@ public class ChoreoManager {
 
         // Load the routine's trajectories
         AutoTrajectory traj_SweepAuto = routine.trajectory("SweepAuto");
-
+        AlignPosition alignPosition = isRightClimb ? AlignPosition.RightOffset : AlignPosition.LeftOffset;
+        if (!willClimb)
+        {
+            alignPosition = AlignPosition.NoPos;
+        }
         // When the routine begins, reset odometry and start the first trajectory
         routine.active().onTrue(
             Commands.sequence(
@@ -153,7 +157,7 @@ public class ChoreoManager {
     }
 
     // MARK: Right Half Auto
-    public AutoRoutine rightHalfAuto() {
+    public AutoRoutine rightHalfAuto(boolean willClimb, boolean isRightClimb) {
         // System.out.println("this is before the auto routine");
         AutoRoutine routine = autoFactory.newRoutine("RightHalfAuto");
 
@@ -161,7 +165,11 @@ public class ChoreoManager {
 
         // Load the routine's trajectories
         AutoTrajectory traj_RightHalfAuto = routine.trajectory("RightHalfAuto");
-
+        AlignPosition alignPosition = isRightClimb ? AlignPosition.RightOffset : AlignPosition.LeftOffset;
+        if (!willClimb)
+        {
+            alignPosition = AlignPosition.NoPos;
+        }
         // When the routine begins, reset odometry and start the first trajectory
         routine.active().onTrue(
             Commands.sequence(
@@ -171,7 +179,7 @@ public class ChoreoManager {
                 new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
                 traj_RightHalfAuto.cmd().withTimeout(10),
                 new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
-                new AutoAlignClimb(AlignPosition.LeftOffset, 0)
+                new AutoAlignClimb(alignPosition, 0)
 
         ));
         return routine;
