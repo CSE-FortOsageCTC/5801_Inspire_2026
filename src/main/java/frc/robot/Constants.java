@@ -41,7 +41,14 @@ public final class Constants {
     public static final double climbingDy = Units.inchesToMeters(39); //TODO: adjust values as needed
 
     // position (x and y) of the hub from a top down perspective. height (z) of target of the hub
-    public static final Pose3d hubPosition = new Pose3d(4.625594, 4.034536, 1.8288, null);
+    public static final Pose3d redHubPosition = new Pose3d(4.625594, 4.034536, 1.8288, null);
+    public static final Pose3d blueHubPosition = new Pose3d(11.901424, 4.034536, 1.8288, null);
+    public static final Pose3d redNorthShuttleTarget = new Pose3d(2.305812, 6.031992, 0, null);
+    public static final Pose3d redSouthShuttleTarget = new Pose3d(2.305812, 2.010664, 0, null);
+    public static final Pose3d blueNorthShuttleTarget = new Pose3d(14.207236, 6.031992, 0, null);
+    public static final Pose3d blueSouthShuttleTarget = new Pose3d(14.207236, 2.010664, 0, null);
+    public static final double redAllianceLineX = 3.977894;
+    public static final double blueAllianceLineX = 12.563094;
     public static final double minimumHubDist = 0.61; // in meters
     public static final double maximumHubDist = 5.4; // in meters
     public static final double minimumHoodAngle = 75; // in degrees
@@ -57,6 +64,8 @@ public final class Constants {
     //Set Points
     public static double primaryL1ClimbSetpoint = 0; //TODO: find this
     public static double secondaryL1ClimbSetpoint = 0; //TODO: find this
+
+
 
     
 
