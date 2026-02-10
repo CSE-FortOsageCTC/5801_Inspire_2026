@@ -187,20 +187,31 @@ public class ChoreoManager {
         return routine;
     }
 
-    public AutoRoutine demoCircle() {
+    // MARK: Left Half Auto
+    public AutoRoutine leftAuto(boolean willClimb, boolean isRightClimb) {
         // System.out.println("this is before the auto routine");
-        AutoRoutine routine = autoFactory.newRoutine("demo");
+        AutoRoutine routine = autoFactory.newRoutine("LeftAuto");
 
         // System.out.println("this is the top of the auto code");
 
         // Load the routine's trajectories
-        AutoTrajectory traj_circle = routine.trajectory("DemoCircle");
-
+        AutoTrajectory traj_LeftAuto = routine.trajectory("LeftAuto");
+        AlignPosition alignPosition = isRightClimb ? AlignPosition.RightOffset : AlignPosition.LeftOffset;
+        if (!willClimb)
+        {
+            alignPosition = AlignPosition.NoPos;
+        }
         // When the routine begins, reset odometry and start the first trajectory
         routine.active().onTrue(
             Commands.sequence(
+                // traj_startToIJ.resetOdometry(),
+                // new InstantCommand(() ->
+                // ArmPosition.setPosition(ArmPosition.StartingConfig)),
                 new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
-                traj_circle.cmd()
+                traj_LeftAuto.cmd().withTimeout(10),
+                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
+                new AutoAlignClimb(alignPosition, 0)
+
         ));
         return routine;
     }
