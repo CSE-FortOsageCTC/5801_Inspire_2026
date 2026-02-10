@@ -42,7 +42,7 @@ public class ShooterDefault extends Command {
         botPose = new Pose2d();
         // botPose = swerveEstimator.getEstimatedPosition(); // TODO: Uncomment this line once Swerve is merged into main!!!
 
-        if (s_Swerve.isInNuetral()){
+        if (s_Swerve.isInNeutral()){
             if (DriverStation.Alliance.Red.equals(DriverStation.getAlliance().get())) {
                 if (isNorth(botPose)){
                     targetPose = Constants.redNorthShuttleTarget;
