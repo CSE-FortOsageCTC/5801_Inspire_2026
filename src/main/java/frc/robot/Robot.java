@@ -4,9 +4,21 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ctre.phoenix6.Orchestra;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.IntakeExtensionSubsystem;
+
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -17,7 +29,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
-
+  public Orchestra orchestra = new Orchestra();
+    List<String> music = new ArrayList<String>();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -26,8 +39,57 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-  }
+    RobotModeTriggers.autonomous().whileTrue(m_robotContainer.autoChooser.selectedCommandScheduler());
 
+    addAllInstruments();
+
+    // music.add("midis/jeopardy.chrp");
+    music.add("midis/freeBird.chrp");
+    // music.add("midis/marioOne.chrp");
+    music.add("midis/marioTwo.chrp");
+    music.add("midis/pirate.chrp");
+    // music.add("midis/star.chrp");
+    // music.add("midis/guilesTheme.chrp");
+    // music.add("midis/TTFATF.chrp");
+    music.add("midis/Sans.chrp");
+    music.add("midis/doom.chrp");
+
+
+    
+
+
+    int index = (int)(Math.random() * music.size());
+    orchestra.loadMusic(music.get(index));
+
+    playOrchestra();
+  }
+ 
+
+  
+  public void playOrchestra() {
+    int index = (int)(Math.random() * music.size());
+    orchestra.loadMusic(music.get(index));
+    orchestra.play();
+}
+
+public void stopOrchestra() {
+    orchestra.stop();
+}
+
+public void restartOrchestra() {
+    if (!orchestra.isPlaying()) {
+        int index = (int)(Math.random() * music.size());
+        orchestra.loadMusic(music.get(index));
+        orchestra.play();
+    }
+  }
+  public void addAllInstruments(){
+  Swerve.getInstance().addInstruments(orchestra);
+  IntakeExtensionSubsystem.getInstance().addInstruments(orchestra);
+  IntakeSubsystem.getInstance().addInstruments(orchestra);
+  ClimbSubsystem.getInstance().addInstruments(orchestra);
+  ShooterSubsystem.getInstance().addInstruments(orchestra);
+  }
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
