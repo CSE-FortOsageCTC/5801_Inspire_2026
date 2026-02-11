@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -34,4 +35,8 @@ public class IntakeSubsystem extends SubsystemBase {
     public void setIntakeSpeed(double speed){
         intakeMaster.set(speed);
     }
-}
+        public void addInstruments(Orchestra orchestra){
+        orchestra.addInstrument(intakeMaster);
+        orchestra.addInstrument(intakeFollower);
+        }
+    }

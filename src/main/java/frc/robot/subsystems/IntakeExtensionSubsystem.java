@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -7,11 +8,12 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.SwerveModule;
 
 public class IntakeExtensionSubsystem extends SubsystemBase {
     //probably two motors
-    // private static TalonFX extensionMaster;
-    // private static TalonFX extensionFollower;
+    private static TalonFX extensionMaster;
+    private static TalonFX extensionFollower;
 
     private static DoubleSolenoid intakeExtentionSolenoid;
 
@@ -44,4 +46,10 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     public static void resetExtension(){
         intakeExtentionSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
-}
+    public void addInstruments(Orchestra orchestra){
+        orchestra.addInstrument(extensionMaster);
+        orchestra.addInstrument(extensionFollower);
+
+    }
+
+    }
