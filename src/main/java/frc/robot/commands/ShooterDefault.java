@@ -1,27 +1,68 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Rotation;
-
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.Swerve;
 
 public class ShooterDefault extends Command {
     
     private ShooterSubsystem s_ShooterSubsystem;
 
+    private Swerve s_Swerve;
+
     private Pose2d botPose;
+
+    private Pose3d targetPose;
 
     private Joystick driver;
 
     public ShooterDefault(Joystick driver) {
         s_ShooterSubsystem = ShooterSubsystem.getInstance();
+        s_Swerve = Swerve.getInstance();
         this.driver = driver;
         
+    }
+
+    private boolean isNorth(Pose2d botPose){
+        if (botPose.getY() >= 4.021328){
+            return true;
+        }
+        return false;
+    }
+
+    private Pose3d getShuttleTargetPose(){
+        if (DriverStation.Alliance.Red.equals(DriverStation.getAlliance().get())) {
+            if (isNorth(botPose)){
+                return Constants.redNorthShuttleTarget;
+            }
+            else{
+                return Constants.redSouthShuttleTarget;
+            }
+        }
+
+        else{
+            if (isNorth(botPose)){
+                return Constants.blueNorthShuttleTarget;
+            }
+            else{
+                return Constants.blueSouthShuttleTarget;
+            }
+        }
+    }
+
+    private Pose3d getHubTargetPose(){
+        if (DriverStation.Alliance.Red.equals(DriverStation.getAlliance().get())) {
+            return Constants.redHubPosition;
+        }
+        else{
+            return Constants.blueHubPosition;
+        }
     }
 
     @Override
@@ -30,11 +71,18 @@ public class ShooterDefault extends Command {
         botPose = new Pose2d();
         // botPose = swerveEstimator.getEstimatedPosition(); // TODO: Uncomment this line once Swerve is merged into main!!!
 
+        if (s_Swerve.isInNeutral()){
+            targetPose = getShuttleTargetPose();
+        }
+        else{
+            targetPose = getHubTargetPose();
+        }
+
         Pose2d turretPoseFieldRelative = new Pose2d(botPose.getX() + (Math.sin(botPose.getRotation().getRadians()) * Constants.turretPoseRobotReletive.getX()), botPose.getY() + (Math.cos(botPose.getRotation().getRadians()) * Constants.turretPoseRobotReletive.getY()), Rotation2d.fromDegrees(botPose.getRotation().getDegrees() + Constants.turretPoseRobotReletive.getRotation().getDegrees()));
 
         // Distance in x and y axis respectively
-        double dx = turretPoseFieldRelative.getX() - Constants.hubPosition.getX();
-        double dy = turretPoseFieldRelative.getY() - Constants.hubPosition.getY();
+        double dx = turretPoseFieldRelative.getX() - targetPose.getX();
+        double dy = turretPoseFieldRelative.getY() - targetPose.getY();
 
         // angle in radians of the theoretical setpoint while stood still.
         double thetaDegrees = Math.toDegrees(Math.atan2(dy, dx));
@@ -46,7 +94,7 @@ public class ShooterDefault extends Command {
         double launchAngleDegrees = ((hypotenuse - Constants.minimumHubDist) / (Constants.maximumHubDist - Constants.minimumHubDist)) * (Constants.maximumHoodAngle - Constants.minimumHoodAngle) + Constants.minimumHoodAngle;
 
         // Distance the ball needs to hit for the ball to hit the height and position of the hub along it's parabola
-        double shootingTargetDistance = hypotenuse + (Constants.hubPosition.getZ() / Math.tan(launchAngleDegrees));
+        double shootingTargetDistance = hypotenuse + (targetPose.getZ() / Math.tan(launchAngleDegrees));
 
         // Initial velocity in m/s that the ball should have to travel to score (9.81 is gravity)
         double vO = Math.sqrt((shootingTargetDistance * 9.81) / Math.sin(2 * Math.toRadians(launchAngleDegrees)));
@@ -63,7 +111,10 @@ public class ShooterDefault extends Command {
             s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
         }
         
+   
+
         s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees);
+
 
         if (ShooterSubsystem.getIsShooting() && s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
             s_ShooterSubsystem.setFlywheels(motorSpeed);
