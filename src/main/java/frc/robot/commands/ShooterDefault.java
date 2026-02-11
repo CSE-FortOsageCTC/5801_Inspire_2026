@@ -36,6 +36,35 @@ public class ShooterDefault extends Command {
         return false;
     }
 
+    private Pose3d getShuttleTargetPose(){
+        if (DriverStation.Alliance.Red.equals(DriverStation.getAlliance().get())) {
+            if (isNorth(botPose)){
+                return Constants.redNorthShuttleTarget;
+            }
+            else{
+                return Constants.redSouthShuttleTarget;
+            }
+        }
+
+        else{
+            if (isNorth(botPose)){
+                return Constants.blueNorthShuttleTarget;
+            }
+            else{
+                return Constants.blueSouthShuttleTarget;
+            }
+        }
+    }
+
+    private Pose3d getHubTargetPose(){
+        if (DriverStation.Alliance.Red.equals(DriverStation.getAlliance().get())) {
+            return Constants.redHubPosition;
+        }
+        else{
+            return Constants.blueHubPosition;
+        }
+    }
+
     @Override
     public void execute() {
 
@@ -43,31 +72,10 @@ public class ShooterDefault extends Command {
         // botPose = swerveEstimator.getEstimatedPosition(); // TODO: Uncomment this line once Swerve is merged into main!!!
 
         if (s_Swerve.isInNeutral()){
-            if (DriverStation.Alliance.Red.equals(DriverStation.getAlliance().get())) {
-                if (isNorth(botPose)){
-                    targetPose = Constants.redNorthShuttleTarget;
-                }
-                else{
-                    targetPose = Constants.redSouthShuttleTarget;
-                }
-            }
-
-            else{
-                if (isNorth(botPose)){
-                    targetPose = Constants.blueNorthShuttleTarget;
-                }
-                else{
-                    targetPose = Constants.blueSouthShuttleTarget;
-                }
-            }
+            targetPose = getShuttleTargetPose();
         }
         else{
-            if (DriverStation.Alliance.Red.equals(DriverStation.getAlliance().get())) {
-                targetPose = Constants.redHubPosition;
-            }
-            else{
-                targetPose = Constants.blueHubPosition;
-            }
+            targetPose = getHubTargetPose();
         }
 
         Pose2d turretPoseFieldRelative = new Pose2d(botPose.getX() + (Math.sin(botPose.getRotation().getRadians()) * Constants.turretPoseRobotReletive.getX()), botPose.getY() + (Math.cos(botPose.getRotation().getRadians()) * Constants.turretPoseRobotReletive.getY()), Rotation2d.fromDegrees(botPose.getRotation().getDegrees() + Constants.turretPoseRobotReletive.getRotation().getDegrees()));
