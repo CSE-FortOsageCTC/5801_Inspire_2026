@@ -30,7 +30,7 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
   public Orchestra orchestra = new Orchestra();
-    List<String> music = new ArrayList<String>();
+  List<String> music = new ArrayList<String>();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -70,25 +70,27 @@ public class Robot extends TimedRobot {
     int index = (int)(Math.random() * music.size());
     orchestra.loadMusic(music.get(index));
     orchestra.play();
-}
+  }
 
-public void stopOrchestra() {
+  public void stopOrchestra() {
     orchestra.stop();
-}
+  }
 
-public void restartOrchestra() {
+  public void restartOrchestra() {
     if (!orchestra.isPlaying()) {
         int index = (int)(Math.random() * music.size());
         orchestra.loadMusic(music.get(index));
         orchestra.play();
     }
   }
+
   public void addAllInstruments(){
-  Swerve.getInstance().addInstruments(orchestra);
-  IntakeSubsystem.getInstance().addInstruments(orchestra);
-  ClimbSubsystem.getInstance().addInstruments(orchestra);
-  ShooterSubsystem.getInstance().addInstruments(orchestra);
+    Swerve.getInstance().addInstruments(orchestra);
+    IntakeSubsystem.getInstance().addInstruments(orchestra);
+    ClimbSubsystem.getInstance().addInstruments(orchestra);
+    ShooterSubsystem.getInstance().addInstruments(orchestra);
   }
+  
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.

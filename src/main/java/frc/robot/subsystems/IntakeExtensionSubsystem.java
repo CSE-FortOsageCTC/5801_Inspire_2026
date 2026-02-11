@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -43,8 +42,9 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
         //extensionMaster.set(speed);
         intakeExtentionSolenoid.set(DoubleSolenoid.Value.kForward);
     }
+    
     public static void resetExtension(){
         intakeExtentionSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
-    }
+}

@@ -75,8 +75,9 @@ public class ClimbSubsystem extends SubsystemBase {
 
         setClimbSpeed(speed);
     }
-        public void addInstruments(Orchestra orchestra){
+    
+    public void addInstruments(Orchestra orchestra){
         orchestra.addInstrument(masterClimb);
         orchestra.addInstrument(followerClimb);
-      }
+    }
 }

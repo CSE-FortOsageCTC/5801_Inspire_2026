@@ -106,6 +106,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setSpindexer(double speed){
     spindexerMaster.set(speed);
   }
+  
   public static boolean getIsShooting(){
     return isShooting;
   }
@@ -113,12 +114,13 @@ public class ShooterSubsystem extends SubsystemBase {
   public static void toggleIsShooting(){
     isShooting = !isShooting;
   }
-    public void addInstruments(Orchestra orchestra){
-      orchestra.addInstrument(swivel);
-      orchestra.addInstrument(flywheelFollower);
-      orchestra.addInstrument(flywheelMaster);
-      orchestra.addInstrument(spindexerFollower);
-      orchestra.addInstrument(spindexerFollower);
-      orchestra.addInstrument(turretHood);
-    }
+
+  public void addInstruments(Orchestra orchestra){
+    orchestra.addInstrument(swivel);
+    orchestra.addInstrument(flywheelFollower);
+    orchestra.addInstrument(flywheelMaster);
+    orchestra.addInstrument(spindexerFollower);
+    orchestra.addInstrument(spindexerFollower);
+    orchestra.addInstrument(turretHood);
+  }
 }
