@@ -578,6 +578,15 @@ public class Swerve extends SubsystemBase {
 
     }
 
+    public boolean isInNeutral(){
+        if (swerveEstimator.getEstimatedPosition().getX() >= Constants.redAllianceLineX && swerveEstimator.getEstimatedPosition().getX() <= Constants.blueAllianceLineX){
+            return true;
+        }
+        
+        return false;
+    }
+
+
     @Override
     public void periodic() {
         // swerveOdometry.update(getGyroYaw(), getModulePositions());
