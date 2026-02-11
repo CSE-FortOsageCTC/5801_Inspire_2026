@@ -104,13 +104,16 @@ public class RobotContainer {
     autoChooser.addRoutine("SweepAuto No Climb", () -> s_choreoManager.sweepAuto(false, false));
     autoChooser.addRoutine("SweepAuto Left Climb", () -> s_choreoManager.sweepAuto(true, false));
     autoChooser.addRoutine("SweepAuto Right Climb", () -> s_choreoManager.sweepAuto(true, true));
-        autoChooser.addRoutine("RightAuto No Climb", () -> s_choreoManager.rightHalfAuto(false, false));
+
+    autoChooser.addRoutine("RightAuto No Climb", () -> s_choreoManager.rightHalfAuto(false, false));
     autoChooser.addRoutine("RightAuto Left Climb", () -> s_choreoManager.rightHalfAuto(true, false));
     autoChooser.addRoutine("RightAuto Right Climb", () -> s_choreoManager.rightHalfAuto(true, true));
-        autoChooser.addRoutine("LeftAuto No Climb", () -> s_choreoManager.leftAuto(false, false));
+
+    autoChooser.addRoutine("LeftAuto No Climb", () -> s_choreoManager.leftAuto(false, false));
     autoChooser.addRoutine("LeftAuto Left Climb", () -> s_choreoManager.leftAuto(true, false));
     autoChooser.addRoutine("LeftAuto Right Climb", () -> s_choreoManager.leftAuto(true, true));
-        autoChooser.addRoutine("NonNeutral No Climb", () -> s_choreoManager.nonNeutralAuto(false, false));
+    
+    autoChooser.addRoutine("NonNeutral No Climb", () -> s_choreoManager.nonNeutralAuto(false, false));
     autoChooser.addRoutine("NonNeutral Left Climb", () -> s_choreoManager.nonNeutralAuto(true, false));
     autoChooser.addRoutine("NonNeutral Right Climb", () -> s_choreoManager.nonNeutralAuto(true, true));
     //autoChooser.addRoutine("L2 IJ", s_choreoSubsystem::twoPieceIJAutoL2); //If we need an L2 Auto
