@@ -4,16 +4,19 @@
 
 package frc.robot;
 
+import choreo.auto.AutoChooser;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoAlignClimb;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.L1Climb;
 import frc.robot.commands.ShooterDefault;
 import frc.robot.commands.TeleopDrive;
+import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -28,6 +31,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private ChoreoManager s_choreoManager;
+  private LimeLightSubsystem limelightLeft;
+  private LimeLightSubsystem limelightSky;
+  private LimeLightSubsystem limelightRight;
 
   private Swerve s_Swerve = Swerve.getInstance();
   private ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
@@ -70,6 +78,7 @@ public class RobotContainer {
   private final POVButton operatorDownDPad = new POVButton(operator, 180);
   private final POVButton operatorLeftDPad = new POVButton(operator, 270);
 
+    public AutoChooser autoChooser;
 
   // The robot's subsystems and commands are defined here...
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -78,8 +87,41 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    s_Swerve = Swerve.getInstance();
+    s_choreoManager = ChoreoManager.getInstance();
+    limelightLeft = LimeLightSubsystem.getInstance(Constants.limelightLeft);
+    limelightSky = LimeLightSubsystem.getInstance(Constants.limelightSky);
+    limelightRight = LimeLightSubsystem.getInstance(Constants.limelightRight);
     // Configure the trigger bindings
     configureBindings();
+
+
+        // Create the auto chooser
+    autoChooser = new AutoChooser();
+
+    // Add options to the chooser
+    // autoChooser.addRoutine("Middle Auto", s_choreoSubsystem::onePieceAuto);
+    autoChooser.addRoutine("SweepAuto No Climb", () -> s_choreoManager.sweepAuto(false, false));
+    autoChooser.addRoutine("SweepAuto Left Climb", () -> s_choreoManager.sweepAuto(true, false));
+    autoChooser.addRoutine("SweepAuto Right Climb", () -> s_choreoManager.sweepAuto(true, true));
+
+    autoChooser.addRoutine("RightAuto No Climb", () -> s_choreoManager.rightHalfAuto(false, false));
+    autoChooser.addRoutine("RightAuto Left Climb", () -> s_choreoManager.rightHalfAuto(true, false));
+    autoChooser.addRoutine("RightAuto Right Climb", () -> s_choreoManager.rightHalfAuto(true, true));
+
+    autoChooser.addRoutine("LeftAuto No Climb", () -> s_choreoManager.leftAuto(false, false));
+    autoChooser.addRoutine("LeftAuto Left Climb", () -> s_choreoManager.leftAuto(true, false));
+    autoChooser.addRoutine("LeftAuto Right Climb", () -> s_choreoManager.leftAuto(true, true));
+    
+    autoChooser.addRoutine("NonNeutral No Climb", () -> s_choreoManager.nonNeutralAuto(false, false));
+    autoChooser.addRoutine("NonNeutral Left Climb", () -> s_choreoManager.nonNeutralAuto(true, false));
+    autoChooser.addRoutine("NonNeutral Right Climb", () -> s_choreoManager.nonNeutralAuto(true, true));
+    //autoChooser.addRoutine("L2 IJ", s_choreoSubsystem::twoPieceIJAutoL2); //If we need an L2 Auto
+
+    // autoChooser.addCmd("Example Auto Command", this::exampleAutoCommand);
+
+    // Put the auto chooser on the dashboard
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -109,7 +151,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return new Command() {};
+    return autoChooser.selectedCommand();
   }
 }
