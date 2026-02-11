@@ -93,7 +93,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     s_Swerve.setDefaultCommand(new TeleopDrive(driver, operator));
-    s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(driver));
+    s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(operator));
 
     driver_A_Function.onTrue(new InstantCommand(() -> ShooterSubsystem.toggleIsShooting()));
     driver_RightBumper_Function.whileTrue(new IntakeCommand(true));

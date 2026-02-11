@@ -63,7 +63,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private void privSetSwivel(double speed) {
     swivel.set(speed);
   }
-
+  public double getSwivelSetpoint() {
+    return swivelSetpoint;
+  }
   public void setSwivelSetpoint(double setpoint) {
     swivelSetpoint = setpoint;
 
@@ -82,7 +84,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private void privSetHood(double speed) {
     turretHood.set(speed);
   }
-
+  public double getHoodSetpoint() {
+    return turretHoodSetpoint;
+  }
   public void setHoodSetpoint(double setpoint) {
     turretHoodSetpoint = setpoint;
 

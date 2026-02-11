@@ -6,7 +6,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -16,16 +18,35 @@ public class ShooterDefault extends Command {
 
     private Pose2d botPose;
 
-    private Joystick driver;
+    private Joystick operator;
 
-    public ShooterDefault(Joystick driver) {
+    private boolean isManual = false;
+
+    public ShooterDefault(Joystick operator) {
         s_ShooterSubsystem = ShooterSubsystem.getInstance();
-        this.driver = driver;
+        this.operator = operator;
         
     }
 
     @Override
     public void execute() {
+
+        if (operator.getRawButton(XboxController.Button.kRightStick.value)) {
+            isManual = !isManual;
+        }
+
+        if (isManual) {
+            double manualSwivel = operator.getRawAxis(XboxController.Axis.kRightX.value);
+            double manualHood = operator.getRawAxis(XboxController.Axis.kRightY.value);
+            s_ShooterSubsystem.setSwivelSetpoint(s_ShooterSubsystem.getSwivelSetpoint() + manualSwivel);
+            s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodSetpoint() + manualHood);
+            if (ShooterSubsystem.getIsShooting()) { 
+                s_ShooterSubsystem.setFlywheels(1);
+            } else {
+                s_ShooterSubsystem.setFlywheels(0);
+            }
+            return;
+        }
 
         botPose = new Pose2d();
         // botPose = swerveEstimator.getEstimatedPosition(); // TODO: Uncomment this line once Swerve is merged into main!!!
