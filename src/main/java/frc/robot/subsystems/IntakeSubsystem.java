@@ -34,7 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void setIntakeSpeed(double speed){
         intakeMaster.set(speed);
-    }
+        }
         public void addInstruments(Orchestra orchestra){
         orchestra.addInstrument(intakeMaster);
         orchestra.addInstrument(intakeFollower);

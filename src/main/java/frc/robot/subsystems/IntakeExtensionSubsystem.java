@@ -12,8 +12,8 @@ import frc.robot.SwerveModule;
 
 public class IntakeExtensionSubsystem extends SubsystemBase {
     //probably two motors
-    private static TalonFX extensionMaster;
-    private static TalonFX extensionFollower;
+    // private static TalonFX extensionMaster;
+    // private static TalonFX extensionFollower;
 
     private static DoubleSolenoid intakeExtentionSolenoid;
 
@@ -45,11 +45,6 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     }
     public static void resetExtension(){
         intakeExtentionSolenoid.set(DoubleSolenoid.Value.kReverse);
-    }
-    public void addInstruments(Orchestra orchestra){
-        orchestra.addInstrument(extensionMaster);
-        orchestra.addInstrument(extensionFollower);
-
     }
 
     }

@@ -85,7 +85,6 @@ public void restartOrchestra() {
   }
   public void addAllInstruments(){
   Swerve.getInstance().addInstruments(orchestra);
-  IntakeExtensionSubsystem.getInstance().addInstruments(orchestra);
   IntakeSubsystem.getInstance().addInstruments(orchestra);
   ClimbSubsystem.getInstance().addInstruments(orchestra);
   ShooterSubsystem.getInstance().addInstruments(orchestra);
