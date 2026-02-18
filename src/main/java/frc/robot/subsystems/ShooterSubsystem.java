@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
@@ -106,11 +107,21 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setSpindexer(double speed){
     spindexerMaster.set(speed);
   }
+  
   public static boolean getIsShooting(){
     return isShooting;
   }
 
   public static void toggleIsShooting(){
     isShooting = !isShooting;
+  }
+
+  public void addInstruments(Orchestra orchestra){
+    orchestra.addInstrument(swivel);
+    orchestra.addInstrument(flywheelFollower);
+    orchestra.addInstrument(flywheelMaster);
+    orchestra.addInstrument(spindexerFollower);
+    orchestra.addInstrument(spindexerFollower);
+    orchestra.addInstrument(turretHood);
   }
 }

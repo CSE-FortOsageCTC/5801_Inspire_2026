@@ -11,6 +11,8 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.L1Climb;
 import frc.robot.commands.ShooterDefault;
 import frc.robot.commands.TeleopDrive;
+import frc.robot.commands.ClimbDefault;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
@@ -38,7 +40,8 @@ public class RobotContainer {
   private LimeLightSubsystem limelightRight;
 
   private Swerve s_Swerve = Swerve.getInstance();
-  //private ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
+  private ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
+  private ClimbSubsystem s_ClimbSubsystem = ClimbSubsystem.getInstance();
 
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
@@ -112,7 +115,7 @@ public class RobotContainer {
     autoChooser.addRoutine("LeftAuto No Climb", () -> s_choreoManager.leftAuto(false, false));
     autoChooser.addRoutine("LeftAuto Left Climb", () -> s_choreoManager.leftAuto(true, false));
     autoChooser.addRoutine("LeftAuto Right Climb", () -> s_choreoManager.leftAuto(true, true));
-    
+
     autoChooser.addRoutine("NonNeutral No Climb", () -> s_choreoManager.nonNeutralAuto(false, false));
     autoChooser.addRoutine("NonNeutral Left Climb", () -> s_choreoManager.nonNeutralAuto(true, false));
     autoChooser.addRoutine("NonNeutral Right Climb", () -> s_choreoManager.nonNeutralAuto(true, true));
@@ -135,7 +138,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
     s_Swerve.setDefaultCommand(new TeleopDrive(driver, operator));
-    // s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(operator));
+    s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(operator));
+    s_ClimbSubsystem.setDefaultCommand(new ClimbDefault(operator));
+    
 
     // driver_A_Function.onTrue(new InstantCommand(() -> ShooterSubsystem.toggleIsShooting()));
     // driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
