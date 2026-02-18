@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.SwerveModule;
 
 public class IntakeExtensionSubsystem extends SubsystemBase {
     //probably two motors
@@ -41,7 +42,9 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
         //extensionMaster.set(speed);
         intakeExtentionSolenoid.set(DoubleSolenoid.Value.kForward);
     }
+    
     public static void resetExtension(){
         intakeExtentionSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
+
 }
