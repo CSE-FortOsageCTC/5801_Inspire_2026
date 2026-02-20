@@ -57,14 +57,14 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public void setClimbSpeed(double speed) {
-        if (!intakeExtensionSubsystem.getExtensionState()){ //intake extension not also out
-            masterClimb.set(speed);
-        }
+        masterClimb.set(speed);
     }
 
     public void setPivot(){
-        isPivotOut = true;
-        climbPivot.set(DoubleSolenoid.Value.kForward);
+        if (!intakeExtensionSubsystem.getExtensionState()) {
+            isPivotOut = true;
+            climbPivot.set(DoubleSolenoid.Value.kForward);
+        }
     }
 
     public void resetPivot(){
