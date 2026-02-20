@@ -30,12 +30,12 @@ public class ClimbSubsystem extends SubsystemBase {
 
     private ClimbSubsystem() {
 
-        masterClimb = new TalonFX(0);
-        followerClimb = new TalonFX(0);
+        masterClimb = new TalonFX(15);
+        followerClimb = new TalonFX(11);
 
         climbPivot = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
 
-        followerClimb.setControl(new Follower(masterClimb.getDeviceID(), MotorAlignmentValue.Aligned));
+        followerClimb.setControl(new Follower(masterClimb.getDeviceID(), MotorAlignmentValue.Opposed));
 
         //TODO TUNE THESE
         pidControllerSupported = new ProfiledPIDController(0, 0, 0, null);

@@ -24,6 +24,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private TalonFX spindexerMaster;
   private TalonFX spindexerFollower;
   private TalonFX turretHood;
+  //TODO: Add kicker motor
 
   public double swivelSetpoint = 0;
   public double turretHoodSetpoint = 0;

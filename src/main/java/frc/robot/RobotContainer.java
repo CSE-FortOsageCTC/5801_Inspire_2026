@@ -142,11 +142,11 @@ public class RobotContainer {
     s_ClimbSubsystem.setDefaultCommand(new ClimbDefault(operator));
     
 
-    driver_A_Function.onTrue(new InstantCommand(() -> ShooterSubsystem.toggleIsShooting()));
-    driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
-    driverLeftDpad.whileTrue(new AutoAlignClimb(AlignPosition.LeftOffset, 0));
-    driverRightDpad.whileTrue(new AutoAlignClimb(AlignPosition.RightOffset, 0));
-    driver_Y_Function.whileTrue(new L1Climb());
+    // driver_A_Function.onTrue(new InstantCommand(() -> ShooterSubsystem.toggleIsShooting()));
+    // driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
+    // driverLeftDpad.whileTrue(new AutoAlignClimb(AlignPosition.LeftOffset, 0));
+    // driverRightDpad.whileTrue(new AutoAlignClimb(AlignPosition.RightOffset, 0));
+    // driver_Y_Function.whileTrue(new L1Climb());
   }
   
 

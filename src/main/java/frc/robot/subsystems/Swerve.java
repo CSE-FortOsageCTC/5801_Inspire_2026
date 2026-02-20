@@ -127,8 +127,8 @@ public class Swerve extends SubsystemBase {
 
         // swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics,
         // getGyroYaw(), getModulePositions());
-        // swerveEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getGyroRot2d(),  THIS LINE IS IMPORTANT, UNCOMMENT WHEN NO LONGER ERRORS!!
-        //         getModulePositions(), new Pose2d(0, 0, new Rotation2d()));   
+        swerveEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getGyroRot2d(),
+                getModulePositions(), new Pose2d(0, 0, new Rotation2d()));   
         // limeLightSwerveEstimator = new
         // SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, getGyroRot2d(),
         // getModulePositions(), new Pose2d(0, 0, new Rotation2d()));
@@ -597,12 +597,12 @@ public class Swerve extends SubsystemBase {
 
         // AlignPosition currentAlignPosition = AlignPosition.getPosition(); FIXED FOR ERROR
 
-        // for(SwerveModule mod : mSwerveMods){
-        //     mod.mDriveMotor.setControl(new MusicTone(1500));
-        //     mod.mAngleMotor.setControl(new MusicTone(1500));
-        // // SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder",
-        // //mod.getCANcoder().getDegrees());
-        // }
+        for(SwerveModule mod : mSwerveMods){
+            // mod.mDriveMotor.setControl(new MusicTone(1500));
+            // mod.mAngleMotor.setControl(new MusicTone(1500));
+        SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder",
+        mod.getCANcoder().getDegrees());
+        }
 
         
 
