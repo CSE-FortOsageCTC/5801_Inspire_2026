@@ -14,9 +14,12 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     // private static TalonFX extensionMaster;
     // private static TalonFX extensionFollower;
 
-    private static DoubleSolenoid intakeExtentionSolenoid;
+    private DoubleSolenoid intakeExtentionSolenoid;
 
     private static IntakeExtensionSubsystem intakeExtensionSubsystem;
+    private static ClimbSubsystem climbSubsystem;
+
+    private boolean isExtended;
 
     public static IntakeExtensionSubsystem getInstance(){
         if (intakeExtensionSubsystem == null) {
@@ -30,6 +33,10 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
 
         intakeExtentionSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
 
+        isExtended = false;
+
+        climbSubsystem = ClimbSubsystem.getInstance();
+
         //TODO assign IDs
         // extensionMaster = new TalonFX(0);
         // extensionFollower = new TalonFX(0);
@@ -38,13 +45,21 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
        // extensionFollower.setControl(new Follower(extensionMaster.getDeviceID(), MotorAlignmentValue.Aligned));
     }
 
-    public static void setExtension(){
+    public void setExtension(){
         //extensionMaster.set(speed);
-        intakeExtentionSolenoid.set(DoubleSolenoid.Value.kForward);
+        if (!climbSubsystem.getPivotState()){
+            intakeExtentionSolenoid.set(DoubleSolenoid.Value.kForward);
+            isExtended = true;
+        }
+
     }
     
-    public static void resetExtension(){
+    public void resetExtension(){
         intakeExtentionSolenoid.set(DoubleSolenoid.Value.kReverse);
+        isExtended = false;
     }
 
+    public boolean getExtensionState() {
+        return isExtended;
+    }
 }
