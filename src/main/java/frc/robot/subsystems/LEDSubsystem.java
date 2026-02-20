@@ -16,6 +16,7 @@ import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.RgbFadeAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
 
+import frc.robot.subsystems.Swerve;
 
 public class LEDSubsystem extends SubsystemBase {
     private CANdle candle1 = new CANdle(42);
@@ -33,7 +34,11 @@ public class LEDSubsystem extends SubsystemBase {
     private double timer;
     private boolean isStrobing;
 
-    private boolean isRed;
+    public boolean isRed;
+    public boolean isBlue;
+    public boolean isYellow;
+    public boolean isGreen;
+
 
     private int[] fullBlue= {0, 0, 255};
 
@@ -95,6 +100,18 @@ public class LEDSubsystem extends SubsystemBase {
     public void periodic() {
         // setColor(rgbColor[0], rgbColor[1], rgbColor[2]);
         // candle1.setLEDs(255, 255, 0);
-
+        //logic for LEDs: turn red if swerve is unaligned (180 degrees), yellow if close, blue if aligned and close but not ready to shoot, green ready to shoot (hood and align) - logic as i understand it
+        if (isRed) {
+            setColor(255, 0, 0);
+        }
+        if (isBlue) {
+            setColor(0, 0, 255);
+        }
+        if (isYellow) {
+            setColor (255, 255, 0);
+        }
+        if (isGreen) {
+            setColor (0, 255, 0);
+        }
     }    
 }
