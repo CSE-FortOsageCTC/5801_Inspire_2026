@@ -1,15 +1,6 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.LEDPattern;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import java.sql.Driver;
-
-import org.w3c.dom.css.RGBColor;
 
 import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.controls.EmptyAnimation;
@@ -17,24 +8,18 @@ import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.controls.RgbFadeAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdle;
 
 import frc.robot.Constants;
-import frc.robot.subsystems.Swerve;
 
 public class LEDSubsystem extends SubsystemBase {
-    private CANdle candle1 = new CANdle(42);
-    private RainbowAnimation rainbowAnimation = new RainbowAnimation(1,  31);
+    private CANdle candle1 = new CANdle(42); //Change this when we know
+    private RainbowAnimation rainbowAnimation = new RainbowAnimation(0,  Constants.numberOfLEDs);
     // private TwinkleAnimation larsonAnimation = new TwinkleAnimation(65,105,225);
-    private StrobeAnimation strobeAnimation = new StrobeAnimation(65, 105);
-    private RgbFadeAnimation rgbFadeAnimation = new RgbFadeAnimation(255, 31);
+    private StrobeAnimation strobeAnimation = new StrobeAnimation(65, Constants.numberOfLEDs);
+    private RgbFadeAnimation rgbFadeAnimation = new RgbFadeAnimation(255, Constants.numberOfLEDs);
 
     private static LEDSubsystem ledSubsystem;
-    private IntakeSubsystem intakeSubsystem;
-
-    private Debouncer isCoralDebouncerLeft;
-    private Debouncer isCoralDebouncerRight;
 
     private double timer;
     private boolean isStrobing;
@@ -43,13 +28,7 @@ public class LEDSubsystem extends SubsystemBase {
     private boolean isTurretAimed = false;
     private boolean isRotationNearUnaligned = false;
     private boolean isRotationAligned = false;
-
-    private SolidColor red = new SolidColor(0, Constants.numberOfLEDs);
-
-    private int[] fullBlue= {0, 0, 255};
-
-    private int[] fullRed = {255, 0, 0};
-
+    
     public static LEDSubsystem getInstance() {
         if (ledSubsystem == null) {
             ledSubsystem = new LEDSubsystem();
@@ -58,10 +37,10 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     private LEDSubsystem() {
-        intakeSubsystem = IntakeSubsystem.getInstance();
-        red.withColor(new RGBWColor(255, 0, 0));
-        candle1.setControl(red);
         clearAnimation();
+        SolidColor color = new SolidColor(0, Constants.numberOfLEDs);
+        color.withColor(new RGBWColor(255,0,0 ));
+        candle1.setControl(color);
         
         timer = 0;
         isStrobing = false;
@@ -103,6 +82,38 @@ public class LEDSubsystem extends SubsystemBase {
         timer = 0;
     }
 
+    public void setRed() {
+        setColor(255, 0, 0);
+    }
+
+    public void setBlue() {
+        setColor(0, 0, 255);
+    }
+
+    public void setGreen() {
+        setColor(0, 255, 0);
+    }
+
+    public void setYellow() {
+        setColor(255, 255, 0);
+    }
+
+    public void setIsClimbAligned(boolean isClimbAligned) {
+        this.isClimbAligned = isClimbAligned;
+    }
+
+    public void setIsTurretAimed(boolean isTurretAimed) {
+        this.isTurretAimed = isTurretAimed;
+    }
+    
+    public void setIsRotationNearUnaligned(boolean isRotationNearUnaligned) {
+        this.isRotationNearUnaligned = isRotationNearUnaligned;
+    }
+
+    public void setIsRotationAligned(boolean isRotationAligned) {
+        this.isRotationAligned = isRotationAligned;
+    }
+
     @Override
     public void periodic() {
         // setColor(rgbColor[0], rgbColor[1], rgbColor[2]);
@@ -114,19 +125,19 @@ public class LEDSubsystem extends SubsystemBase {
         }
         else if(isRotationAligned && isTurretAimed)
         {
-            setColor(0, 255, 0);
+            setGreen();
         }
         else if(isRotationNearUnaligned && isTurretAimed)
         {
-            setColor(0, 0, 255);
+            setBlue();
         }
         else if(isRotationAligned)
         {
-            setColor(255, 255, 0);
+            setYellow();
         }
         else
         {
-            setColor(255, 0, 0);
+            setRed();
         }
     }
 }
