@@ -22,10 +22,10 @@ public class SpindexerCommand extends Command{
     @Override
     public void execute(){
         if (intaking) {
-            shooterSubsystem.setSpindexer(-speed);
+            shooterSubsystem.setSpindexer(speed);
         }
         else {
-            shooterSubsystem.setSpindexer(speed);
+            shooterSubsystem.setSpindexer(-speed);
         }
         
     }
