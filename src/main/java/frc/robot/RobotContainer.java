@@ -10,6 +10,7 @@ import frc.robot.commands.AutoAlignClimb;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.L1Climb;
 import frc.robot.commands.ShooterDefault;
+import frc.robot.commands.SpindexerCommand;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ClimbDefault;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -137,13 +138,13 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    s_Swerve.setDefaultCommand(new TeleopDrive(driver, operator));
-    s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(operator));
-    s_ClimbSubsystem.setDefaultCommand(new ClimbDefault(operator));
-    
+    // s_Swerve.setDefaultCommand(new TeleopDrive(driver, operator));
+    // s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(operator));
+    // s_ClimbSubsystem.setDefaultCommand(new ClimbDefault(operator));
+    operatorA.whileTrue(new SpindexerCommand(true));
 
     // driver_A_Function.onTrue(new InstantCommand(() -> ShooterSubsystem.toggleIsShooting()));
-    // driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
+    driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
     // driverLeftDpad.whileTrue(new AutoAlignClimb(AlignPosition.LeftOffset, 0));
     // driverRightDpad.whileTrue(new AutoAlignClimb(AlignPosition.RightOffset, 0));
     // driver_Y_Function.whileTrue(new L1Climb());
