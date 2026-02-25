@@ -43,13 +43,13 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   private ShooterSubsystem() {
     //TODO assign IDs 
-    flywheelMaster = new TalonFX(0);
-    flywheelFollower = new TalonFX(0);
-    swivel = new TalonFX(0);
-    spindexerMaster = new TalonFX(0);
-    spindexerFollower = new TalonFX(0);
-    turretHood = new TalonFX(0);
-    kicker = new TalonFX(0);
+    // flywheelMaster = new TalonFX(0);
+    // flywheelFollower = new TalonFX(0);
+    // swivel = new TalonFX(0);
+    spindexerMaster = new TalonFX(21);
+    spindexerFollower = new TalonFX(22);
+    // turretHood = new TalonFX(0);
+    // kicker = new TalonFX(0);
     //Change configs as need be
     
     // flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Aligned));
