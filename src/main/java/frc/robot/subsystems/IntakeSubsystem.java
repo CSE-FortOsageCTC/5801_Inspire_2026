@@ -25,11 +25,11 @@ public class IntakeSubsystem extends SubsystemBase {
     private IntakeSubsystem() {
 
         //TODO assign IDs
-        intakeMaster = new TalonFX(0);
-        intakeFollower = new TalonFX(0);
+        intakeMaster = new TalonFX(23);
+        intakeFollower = new TalonFX(24);
         
         //invert if needed
-        intakeFollower.setControl(new Follower(intakeMaster.getDeviceID(), MotorAlignmentValue.Aligned));
+        intakeFollower.setControl(new Follower(intakeMaster.getDeviceID(), MotorAlignmentValue.Opposed));
     }
 
     public void setIntakeSpeed(double speed){

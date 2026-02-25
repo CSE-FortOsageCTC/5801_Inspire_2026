@@ -43,16 +43,16 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   private ShooterSubsystem() {
     //TODO assign IDs 
-    flywheelMaster = new TalonFX(0);
-    flywheelFollower = new TalonFX(0);
-    swivel = new TalonFX(0);
-    spindexerMaster = new TalonFX(0);
-    spindexerFollower = new TalonFX(0);
-    turretHood = new TalonFX(0);
-    kicker = new TalonFX(0);
+    // flywheelMaster = new TalonFX(0);
+    // flywheelFollower = new TalonFX(0);
+    // swivel = new TalonFX(0);
+    spindexerMaster = new TalonFX(21);
+    spindexerFollower = new TalonFX(22);
+    // turretHood = new TalonFX(0);
+    // kicker = new TalonFX(0);
     //Change configs as need be
     
-    flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Aligned));
+    // flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Aligned));
     spindexerFollower.setControl(new Follower(spindexerMaster.getDeviceID(), MotorAlignmentValue.Aligned));
 
     swivelPID = new PIDController(0, 0, 0);
@@ -123,11 +123,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void addInstruments(Orchestra orchestra){
-    orchestra.addInstrument(swivel);
-    orchestra.addInstrument(flywheelFollower);
-    orchestra.addInstrument(flywheelMaster);
-    orchestra.addInstrument(spindexerFollower);
-    orchestra.addInstrument(spindexerFollower);
-    orchestra.addInstrument(turretHood);
+    // orchestra.addInstrument(swivel);
+    // orchestra.addInstrument(flywheelFollower);
+    // orchestra.addInstrument(flywheelMaster);
+    // orchestra.addInstrument(spindexerFollower);
+    // orchestra.addInstrument(spindexerFollower);
+    // orchestra.addInstrument(turretHood);
   }
 }
