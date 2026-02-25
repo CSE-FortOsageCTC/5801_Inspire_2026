@@ -65,6 +65,7 @@ public final class Constants {
     public static double primaryL1ClimbSetpoint = 0; //TODO: find this
     public static double secondaryL1ClimbSetpoint = 0; //TODO: find this
 
+    public static final int numberOfLEDs = 8; //COULD CHANGE
 
 
     
