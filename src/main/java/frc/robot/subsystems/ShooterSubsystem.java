@@ -24,6 +24,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private TalonFX spindexerMaster;
   private TalonFX spindexerFollower;
   private TalonFX turretHood;
+  private TalonFX kicker;
   //TODO: Add kicker motor
 
   public double swivelSetpoint = 0;
@@ -48,6 +49,7 @@ public class ShooterSubsystem extends SubsystemBase {
     spindexerMaster = new TalonFX(0);
     spindexerFollower = new TalonFX(0);
     turretHood = new TalonFX(0);
+    kicker = new TalonFX(0);
     //Change configs as need be
     
     flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Aligned));
@@ -60,6 +62,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setFlywheels(double speed){
     flywheelMaster.set(speed);
+  }
+
+  public void setKicker(double speed) {
+    kicker.set(speed);
   }
 
   private void privSetSwivel(double speed) {
