@@ -16,8 +16,8 @@ public class LEDSubsystem extends SubsystemBase {
     private CANdle candle1 = new CANdle(42); //Change this when we know
     private RainbowAnimation rainbowAnimation = new RainbowAnimation(0,  Constants.numberOfLEDs);
     // private TwinkleAnimation larsonAnimation = new TwinkleAnimation(65,105,225);
-    private StrobeAnimation strobeAnimation = new StrobeAnimation(65, Constants.numberOfLEDs);
-    private RgbFadeAnimation rgbFadeAnimation = new RgbFadeAnimation(255, Constants.numberOfLEDs);
+    private StrobeAnimation strobeAnimation = new StrobeAnimation(0, Constants.numberOfLEDs);
+    private RgbFadeAnimation rgbFadeAnimation = new RgbFadeAnimation(0, Constants.numberOfLEDs);
 
     private static LEDSubsystem ledSubsystem;
 
@@ -37,11 +37,7 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     private LEDSubsystem() {
-        clearAnimation();
-        SolidColor color = new SolidColor(0, Constants.numberOfLEDs);
-        color.withColor(new RGBWColor(255,0,0 ));
-        candle1.setControl(color);
-        
+        setColor(0, 0, 0);
         timer = 0;
         isStrobing = false;
     }
