@@ -3,7 +3,6 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
-
 import frc.robot.subsystems.IntakeExtensionSubsystem;
 
 
@@ -26,10 +25,10 @@ public class IntakeExtensionCommand extends Command {
     @Override
     public void execute() {
         if (isExtending) {
-            IntakeExtensionSubsystem.setExtension();
+            intakeExtensionSubsystem.setExtension();
         }
         else {
-            IntakeExtensionSubsystem.resetExtension();
+            intakeExtensionSubsystem.resetExtension();
         }
         hasRun = true;
     }

@@ -84,8 +84,10 @@ public class ShooterDefault extends Command {
             s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodSetpoint() + manualHood);
             if (ShooterSubsystem.getIsShooting()) { 
                 s_ShooterSubsystem.setFlywheels(1);
+                s_ShooterSubsystem.setKicker(1);
             } else {
                 s_ShooterSubsystem.setFlywheels(0);
+                s_ShooterSubsystem.setKicker(0);
             }
             return;
         }
@@ -132,7 +134,6 @@ public class ShooterDefault extends Command {
         if (robotRelativeSwivelEncoder <= Constants.maximumSwivelEncoder && robotRelativeSwivelEncoder >= Constants.minimumSwivelEncoder) {
             s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
         }
-        
    
 
         s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees);

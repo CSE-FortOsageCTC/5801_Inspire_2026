@@ -8,6 +8,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimbSubsystem extends SubsystemBase {
@@ -15,10 +16,11 @@ public class ClimbSubsystem extends SubsystemBase {
     private static TalonFX followerClimb;
     private static DoubleSolenoid climbPivot;
     private static ClimbSubsystem climbSubsystem;
+    private static IntakeExtensionSubsystem intakeExtensionSubsystem;
     private static ProfiledPIDController pidControllerSupported;
     private static ProfiledPIDController pidControllerUnsupported;
     private static double setPoint;
-    
+    private boolean isPivotOut;
 
 
     public static ClimbSubsystem getInstance() {
@@ -40,10 +42,18 @@ public class ClimbSubsystem extends SubsystemBase {
         //TODO TUNE THESE
         pidControllerSupported = new ProfiledPIDController(0, 0, 0, null);
         pidControllerUnsupported = new ProfiledPIDController(0, 0, 0, null);
+
+        isPivotOut = false;
+
+        intakeExtensionSubsystem = IntakeExtensionSubsystem.getInstance();
     }
 
     public double getExtensionEncoder() {
         return masterClimb.getPosition().getValueAsDouble();
+    }
+
+    public boolean getPivotState() {
+        return isPivotOut;
     }
 
     public void setClimbSpeed(double speed) {
@@ -51,11 +61,15 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public void setPivot(){
-        climbPivot.set(DoubleSolenoid.Value.kForward);
+        if (!intakeExtensionSubsystem.getExtensionState()) {
+            isPivotOut = true;
+            climbPivot.set(DoubleSolenoid.Value.kForward);
+        }
     }
 
-    public void resetKicker(){
+    public void resetPivot(){
         climbPivot.set(DoubleSolenoid.Value.kReverse);
+        isPivotOut = false;
     }
 
     public void setPosition(double setPoint){
