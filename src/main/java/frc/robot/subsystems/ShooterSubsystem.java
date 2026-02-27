@@ -9,16 +9,23 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
 
   private static ShooterSubsystem shooterSubsystem;
   
-  private TalonFX swivel;
+  private SparkMax swivel;
   private TalonFX flywheelMaster;
   private TalonFX flywheelFollower;
   private TalonFX spindexerMaster;
@@ -30,7 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public double swivelSetpoint = 0;
   public double turretHoodSetpoint = 0;
 
-  private PIDController swivelPID;
+  private ProfiledPIDController swivelPID;
   private PIDController hoodPID;
   
   private static boolean isShooting = false;
@@ -45,18 +52,33 @@ public class ShooterSubsystem extends SubsystemBase {
     //TODO assign IDs 
     // flywheelMaster = new TalonFX(0);
     // flywheelFollower = new TalonFX(0);
-    // swivel = new TalonFX(0);
+    swivel = new SparkMax(55, MotorType.kBrushless);
     spindexerMaster = new TalonFX(21);
     spindexerFollower = new TalonFX(22);
     // turretHood = new TalonFX(0);
     // kicker = new TalonFX(0);
     //Change configs as need be
     
+    try {
+      getSwivelAbsoluteEncoder();
+      getSwivelEncoder();
+      Thread.sleep(200);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    swivel.getEncoder().setPosition(getSwivelAbsoluteEncoder() * Constants.swivelEncoderToAbsolute);
     // flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Aligned));
     spindexerFollower.setControl(new Follower(spindexerMaster.getDeviceID(), MotorAlignmentValue.Aligned));
 
-    swivelPID = new PIDController(0, 0, 0);
+    swivelPID = new ProfiledPIDController(0.08, 0.001, 0.001, new TrapezoidProfile.Constraints(500, 500));
+    swivelPID.setTolerance(0.75);
+
     hoodPID = new PIDController(0, 0, 0);
+
+    swivelSetpoint = getSwivelEncoder();
+
+    swivelPID.reset(swivelSetpoint);
 
   }
 
@@ -75,14 +97,39 @@ public class ShooterSubsystem extends SubsystemBase {
     return swivelSetpoint;
   }
   public void setSwivelSetpoint(double setpoint) {
+    // if (setpoint != swivelSetpoint) {
+    //   swivelPID.reset(getSwivelEncoder());
+    // }
+
     swivelSetpoint = setpoint;
 
-    double calculation = swivelPID.calculate(getSwivelEncoder(), setpoint);
-    privSetSwivel(MathUtil.clamp(calculation, -1, 1)); // TODO: adjust clamps as needed
+    double calculation = 0;
+    swivelPID.setGoal(setpoint);
+    // double pidValue = swivelPID.calculate(getSwivelEncoder());
+
+    if (!swivelPID.atGoal()) {
+      calculation = swivelPID.calculate(getSwivelEncoder());
+    } else {
+      swivelPID.reset(getSwivelEncoder());
+    }
+
+    // if (!swivelPID.atSetpoint()) {
+    //   privSetSwivel(MathUtil.clamp(calculation, -1, 1));
+    // }
+
+    privSetSwivel(MathUtil.clamp(calculation, -1, 1));
+
+    SmartDashboard.putNumber("Swivel Speed", calculation);
+    
+    
   }
 
   public double getSwivelEncoder() {
-    return swivel.getPosition().getValueAsDouble();
+    return swivel.getEncoder().getPosition();
+  }
+
+  public double getSwivelAbsoluteEncoder() {
+    return swivel.getAbsoluteEncoder().getPosition();
   }
 
   public boolean isSwivelReadyToShoot() {
@@ -129,5 +176,12 @@ public class ShooterSubsystem extends SubsystemBase {
     // orchestra.addInstrument(spindexerFollower);
     // orchestra.addInstrument(spindexerFollower);
     // orchestra.addInstrument(turretHood);
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("Swivel Internal Encoder", getSwivelEncoder());
+    SmartDashboard.putNumber("Swivel Absolute Encoder", getSwivelAbsoluteEncoder());
+    SmartDashboard.putNumber("Swivel Setpoint", swivelSetpoint);
   }
 }

@@ -1,11 +1,15 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
@@ -20,6 +24,8 @@ public class ShooterDefault extends Command {
 
     private Pose2d botPose;
 
+    private Field2d fieldTest;
+
 
     private Joystick operator;
     private Pose3d targetPose;
@@ -32,6 +38,13 @@ public class ShooterDefault extends Command {
         s_ShooterSubsystem = ShooterSubsystem.getInstance();
         this.operator = operator;
         s_Swerve = Swerve.getInstance();    
+
+        SmartDashboard.putNumber("TestX", 0);
+        SmartDashboard.putNumber("TestY", 0);
+
+        fieldTest = new Field2d();
+
+        addRequirements(s_ShooterSubsystem);
     }
 
     private boolean isNorth(Pose2d botPose){
@@ -73,43 +86,59 @@ public class ShooterDefault extends Command {
     @Override
     public void execute() {
 
-        if (operator.getRawButton(XboxController.Button.kRightStick.value)) {
+        if (operator.getRawButtonPressed(XboxController.Button.kRightStick.value)) {
             isManual = !isManual;
         }
 
         if (isManual) {
-            double manualSwivel = operator.getRawAxis(XboxController.Axis.kRightX.value);
+            double manualSwivel = 5 * MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kRightX.value), Constants.stickDeadband);
             double manualHood = operator.getRawAxis(XboxController.Axis.kRightY.value);
             s_ShooterSubsystem.setSwivelSetpoint(s_ShooterSubsystem.getSwivelSetpoint() + manualSwivel);
-            s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodSetpoint() + manualHood);
-            if (ShooterSubsystem.getIsShooting()) { 
-                s_ShooterSubsystem.setFlywheels(1);
-                s_ShooterSubsystem.setKicker(1);
-            } else {
-                s_ShooterSubsystem.setFlywheels(0);
-                s_ShooterSubsystem.setKicker(0);
-            }
+            // s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodSetpoint() + manualHood);
+            // if (ShooterSubsystem.getIsShooting()) { 
+            //     s_ShooterSubsystem.setFlywheels(1);
+            //     s_ShooterSubsystem.setKicker(1);
+            // } else {
+            //     s_ShooterSubsystem.setFlywheels(0);
+            //     s_ShooterSubsystem.setKicker(0);
+            // }
             return;
         }
 
-        botPose = new Pose2d();
+        botPose = new Pose2d(SmartDashboard.getNumber("TestX", 0), SmartDashboard.getNumber("TestY", 0), new Rotation2d());
         // botPose = swerveEstimator.getEstimatedPosition(); // TODO: Uncomment this line once Swerve is merged into main!!!
 
-        if (s_Swerve.isInNeutral()){
-            targetPose = getShuttleTargetPose();
-        }
-        else{
-            targetPose = getHubTargetPose();
-        }
+        fieldTest.setRobotPose(botPose);
+        SmartDashboard.putData("TestField", fieldTest);
 
-        Pose2d turretPoseFieldRelative = new Pose2d(botPose.getX() + (Math.sin(botPose.getRotation().getRadians()) * Constants.turretPoseRobotReletive.getX()), botPose.getY() + (Math.cos(botPose.getRotation().getRadians()) * Constants.turretPoseRobotReletive.getY()), Rotation2d.fromDegrees(botPose.getRotation().getDegrees() + Constants.turretPoseRobotReletive.getRotation().getDegrees()));
+        // if (s_Swerve.isInNeutral()){
+        //     targetPose = getShuttleTargetPose();
+        // }
+        // else{
+        //     targetPose = getHubTargetPose();
+        // }
+        targetPose = getHubTargetPose();
+
+        double turretDist = Math.sqrt((Constants.turretPoseRobotReletive.getY() * Constants.turretPoseRobotReletive.getY()) + (Constants.turretPoseRobotReletive.getX() * Constants.turretPoseRobotReletive.getX()));
+
+        double turretTheta = Math.atan2(Constants.turretPoseRobotReletive.getY(), Constants.turretPoseRobotReletive.getX()) + botPose.getRotation().getRadians() - (Math.PI/2);
+
+        double botX = botPose.getX() + Math.cos(turretTheta) * turretDist;
+        double botY = botPose.getY() + Math.sin(turretTheta) * turretDist;
+
+        Pose2d turretPoseFieldRelative = new Pose2d(botX, botY, Rotation2d.fromDegrees(botPose.getRotation().getDegrees() + Constants.turretPoseRobotReletive.getRotation().getDegrees()));
+        SmartDashboard.putString("Turret Pose", turretPoseFieldRelative.toString());
 
         // Distance in x and y axis respectively
-        double dx = turretPoseFieldRelative.getX() - targetPose.getX();
-        double dy = turretPoseFieldRelative.getY() - targetPose.getY();
+        double dx = targetPose.getX() - turretPoseFieldRelative.getX();
+        double dy = targetPose.getY() - turretPoseFieldRelative.getY();
 
+        SmartDashboard.putNumber("dX", dx);
+        SmartDashboard.putNumber("dY", dy);
         // angle in radians of the theoretical setpoint while stood still.
         double thetaDegrees = Math.toDegrees(Math.atan2(dy, dx));
+
+        SmartDashboard.putNumber("ThetaDegrees", thetaDegrees);
 
         // distance away from center point of the turret to the center of the hub
         double hypotenuse = Math.hypot(dx, dy);
@@ -131,19 +160,20 @@ public class ShooterDefault extends Command {
 
         double robotRelativeSwivelEncoder = robotRelativeAngleDegrees * Constants.swivelEncoderPerDegrees;
 
-        if (robotRelativeSwivelEncoder <= Constants.maximumSwivelEncoder && robotRelativeSwivelEncoder >= Constants.minimumSwivelEncoder) {
-            s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
-        }
-   
+        // if (robotRelativeSwivelEncoder <= Constants.maximumSwivelEncoder && robotRelativeSwivelEncoder >= Constants.minimumSwivelEncoder) {
+            
+        // }
+        
+        s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
 
-        s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees);
+        // s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees);
 
 
-        if (ShooterSubsystem.getIsShooting() && s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
-            s_ShooterSubsystem.setFlywheels(motorSpeed);
-        } else {
-            s_ShooterSubsystem.setFlywheels(0);
-        }
+        // if (ShooterSubsystem.getIsShooting() && s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
+        //     s_ShooterSubsystem.setFlywheels(motorSpeed);
+        // } else {
+        //     s_ShooterSubsystem.setFlywheels(0);
+        // }
 
     }
 
