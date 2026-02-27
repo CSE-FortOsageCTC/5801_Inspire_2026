@@ -169,16 +169,6 @@ public class ShooterSubsystem extends SubsystemBase {
     isShooting = !isShooting;
   }
 
-  public void attemptToShoot(int delay){
-    setFlywheels(1);
-    if (delay >= 25){ //0.5 second delay
-      setKicker(1);
-      if (delay >= 50){ //another 0.5 sec delay
-        setSpindexer(0.1);
-      }
-    }
-  }
-
   public void addInstruments(Orchestra orchestra){
     // orchestra.addInstrument(swivel);
     // orchestra.addInstrument(flywheelFollower);
