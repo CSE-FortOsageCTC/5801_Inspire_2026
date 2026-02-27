@@ -139,8 +139,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // s_Swerve.setDefaultCommand(new TeleopDrive(driver, operator));
-    // s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(operator));
-    // s_ClimbSubsystem.setDefaultCommand(new ClimbDefault(operator));
+    s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(operator));
+    s_ClimbSubsystem.setDefaultCommand(new ClimbDefault(operator));
     operatorA.whileTrue(new SpindexerCommand(true));
 
     // driver_A_Function.onTrue(new InstantCommand(() -> ShooterSubsystem.toggleIsShooting()));

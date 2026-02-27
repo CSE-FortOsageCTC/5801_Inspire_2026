@@ -21,11 +21,14 @@ public class ClimbDefault extends Command{
     public void execute(){
 
         if (operator.getRawButton(XboxController.Button.kLeftBumper.value)){ //up
-            climbSubsystem.setClimbSpeed(0.1); //low for safety
+            climbSubsystem.setClimbSpeed(1); //low for safety
         }
 
         else if (operator.getRawButton(XboxController.Button.kRightBumper.value)){ //down
-            climbSubsystem.setClimbSpeed(-0.1);
+            climbSubsystem.setClimbSpeed(-1);
+        }
+        else {
+            climbSubsystem.setClimbSpeed(0);
         }
     }
 }

@@ -32,10 +32,10 @@ public class ClimbSubsystem extends SubsystemBase {
 
     private ClimbSubsystem() {
 
-        masterClimb = new TalonFX(15);
-        followerClimb = new TalonFX(11);
+        masterClimb = new TalonFX(11);
+        followerClimb = new TalonFX(15);
 
-        climbPivot = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
+        //climbPivot = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
 
         followerClimb.setControl(new Follower(masterClimb.getDeviceID(), MotorAlignmentValue.Opposed));
 
@@ -45,7 +45,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
         isPivotOut = false;
 
-        intakeExtensionSubsystem = IntakeExtensionSubsystem.getInstance();
+        //intakeExtensionSubsystem = IntakeExtensionSubsystem.getInstance();
     }
 
     public double getExtensionEncoder() {

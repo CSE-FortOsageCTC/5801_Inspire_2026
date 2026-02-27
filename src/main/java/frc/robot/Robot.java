@@ -45,12 +45,12 @@ public class Robot extends TimedRobot {
 
     // music.add("midis/jeopardy.chrp");
     music.add("midis/freeBird.chrp");
-    // music.add("midis/marioOne.chrp");
+    music.add("midis/marioOne.chrp");
     music.add("midis/marioTwo.chrp");
     music.add("midis/pirate.chrp");
-    // music.add("midis/star.chrp");
-    // music.add("midis/guilesTheme.chrp");
-    // music.add("midis/TTFATF.chrp");
+    music.add("midis/star.chrp");
+    music.add("midis/guilesTheme.chrp");
+    music.add("midis/TTFATF.chrp");
     music.add("midis/Sans.chrp");
     music.add("midis/doom.chrp");
 
