@@ -95,21 +95,16 @@ public class ShooterDefault extends Command {
             double manualSwivel = 5 * MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kRightX.value), Constants.stickDeadband);
             double manualHood = operator.getRawAxis(XboxController.Axis.kRightY.value);
             s_ShooterSubsystem.setSwivelSetpoint(s_ShooterSubsystem.getSwivelSetpoint() + manualSwivel);
-            s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodSetpoint() + manualHood);
-        //     if (ShooterSubsystem.getIsShooting()) { 
-        //         s_ShooterSubsystem.setFlywheels(1);
-        //         if (delayCounter >= 25){ //0.5 second delay
-        //             s_ShooterSubsystem.setKicker(1);
-        //             if (delayCounter >= 50){ //another 0.5 sec delay
-        //                 s_ShooterSubsystem.setSpindexer(0.1);
-        //             }
-        //         }
-        //     } else {
-        //         s_ShooterSubsystem.setFlywheels(0);
-        //         s_ShooterSubsystem.setKicker(0);
-        //         s_ShooterSubsystem.setSpindexer(0);
-        //         delayCounter = 0;
-        //     }
+            // s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodSetpoint() + manualHood);
+            // if (ShooterSubsystem.getIsShooting()) { 
+            //     s_ShooterSubsystem.attemptToShoot(delayCounter);
+            //     delayCounter++;
+            // } else {
+            //     s_ShooterSubsystem.setFlywheels(0);
+            //     s_ShooterSubsystem.setKicker(0);
+            //     s_ShooterSubsystem.setSpindexer(0);
+            //     delayCounter = 0;
+            // }
             return;
         }
 
@@ -178,13 +173,8 @@ public class ShooterDefault extends Command {
 
 
         // if (ShooterSubsystem.getIsShooting() && s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
-        //     s_ShooterSubsystem.setFlywheels(motorSpeed);
-        //     if (delayCounter >= 25){
-        //         s_ShooterSubsystem.setKicker(1);
-        //         if (delayCounter >= 50){
-        //             s_ShooterSubsystem.setSpindexer(0.1);
-        //         }
-        //     }
+        //     s_ShooterSubsystem.attemptToShoot(delayCounter);
+        //     delayCounter++;
         // } else {
         //     s_ShooterSubsystem.setFlywheels(0);
         //     s_ShooterSubsystem.setKicker(0);
