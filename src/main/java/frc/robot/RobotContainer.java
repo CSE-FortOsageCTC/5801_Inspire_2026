@@ -8,15 +8,18 @@ import choreo.auto.AutoChooser;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoAlignClimb;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeExtensionCommand;
 import frc.robot.commands.L1Climb;
 import frc.robot.commands.ShooterDefault;
 import frc.robot.commands.SpindexerCommand;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ClimbDefault;
 import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.CompressorSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,6 +46,7 @@ public class RobotContainer {
   private Swerve s_Swerve = Swerve.getInstance();
   private ShooterSubsystem s_ShooterSubsystem = ShooterSubsystem.getInstance();
   private ClimbSubsystem s_ClimbSubsystem = ClimbSubsystem.getInstance();
+  private CompressorSubsystem s_CompressorSubsystem = CompressorSubsystem.getInstance();
 
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
@@ -151,8 +155,9 @@ public class RobotContainer {
     s_ClimbSubsystem.setDefaultCommand(new ClimbDefault(operator));
     operatorA.whileTrue(new SpindexerCommand(true));
 
-    // driver_A_Function.onTrue(new InstantCommand(() -> ShooterSubsystem.toggleIsShooting()));
+    driver_A_Function.onTrue(new InstantCommand(() -> ShooterSubsystem.toggleIsShooting()));
     driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
+    driver_Start_Function.onTrue(new IntakeExtensionCommand());
     // driverLeftDpad.whileTrue(new AutoAlignClimb(AlignPosition.LeftOffset, 0));
     // driverRightDpad.whileTrue(new AutoAlignClimb(AlignPosition.RightOffset, 0));
     // driver_Y_Function.whileTrue(new L1Climb());

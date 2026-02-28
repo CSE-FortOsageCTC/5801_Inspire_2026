@@ -53,11 +53,14 @@ public final class Constants {
     public static final double maximumHubDist = 5.4; // in meters
     public static final double minimumHoodAngle = 75; // in degrees
     public static final double maximumHoodAngle = 85; // in degrees
+    public static final double minimumHoodEncoder = 0;
+    public static final double maximumHoodEncoder = 0; // TODO: Figure this out!
+    public static final double hoodEncoderPerDegree = 0; // TODO: Figure this out too!
     public static final double maximumBallSpeed = 10.7; // (in m/s) TODO: Test m/s of ball on release at max flywheel speed
     public static final double minimumSwivelEncoder = 0;
-    public static final double maximumSwivelEncoder = 225; // TODO: Find this out :)
+    public static final double maximumSwivelEncoder = 215; // TODO: Find this out :)
     public static final double swivelEncoderToAbsolute = 49.2854;
-    public static final double swivelEncoderPerDegrees = 453 / 360; // TODO: Find this out :)
+    public static final double swivelEncoderPerDegrees = 453.0 / 360.0; // TODO: Find this out :)
     public static final double totalSwivelRange = 180; // In Degrees TODO: Find this out :)
     public static final Pose2d turretPoseRobotReletive = new Pose2d(0.2032, -0.1016, Rotation2d.fromDegrees(90)); // TODO: find x and y meters offset that the robot is from the center of the robot
     public static final double stickDeadband = 0.125;

@@ -9,7 +9,7 @@ public class SpindexerCommand extends Command{
     
     private ShooterSubsystem shooterSubsystem;
     public boolean intaking;
-    public double speed=0.1;
+    public double speed=0.15;
 
     public SpindexerCommand(boolean intaking) {
         this.intaking = intaking;

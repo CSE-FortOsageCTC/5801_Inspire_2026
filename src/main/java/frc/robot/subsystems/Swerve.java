@@ -578,8 +578,8 @@ public class Swerve extends SubsystemBase {
 
     }
 
-    public boolean isInNeutral(){
-        if (swerveEstimator.getEstimatedPosition().getX() >= Constants.redAllianceLineX && swerveEstimator.getEstimatedPosition().getX() <= Constants.blueAllianceLineX){
+    public boolean isInNeutral(Pose2d pose){
+        if (pose.getX() >= Constants.redAllianceLineX && pose.getX() <= Constants.blueAllianceLineX){
             return true;
         }
         

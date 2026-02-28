@@ -10,12 +10,9 @@ public class IntakeExtensionCommand extends Command {
 
     private IntakeExtensionSubsystem intakeExtensionSubsystem;
 
-    private boolean isExtending;
-
     private boolean hasRun = false;
 
-    public IntakeExtensionCommand(boolean isExtending) {
-        this.isExtending = isExtending;
+    public IntakeExtensionCommand() {
 
         intakeExtensionSubsystem = IntakeExtensionSubsystem.getInstance();
 
@@ -24,13 +21,14 @@ public class IntakeExtensionCommand extends Command {
 
     @Override
     public void execute() {
-        if (isExtending) {
+        if (intakeExtensionSubsystem.getExtensionState()) {
+            System.out.println("Reset Extension");
+            intakeExtensionSubsystem.resetExtension();
+        } else {
+            System.out.println("Set Extenstion");
             intakeExtensionSubsystem.setExtension();
         }
-        else {
-            intakeExtensionSubsystem.resetExtension();
-        }
-        hasRun = true;
+        hasRun = true;        
     }
     
     @Override

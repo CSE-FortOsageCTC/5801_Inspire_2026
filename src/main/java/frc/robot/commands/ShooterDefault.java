@@ -95,13 +95,13 @@ public class ShooterDefault extends Command {
             double manualHood = operator.getRawAxis(XboxController.Axis.kRightY.value);
             s_ShooterSubsystem.setSwivelSetpoint(s_ShooterSubsystem.getSwivelSetpoint() + manualSwivel);
             // s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodSetpoint() + manualHood);
-            // if (ShooterSubsystem.getIsShooting()) { 
-            //     s_ShooterSubsystem.setFlywheels(1);
-            //     s_ShooterSubsystem.setKicker(1);
-            // } else {
-            //     s_ShooterSubsystem.setFlywheels(0);
-            //     s_ShooterSubsystem.setKicker(0);
-            // }
+            if (ShooterSubsystem.getIsShooting()) { 
+                // s_ShooterSubsystem.setFlywheels(1);
+                s_ShooterSubsystem.setKicker(.2);
+            } else {
+                // s_ShooterSubsystem.setFlywheels(0);
+                s_ShooterSubsystem.setKicker(0);
+            }
             return;
         }
 
@@ -111,13 +111,13 @@ public class ShooterDefault extends Command {
         fieldTest.setRobotPose(botPose);
         SmartDashboard.putData("TestField", fieldTest);
 
-        // if (s_Swerve.isInNeutral()){
-        //     targetPose = getShuttleTargetPose();
-        // }
-        // else{
-        //     targetPose = getHubTargetPose();
-        // }
-        targetPose = getHubTargetPose();
+        if (s_Swerve.isInNeutral(botPose)){
+            targetPose = getShuttleTargetPose();
+        }
+        else{
+            targetPose = getHubTargetPose();
+        }
+        // targetPose = getHubTargetPose();
 
         double turretDist = Math.sqrt((Constants.turretPoseRobotReletive.getY() * Constants.turretPoseRobotReletive.getY()) + (Constants.turretPoseRobotReletive.getX() * Constants.turretPoseRobotReletive.getX()));
 
@@ -142,9 +142,11 @@ public class ShooterDefault extends Command {
 
         // distance away from center point of the turret to the center of the hub
         double hypotenuse = Math.hypot(dx, dy);
+        SmartDashboard.putNumber("Distance From Hub", hypotenuse);
 
         // hypothetically, this math should give the launcher angle in degrees from 75 to 85 scaled to distance away from the center of the hub
         double launchAngleDegrees = ((hypotenuse - Constants.minimumHubDist) / (Constants.maximumHubDist - Constants.minimumHubDist)) * (Constants.maximumHoodAngle - Constants.minimumHoodAngle) + Constants.minimumHoodAngle;
+        SmartDashboard.putNumber("Launch Angle", launchAngleDegrees);
 
         // Distance the ball needs to hit for the ball to hit the height and position of the hub along it's parabola
         double shootingTargetDistance = hypotenuse + (targetPose.getZ() / Math.tan(launchAngleDegrees));
@@ -160,13 +162,13 @@ public class ShooterDefault extends Command {
 
         double robotRelativeSwivelEncoder = robotRelativeAngleDegrees * Constants.swivelEncoderPerDegrees;
 
-        // if (robotRelativeSwivelEncoder <= Constants.maximumSwivelEncoder && robotRelativeSwivelEncoder >= Constants.minimumSwivelEncoder) {
-            
-        // }
+        if (robotRelativeSwivelEncoder <= Constants.maximumSwivelEncoder && robotRelativeSwivelEncoder >= Constants.minimumSwivelEncoder) {
+            s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
+        }
         
-        s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
+        
 
-        // s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees);
+        // s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees * Constants.hoodEncoderPerDegree);
 
 
         // if (ShooterSubsystem.getIsShooting() && s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
