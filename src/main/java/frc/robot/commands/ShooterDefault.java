@@ -160,20 +160,32 @@ public class ShooterDefault extends Command {
 
         double robotRelativeSwivelEncoder = robotRelativeAngleDegrees * Constants.swivelEncoderPerDegrees;
 
-        // if (robotRelativeSwivelEncoder <= Constants.maximumSwivelEncoder && robotRelativeSwivelEncoder >= Constants.minimumSwivelEncoder) {
-            
-        // }
+        if (robotRelativeSwivelEncoder <= Constants.maximumSwivelEncoder && robotRelativeSwivelEncoder >= Constants.minimumSwivelEncoder) {
+            s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
+
+        }
+        else if (thetaDegrees <= -90 && thetaDegrees >= -120) {
+            s_ShooterSubsystem.setSwivelSetpoint(0);
+        }
+        else if (thetaDegrees >= 90 && thetaDegrees <= 120){
+            s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
+        }
         
-        s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
+        // s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
 
         // s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees);
 
 
-        // if (ShooterSubsystem.getIsShooting() && s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
-        //     s_ShooterSubsystem.setFlywheels(motorSpeed);
-        // } else {
-        //     s_ShooterSubsystem.setFlywheels(0);
-        // }
+    //     if (ShooterSubsystem.getIsShooting() && s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
+    //         s_ShooterSubsystem.setFlywheels(motorSpeed);
+    //     } else {
+    //         s_ShooterSubsystem.setFlywheels(0);
+    //     }
+        
+
+
+
+        }
 
     }
 
