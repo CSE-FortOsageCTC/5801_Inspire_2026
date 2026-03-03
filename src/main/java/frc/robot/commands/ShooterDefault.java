@@ -84,7 +84,7 @@ public class ShooterDefault extends Command {
         }
     }
 
-    public void attemptToShoot(){
+    private void attemptToShoot(){
         if (ShooterSubsystem.getIsShooting()) {
             s_ShooterSubsystem.setFlywheels(1);
             if (delayCounter >= 25){ //0.5 second delay
@@ -182,7 +182,7 @@ public class ShooterDefault extends Command {
         // s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees);
 
 
-        // if (ShooterSubsystem.getIsShooting() && s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
+        // if (s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
         //     s_ShooterSubsystem.attemptToShoot();
 
     }
