@@ -11,8 +11,8 @@ public class SpindexerCommand extends Command{
     public boolean intaking;
     public double speed=0.15;
 
-    public SpindexerCommand(boolean intaking) {
-        this.intaking = intaking;
+    public SpindexerCommand(boolean feeding) {
+        this.feeding = feeding;
 
         shooterSubsystem = ShooterSubsystem.getInstance();
 
@@ -21,7 +21,7 @@ public class SpindexerCommand extends Command{
 
     @Override
     public void execute(){
-        if (intaking) {
+        if (feeding) {
             shooterSubsystem.setSpindexer(speed);
         }
         else {
