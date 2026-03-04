@@ -84,9 +84,15 @@ public class ShooterDefault extends Command {
         }
     }
 
+<<<<<<< turret_preemtive_turn
     private void attemptToShoot(double motorSpeed){
         if (ShooterSubsystem.getIsShooting()) {
             s_ShooterSubsystem.setFlywheels(motorSpeed);
+=======
+    private void attemptToShoot(){
+        if (ShooterSubsystem.getIsShooting()) {
+            s_ShooterSubsystem.setFlywheels(1);
+>>>>>>> main
             if (delayCounter >= 25){ //0.5 second delay
                 s_ShooterSubsystem.setKicker(1);
                 if (delayCounter >= 50){ //another 0.5 sec delay
@@ -114,7 +120,11 @@ public class ShooterDefault extends Command {
             double manualHood = operator.getRawAxis(XboxController.Axis.kRightY.value);
             s_ShooterSubsystem.setSwivelSetpoint(s_ShooterSubsystem.getSwivelSetpoint() + manualSwivel);
             // s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodSetpoint() + manualHood); 
+<<<<<<< turret_preemtive_turn
             //  attemptToShoot(1);
+=======
+            // s_ShooterSubsystem.attemptToShoot();
+>>>>>>> main
             return;
         }
 
@@ -193,7 +203,11 @@ public class ShooterDefault extends Command {
 
 
         // if (s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
+<<<<<<< turret_preemtive_turn
             // attemptToShoot(motorSpeed);
+=======
+        //     s_ShooterSubsystem.attemptToShoot();
+>>>>>>> main
 
     }
 
