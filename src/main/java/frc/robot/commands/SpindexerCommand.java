@@ -8,7 +8,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class SpindexerCommand extends Command{
     
     private ShooterSubsystem shooterSubsystem;
-    public boolean intaking;
+    public boolean feeding;
     public double speed=0.15;
 
     public SpindexerCommand(boolean feeding) {

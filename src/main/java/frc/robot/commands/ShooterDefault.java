@@ -87,7 +87,7 @@ public class ShooterDefault extends Command {
 
 
     private void attemptToShoot(double motorSpeed){
-        if (ShooterSubsystem.getIsShooting()) {
+        if (s_ShooterSubsystem.getIsShooting()) {
             s_ShooterSubsystem.setFlywheels(motorSpeed);
 
             if (delayCounter >= 25){ //0.5 second delay
