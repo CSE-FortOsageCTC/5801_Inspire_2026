@@ -84,9 +84,11 @@ public class ShooterDefault extends Command {
         }
     }
 
-    private void attemptToShoot(){
+
+    private void attemptToShoot(double motorSpeed){
         if (ShooterSubsystem.getIsShooting()) {
-            s_ShooterSubsystem.setFlywheels(1);
+            s_ShooterSubsystem.setFlywheels(motorSpeed);
+
             if (delayCounter >= 25){ //0.5 second delay
                 s_ShooterSubsystem.setKicker(1);
                 if (delayCounter >= 50){ //another 0.5 sec delay
@@ -114,7 +116,8 @@ public class ShooterDefault extends Command {
             double manualHood = operator.getRawAxis(XboxController.Axis.kRightY.value);
             s_ShooterSubsystem.setSwivelSetpoint(s_ShooterSubsystem.getSwivelSetpoint() + manualSwivel);
             // s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodSetpoint() + manualHood); 
-            // s_ShooterSubsystem.attemptToShoot();
+
+            //  attemptToShoot(1);
             return;
         }
 
@@ -173,17 +176,27 @@ public class ShooterDefault extends Command {
 
         double robotRelativeSwivelEncoder = robotRelativeAngleDegrees * Constants.swivelEncoderPerDegrees;
 
-        // if (robotRelativeSwivelEncoder <= Constants.maximumSwivelEncoder && robotRelativeSwivelEncoder >= Constants.minimumSwivelEncoder) {
-            
-        // }
+        if (robotRelativeSwivelEncoder <= Constants.maximumSwivelEncoder && robotRelativeSwivelEncoder >= Constants.minimumSwivelEncoder) {
+            s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
+
+
+        }
+        else if (thetaDegrees <= -90 && thetaDegrees >= -120) {
+            s_ShooterSubsystem.setSwivelSetpoint(0);
+        }
+        else if (thetaDegrees >= 90 && thetaDegrees <= 120){
+            s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
+        }
+
+
         
-        s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
+        // s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
 
         // s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees);
 
 
         // if (s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
-        //     s_ShooterSubsystem.attemptToShoot();
+            // attemptToShoot(motorSpeed);
 
     }
 
