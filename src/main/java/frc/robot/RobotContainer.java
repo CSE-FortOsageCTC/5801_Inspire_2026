@@ -150,12 +150,12 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // s_Swerve.setDefaultCommand(new TeleopDrive(driver, operator));
+    s_Swerve.setDefaultCommand(new TeleopDrive(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(operator));
     s_ClimbSubsystem.setDefaultCommand(new ClimbDefault(operator));
     operatorA.whileTrue(new SpindexerCommand(true));
 
-    driver_A_Function.onTrue(new InstantCommand(() -> ShooterSubsystem.toggleIsShooting()));
+    driver_A_Function.onTrue(new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()));
     driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
     driver_Start_Function.onTrue(new IntakeExtensionCommand());
     // driverLeftDpad.whileTrue(new AutoAlignClimb(AlignPosition.LeftOffset, 0));

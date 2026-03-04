@@ -52,10 +52,11 @@ public final class Constants {
     public static final double minimumHubDist = 0.61; // in meters
     public static final double maximumHubDist = 5.4; // in meters
     public static final double minimumHoodAngle = 75; // in degrees
-    public static final double maximumHoodAngle = 85; // in degrees
+    public static final double maximumHoodAngle = 80; // in degrees
+    public static final double totalHoodRangeDegrees = 40;
     public static final double minimumHoodEncoder = 0;
-    public static final double maximumHoodEncoder = 0; // TODO: Figure this out!
-    public static final double hoodEncoderPerDegree = 0; // TODO: Figure this out too!
+    public static final double maximumHoodEncoder = 76; // TODO: Figure this out!
+    public static final double hoodEncoderPerDegree = maximumHoodEncoder / totalHoodRangeDegrees; // TODO: Figure this out too!
     public static final double maximumBallSpeed = 10.7; // (in m/s) TODO: Test m/s of ball on release at max flywheel speed
     public static final double minimumSwivelEncoder = 0;
     public static final double maximumSwivelEncoder = 215; // TODO: Find this out :)
