@@ -124,6 +124,7 @@ public class ShooterDefault extends Command {
                 s_ShooterSubsystem.setFlywheels(0);
                 s_ShooterSubsystem.setKicker(0);
             }
+            // attemptToShoot(motorSpeed);
             return;
         }
 
@@ -189,15 +190,15 @@ public class ShooterDefault extends Command {
 
 
         
-        if (thetaDegrees <= -90 && thetaDegrees >= -120) {
-            s_ShooterSubsystem.setSwivelSetpoint(0);
-        }
-        else if (thetaDegrees >= 90 && thetaDegrees <= 120){
-            s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
-        }
-        else {
-            s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
-        }
+        // if (thetaDegrees <= -90 && thetaDegrees >= -120) {
+        //     s_ShooterSubsystem.setSwivelSetpoint(0);
+        // }
+        // else if (thetaDegrees >= 90 && thetaDegrees <= 120){
+        //     s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
+        // }
+        // else {
+        //     s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
+        // }
 
         s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees / Constants.hoodEncoderPerDegree);
 

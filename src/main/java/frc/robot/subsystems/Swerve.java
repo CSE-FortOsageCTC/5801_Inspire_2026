@@ -618,12 +618,8 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Odometry X", odometryX);
         SmartDashboard.putNumber("Odometry Y", odometryY);
 
-        // if (AlignPosition.getIsScoring()) {
-        //     setLimelightOdometryMT2(Constants.limelightLeft);
-        //     setLimelightOdometryMT2(Constants.limelightRight);
-        // } else {
-        //     setLimelightOdometryMT1(Constants.limelightSky);
-        // }  FIXED FOR ERROR
+        setLimelightOdometryMT2(Constants.limelightFront);
+        // setLimelightOdometryMT2(Constants.limelightRight);
 
     }
 

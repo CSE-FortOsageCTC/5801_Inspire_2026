@@ -97,9 +97,9 @@ public class RobotContainer {
   public RobotContainer() {
     s_Swerve = Swerve.getInstance();
     s_choreoManager = ChoreoManager.getInstance();
-    limelightLeft = LimeLightSubsystem.getInstance(Constants.limelightLeft);
+    limelightLeft = LimeLightSubsystem.getInstance(Constants.limelightFront);
     limelightSky = LimeLightSubsystem.getInstance(Constants.limelightSky);
-    limelightRight = LimeLightSubsystem.getInstance(Constants.limelightRight);
+    limelightRight = LimeLightSubsystem.getInstance(Constants.limelightBack);
     // Configure the trigger bindings
     configureBindings();
 
@@ -152,7 +152,7 @@ public class RobotContainer {
   private void configureBindings() {
     s_Swerve.setDefaultCommand(new TeleopDrive(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(operator));
-    s_ClimbSubsystem.setDefaultCommand(new ClimbDefault(operator));
+    // s_ClimbSubsystem.setDefaultCommand(new ClimbDefault(operator));
     operatorA.whileTrue(new SpindexerCommand(true));
 
     driver_A_Function.onTrue(new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()));

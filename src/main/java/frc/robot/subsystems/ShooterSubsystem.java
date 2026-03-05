@@ -75,7 +75,7 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
     // spindexerFollower.setControl(new Follower(spindexerMaster.getDeviceID(), MotorAlignmentValue.Aligned));
 
-    swivelPID = new ProfiledPIDController(0.08, 0.001, 0.001, new TrapezoidProfile.Constraints(500, 500));
+    swivelPID = new ProfiledPIDController(0.04, 0.001, 0.001, new TrapezoidProfile.Constraints(500, 500));
     swivelPID.setTolerance(0.75);
 
     hoodPID = new ProfiledPIDController(0.07, 0, 0, new TrapezoidProfile.Constraints(0, 0));

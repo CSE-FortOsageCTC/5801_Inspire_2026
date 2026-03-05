@@ -31,8 +31,8 @@ import frc.lib.util.SwerveModuleConstants;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static final String limelightRight = "limelight-right";
-    public static final String limelightLeft = "limelight-left";
+    public static final String limelightBack = "limelight-back";
+    public static final String limelightFront = "limelight-front";
     public static final String limelightSky = "limelight-sky";
     
     public static final double feedForwardAngle = 30;
@@ -59,7 +59,7 @@ public final class Constants {
     public static final double hoodEncoderPerDegree = maximumHoodEncoder / totalHoodRangeDegrees; // TODO: Figure this out too!
     public static final double maximumBallSpeed = 10.7; // (in m/s) TODO: Test m/s of ball on release at max flywheel speed
     public static final double minimumSwivelEncoder = 0;
-    public static final double maximumSwivelEncoder = 215; // TODO: Find this out :)
+    public static final double maximumSwivelEncoder = 122; // TODO: Find this out :)
     public static final double swivelEncoderToAbsolute = 49.2854;
     public static final double swivelEncoderPerDegrees = 453.0 / 360.0; // TODO: Find this out :)
     public static final double totalSwivelRange = 180; // In Degrees TODO: Find this out :)
