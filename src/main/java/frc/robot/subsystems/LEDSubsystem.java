@@ -10,8 +10,6 @@ import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 
-import frc.robot.subsystems.ShooterSubsystem;
-
 import frc.robot.Constants;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -23,8 +21,6 @@ public class LEDSubsystem extends SubsystemBase {
 
     private static LEDSubsystem ledSubsystem;
 
-    private ShooterSubsystem shooterSubsystem;
-
     private double timer;
     private boolean isStrobing;
 
@@ -32,6 +28,7 @@ public class LEDSubsystem extends SubsystemBase {
     private boolean isTurretAimed = false;
     private boolean isRotationNearUnaligned = false;
     private boolean isRotationAligned = false;
+    private boolean isHoodReady = false;
     
     public static LEDSubsystem getInstance() {
         if (ledSubsystem == null) {
@@ -114,13 +111,17 @@ public class LEDSubsystem extends SubsystemBase {
         this.isRotationAligned = isRotationAligned;
     }
 
+        public void setIsHoodReady(boolean isHoodReady) {
+        this.isHoodReady = isHoodReady;
+    }
+
     @Override
     public void periodic() {
         // setColor(rgbColor[0], rgbColor[1], rgbColor[2]);
         // candle1.setLEDs(255, 255, 0);
         //logic for LEDs: turn red if swerve is unaligned (180 degrees), yellow if close, blue if aligned and close but not ready to shoot, green ready to shoot (hood and align) - logic as i understand it
 
-        if(shooterSubsystem.isSwivelReadyToShoot()) {
+        if(isHoodReady) {
             setIsTurretAimed(true);
         }
 
@@ -128,7 +129,7 @@ public class LEDSubsystem extends SubsystemBase {
         {
             setRainbow();
         }
-        else if(isRotationAligned && isTurretAimed && shooterSubsystem.isHoodReadyToShoot())
+        else if(isRotationAligned && isTurretAimed && isHoodReady)
         {
             setGreen();
         }

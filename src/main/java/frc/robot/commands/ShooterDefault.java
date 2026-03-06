@@ -34,13 +34,13 @@ public class ShooterDefault extends Command {
 
     private int delayCounter = 0;
 
-
     private boolean isManual = false;
 
     public ShooterDefault(Joystick operator) {
         s_ShooterSubsystem = ShooterSubsystem.getInstance();
         this.operator = operator;
-        s_Swerve = Swerve.getInstance();    
+        s_Swerve = Swerve.getInstance();
+        ledSubsystem = LEDSubsystem.getInstance();    
 
         SmartDashboard.putNumber("TestX", 0);
         SmartDashboard.putNumber("TestY", 0);
@@ -193,19 +193,31 @@ public class ShooterDefault extends Command {
         if (thetaDegrees >= -90 && thetaDegrees <= 90) {
             ledSubsystem.setIsRotationAligned(true);
             s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
+            if (thetaDegrees <= -70 && thetaDegrees >= -90 || thetaDegrees <= 90 && thetaDegrees >= 70) {
+                ledSubsystem.setIsRotationNearUnaligned(true);
+                ledSubsystem.setIsRotationAligned(false);
+            }
         }
         else if (thetaDegrees <= -90 && thetaDegrees >= -120) {
             s_ShooterSubsystem.setSwivelSetpoint(0);
-            ledSubsystem.setIsRotationNearUnaligned(true);
+            ledSubsystem.setIsRotationNearUnaligned(false);
+            ledSubsystem.setIsRotationAligned(false);
         }
         else if (thetaDegrees >= 90 && thetaDegrees <= 120){
             s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
-            ledSubsystem.setIsRotationNearUnaligned(true);
+            ledSubsystem.setIsRotationNearUnaligned(false);
+            ledSubsystem.setIsRotationAligned(false);            
         }   
         else {
             s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
             ledSubsystem.setIsRotationAligned(false);
             ledSubsystem.setIsRotationNearUnaligned(false);
+        }
+
+        if(s_ShooterSubsystem.isHoodReadyToShoot()) {
+            ledSubsystem.setIsHoodReady(true);
+        } else {
+            ledSubsystem.setIsHoodReady(false);
         }
 
         //logic for LEDs: turn red if swerve is unaligned (180 degrees), yellow if close, blue if aligned but not ready to shoot, green ready to shoot (hood and align) - logic as i understand it
