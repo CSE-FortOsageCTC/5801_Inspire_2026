@@ -200,8 +200,13 @@ public class ShooterDefault extends Command {
         //     s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
         // }
 
+        if (((turretPoseFieldRelative.getX() >= Constants.redTrenchAreaLeftX && turretPoseFieldRelative.getX() <= Constants.redTrenchAreaRightX) || (turretPoseFieldRelative.getX() >= Constants.blueTrenchAreaLeftX && turretPoseFieldRelative.getX() <= Constants.blueTrenchAreaRightX)) && (turretPoseFieldRelative.getY() >= Constants.TrenchAreaTopY || turretPoseFieldRelative.getY() <= Constants.TrenchAreaBottomY)) {
+            s_ShooterSubsystem.setHoodSetpoint(Constants.minimumHoodEncoder);
+            return;
+        } 
+        else {
         s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees / Constants.hoodEncoderPerDegree);
-
+        }
 
         // if (s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
             // attemptToShoot(motorSpeed);
