@@ -142,7 +142,7 @@ public class ShooterDefault extends Command {
         double botSpeedX = s_Swerve.getEstimatedFieldRelativeSpeeds().vxMetersPerSecond;
         double botSpeedY = s_Swerve.getEstimatedFieldRelativeSpeeds().vyMetersPerSecond;
 
-        Pose3d newPose = new Pose3d(botSpeedX*period, botSpeedY*period, targetPose.getZ(), null);
+        Pose3d newPose = new Pose3d(-botSpeedX*period, -botSpeedY*period, targetPose.getZ(), null);
         TurretState secondState = calculateTurretWithPosition(newPose);
 
 
