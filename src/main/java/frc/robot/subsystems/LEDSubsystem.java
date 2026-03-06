@@ -10,6 +10,8 @@ import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 
+import frc.robot.subsystems.ShooterSubsystem;
+
 import frc.robot.Constants;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -20,6 +22,8 @@ public class LEDSubsystem extends SubsystemBase {
     private RgbFadeAnimation rgbFadeAnimation = new RgbFadeAnimation(0, Constants.numberOfLEDs);
 
     private static LEDSubsystem ledSubsystem;
+
+    private ShooterSubsystem shooterSubsystem;
 
     private double timer;
     private boolean isStrobing;
@@ -115,19 +119,24 @@ public class LEDSubsystem extends SubsystemBase {
         // setColor(rgbColor[0], rgbColor[1], rgbColor[2]);
         // candle1.setLEDs(255, 255, 0);
         //logic for LEDs: turn red if swerve is unaligned (180 degrees), yellow if close, blue if aligned and close but not ready to shoot, green ready to shoot (hood and align) - logic as i understand it
+
+        if(shooterSubsystem.isSwivelReadyToShoot()) {
+            setIsTurretAimed(true);
+        }
+
         if(isClimbAligned)
         {
             setRainbow();
         }
-        else if(isRotationAligned && isTurretAimed)
+        else if(isRotationAligned && isTurretAimed && shooterSubsystem.isHoodReadyToShoot())
         {
             setGreen();
         }
-        else if(isRotationNearUnaligned && isTurretAimed)
+        else if(isTurretAimed && isRotationAligned)
         {
             setBlue();
         }
-        else if(isRotationAligned)
+        else if(isRotationNearUnaligned)
         {
             setYellow();
         }

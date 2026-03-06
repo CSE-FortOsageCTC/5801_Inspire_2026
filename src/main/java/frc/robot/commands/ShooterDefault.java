@@ -13,12 +13,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
 
 public class ShooterDefault extends Command {
     
     private ShooterSubsystem s_ShooterSubsystem;
+    private LEDSubsystem ledSubsystem;
 
     private Swerve s_Swerve;
 
@@ -176,20 +178,25 @@ public class ShooterDefault extends Command {
 
         double robotRelativeSwivelEncoder = robotRelativeAngleDegrees * Constants.swivelEncoderPerDegrees;
 
-        if (robotRelativeSwivelEncoder <= Constants.maximumSwivelEncoder && robotRelativeSwivelEncoder >= Constants.minimumSwivelEncoder) {
+        if (thetaDegrees >= -90 && thetaDegrees <= 90) {
+            ledSubsystem.setIsRotationAligned(true);
             s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
-
-
         }
         else if (thetaDegrees <= -90 && thetaDegrees >= -120) {
             s_ShooterSubsystem.setSwivelSetpoint(0);
+            ledSubsystem.setIsRotationNearUnaligned(true);
         }
         else if (thetaDegrees >= 90 && thetaDegrees <= 120){
             s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
+            ledSubsystem.setIsRotationNearUnaligned(true);
+        }   
+        else {
+            s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
+            ledSubsystem.setIsRotationAligned(false);
+            ledSubsystem.setIsRotationNearUnaligned(false);
         }
 
-
-        
+        //logic for LEDs: turn red if swerve is unaligned (180 degrees), yellow if close, blue if aligned but not ready to shoot, green ready to shoot (hood and align) - logic as i understand it
         // s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
 
         // s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees);
@@ -199,6 +206,5 @@ public class ShooterDefault extends Command {
             // attemptToShoot(motorSpeed);
 
     }
-
 
 }
