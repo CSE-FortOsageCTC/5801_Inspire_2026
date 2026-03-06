@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
+import frc.robot.TurretState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
 
@@ -127,21 +128,58 @@ public class ShooterDefault extends Command {
             // attemptToShoot(motorSpeed);
             return;
         }
-
-        // botPose = new Pose2d(SmartDashboard.getNumber("TestX", 0), SmartDashboard.getNumber("TestY", 0), s_Swerve.getEstimatedPosition().getRotation()); //SmartDashboard.getNumber("TestDegrees", 0)
-        botPose = s_Swerve.getEstimatedPosition(); // TODO: Uncomment this line once Swerve is merged into main!!!
-        SmartDashboard.putNumber("EstimatorRot", s_Swerve.getEstimatedPosition().getRotation().getDegrees());
-
-        fieldTest.setRobotPose(botPose);
-        SmartDashboard.putData("TestField", fieldTest);
-
+        
         if (s_Swerve.isInNeutral(botPose)){
             targetPose = getShuttleTargetPose();
         }
         else{
             targetPose = getHubTargetPose();
         }
-        // targetPose = getHubTargetPose();
+
+        TurretState initialState = calculateTurretWithPosition(targetPose);
+
+        double period = (2*initialState.initialVelocity*(Math.sin(initialState.hoodDegrees))) / 9.81;
+        double botSpeedX = s_Swerve.getEstimatedFieldRelativeSpeeds().vxMetersPerSecond;
+        double botSpeedY = s_Swerve.getEstimatedFieldRelativeSpeeds().vyMetersPerSecond;
+
+        Pose3d newPose = new Pose3d(botSpeedX*period, botSpeedY*period, targetPose.getZ(), null);
+        TurretState secondState = calculateTurretWithPosition(newPose);
+
+
+        // get the theta angle relative to robot rotation converted to encoder values
+        double robotRelativeAngleDegrees = secondState.turretDegrees - botPose.getRotation().getDegrees() + Constants.turretPoseRobotReletive.getRotation().getDegrees();
+
+        double robotRelativeSwivelEncoder = robotRelativeAngleDegrees * Constants.swivelEncoderPerDegrees;
+
+        // TODO: Figure out velocity to motor speed scale irl (and if it's linear like this or not)
+        double motorSpeed = secondState.initialVelocity / Constants.maximumBallSpeed;
+        
+        // if (thetaDegrees <= -90 && thetaDegrees >= -120) {
+        //     s_ShooterSubsystem.setSwivelSetpoint(0);
+        // }
+        // else if (thetaDegrees >= 90 && thetaDegrees <= 120){
+        //     s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
+        // }
+        // else {
+        //     s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
+        // }
+
+        s_ShooterSubsystem.setHoodSetpoint(secondState.hoodDegrees / Constants.hoodEncoderPerDegree);
+
+
+        // if (s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
+            // attemptToShoot(motorSpeed);
+
+    }
+
+    private TurretState calculateTurretWithPosition(Pose3d targetPosition){
+
+        botPose = s_Swerve.getEstimatedPosition(); // TODO: Uncomment this line once Swerve is merged into main!!!
+        SmartDashboard.putNumber("EstimatorRot", s_Swerve.getEstimatedPosition().getRotation().getDegrees());
+
+        fieldTest.setRobotPose(botPose);
+        SmartDashboard.putData("TestField", fieldTest);
+
 
         double turretDist = Math.sqrt((Constants.turretPoseRobotReletive.getY() * Constants.turretPoseRobotReletive.getY()) + (Constants.turretPoseRobotReletive.getX() * Constants.turretPoseRobotReletive.getX()));
 
@@ -156,8 +194,8 @@ public class ShooterDefault extends Command {
         SmartDashboard.putString("Turret Pose", turretPoseFieldRelative.toString());
 
         // Distance in x and y axis respectively
-        double dx = targetPose.getX() - turretPoseFieldRelative.getX();
-        double dy = targetPose.getY() - turretPoseFieldRelative.getY();
+        double dx = targetPosition.getX() - turretPoseFieldRelative.getX();
+        double dy = targetPosition.getY() - turretPoseFieldRelative.getY();
 
         SmartDashboard.putNumber("dX", dx);
         SmartDashboard.putNumber("dY", dy);
@@ -175,38 +213,14 @@ public class ShooterDefault extends Command {
         SmartDashboard.putNumber("Launch Angle", launchAngleDegrees);
 
         // Distance the ball needs to hit for the ball to hit the height and position of the hub along it's parabola
-        double shootingTargetDistance = hypotenuse + (targetPose.getZ() / Math.tan(launchAngleDegrees));
+        double shootingTargetDistance = hypotenuse + (targetPosition.getZ() / Math.tan(launchAngleDegrees));
 
         // Initial velocity in m/s that the ball should have to travel to score (9.81 is gravity)
         double vO = Math.sqrt((shootingTargetDistance * 9.81) / Math.sin(2 * Math.toRadians(launchAngleDegrees)));
 
-        // TODO: Figure out velocity to motor speed scale irl (and if it's linear like this or not)
-        double motorSpeed = vO / Constants.maximumBallSpeed;
 
-        // get the theta angle relative to robot rotation converted to encoder values
-        double robotRelativeAngleDegrees = thetaDegrees - botPose.getRotation().getDegrees() + Constants.turretPoseRobotReletive.getRotation().getDegrees();
-
-        double robotRelativeSwivelEncoder = robotRelativeAngleDegrees * Constants.swivelEncoderPerDegrees;
-
-
-        
-        // if (thetaDegrees <= -90 && thetaDegrees >= -120) {
-        //     s_ShooterSubsystem.setSwivelSetpoint(0);
-        // }
-        // else if (thetaDegrees >= 90 && thetaDegrees <= 120){
-        //     s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
-        // }
-        // else {
-        //     s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
-        // }
-
-        s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees / Constants.hoodEncoderPerDegree);
-
-
-        // if (s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
-            // attemptToShoot(motorSpeed);
+        return new TurretState(thetaDegrees, launchAngleDegrees, vO);
 
     }
-
 
 }
