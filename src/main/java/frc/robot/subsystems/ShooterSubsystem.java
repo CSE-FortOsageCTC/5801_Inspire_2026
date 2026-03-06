@@ -29,18 +29,18 @@ public class ShooterSubsystem extends SubsystemBase {
   private TalonFX flywheelMaster;
   private TalonFX flywheelFollower;
   private TalonFX spindexerMaster;
-  private TalonFX spindexerFollower;
-  private TalonFX turretHood;
+  // private TalonFX spindexerFollower;
+  private SparkMax hood;
   private TalonFX kicker;
   //TODO: Add kicker motor
 
   public double swivelSetpoint = 0;
-  public double turretHoodSetpoint = 0;
+  public double hoodSetpoint = 0;
 
   private ProfiledPIDController swivelPID;
-  private PIDController hoodPID;
+  private ProfiledPIDController hoodPID;
   
-  private static boolean isShooting = false;
+  private boolean isShooting = false;
  
   public static ShooterSubsystem getInstance(){
         if (shooterSubsystem == null){
@@ -50,35 +50,42 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   private ShooterSubsystem() {
     //TODO assign IDs 
-    // flywheelMaster = new TalonFX(0);
-    // flywheelFollower = new TalonFX(0);
+    flywheelMaster = new TalonFX(30);
+    flywheelFollower = new TalonFX(31);
     swivel = new SparkMax(55, MotorType.kBrushless);
-    spindexerMaster = new TalonFX(21);
-    spindexerFollower = new TalonFX(22);
-    // turretHood = new TalonFX(0);
-    // kicker = new TalonFX(0);
+    spindexerMaster = new TalonFX(22);
+    // spindexerFollower = new TalonFX(22);
+    hood = new SparkMax(56, MotorType.kBrushless);
+    kicker = new TalonFX(13);
     //Change configs as need be
     
-    try {
-      getSwivelAbsoluteEncoder();
-      getSwivelEncoder();
-      Thread.sleep(200);
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    swivel.getEncoder().setPosition(getSwivelAbsoluteEncoder() * Constants.swivelEncoderToAbsolute);
-    // flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Aligned));
-    spindexerFollower.setControl(new Follower(spindexerMaster.getDeviceID(), MotorAlignmentValue.Aligned));
+    /* Only need this logic if we are using an absolute encoder (which we just got rid of) */
+    // try {
+    //   getSwivelAbsoluteEncoder();
+    //   getSwivelEncoder();
+    //   Thread.sleep(200);
+    // } catch (InterruptedException e) {
+    //   e.printStackTrace();
+    // }
+    
+    
+    swivel.getEncoder().setPosition(0); // Make sure turret is hitting hard stop :)
+    hood.getEncoder().setPosition(0);
 
-    swivelPID = new ProfiledPIDController(0.08, 0.001, 0.001, new TrapezoidProfile.Constraints(500, 500));
+    flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
+    // spindexerFollower.setControl(new Follower(spindexerMaster.getDeviceID(), MotorAlignmentValue.Aligned));
+
+    swivelPID = new ProfiledPIDController(0.04, 0.001, 0.001, new TrapezoidProfile.Constraints(500, 500));
     swivelPID.setTolerance(0.75);
 
-    hoodPID = new PIDController(0, 0, 0);
+    hoodPID = new ProfiledPIDController(0.07, 0, 0, new TrapezoidProfile.Constraints(0, 0));
+    hoodPID.setTolerance(0.5);
 
     swivelSetpoint = getSwivelEncoder();
+    hoodSetpoint = getHoodEncoder();
 
     swivelPID.reset(swivelSetpoint);
+    hoodPID.reset(hoodSetpoint);
 
   }
 
@@ -101,10 +108,10 @@ public class ShooterSubsystem extends SubsystemBase {
     //   swivelPID.reset(getSwivelEncoder());
     // }
 
-    swivelSetpoint = setpoint;
+    swivelSetpoint = MathUtil.clamp(setpoint, Constants.minimumSwivelEncoder, Constants.maximumSwivelEncoder);
 
     double calculation = 0;
-    swivelPID.setGoal(setpoint);
+    swivelPID.setGoal(swivelSetpoint);
     // double pidValue = swivelPID.calculate(getSwivelEncoder());
 
     if (!swivelPID.atGoal()) {
@@ -137,35 +144,57 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private void privSetHood(double speed) {
-    turretHood.set(speed);
+    hood.set(speed);
   }
-  public double getHoodSetpoint() {
-    return turretHoodSetpoint;
-  }
-  public void setHoodSetpoint(double setpoint) {
-    turretHoodSetpoint = setpoint;
 
-    double calculation = hoodPID.calculate(getSwivelEncoder(), setpoint);
-    privSetHood(MathUtil.clamp(calculation, -1, 1)); // TODO: adjust clamps as needed
+  public double getHoodSetpoint() {
+    return hoodSetpoint;
+  }
+
+  public void setHoodSetpoint(double setpoint) {
+    // if (setpoint != swivelSetpoint) {
+    //   swivelPID.reset(getSwivelEncoder());
+    // }
+
+    
+    hoodSetpoint = MathUtil.clamp(setpoint, Constants.minimumHoodEncoder, Constants.maximumHoodEncoder);
+
+    double calculation = 0;
+    hoodPID.setGoal(hoodSetpoint);
+    // double pidValue = hoodPID.calculate(getHoodEncoder());
+
+    if (!hoodPID.atGoal()) {
+      calculation = hoodPID.calculate(getHoodEncoder());
+    } else {
+      hoodPID.reset(getHoodEncoder());
+    }
+
+    // if (!hoodPID.atSetpoint()) {
+    //   privSetHood(MathUtil.clamp(calculation, -1, 1));
+    // }
+
+    privSetHood(MathUtil.clamp(calculation, -1, 1));
+
+    SmartDashboard.putNumber("Hood Speed", calculation);
   }
 
   public double getHoodEncoder() {
-    return turretHood.getPosition().getValueAsDouble();
+    return hood.getEncoder().getPosition();
   }
 
   public boolean isHoodReadyToShoot() {
-    return Math.abs(getHoodEncoder() - turretHoodSetpoint) <= 1;
+    return Math.abs(getHoodEncoder() - hoodSetpoint) <= 1;
   }
 
   public void setSpindexer(double speed){
     spindexerMaster.set(speed);
   }
   
-  public static boolean getIsShooting(){
+  public boolean getIsShooting(){
     return isShooting;
   }
 
-  public static void toggleIsShooting(){
+  public void toggleIsShooting(){
     isShooting = !isShooting;
   }
 
@@ -181,7 +210,9 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Swivel Internal Encoder", getSwivelEncoder());
-    SmartDashboard.putNumber("Swivel Absolute Encoder", getSwivelAbsoluteEncoder());
     SmartDashboard.putNumber("Swivel Setpoint", swivelSetpoint);
+
+    SmartDashboard.putNumber("Hood Internal Encoder", getHoodEncoder());
+    SmartDashboard.putNumber("Hood Setpoint", hoodSetpoint);
   }
 }

@@ -32,12 +32,12 @@ public class ClimbSubsystem extends SubsystemBase {
 
     private ClimbSubsystem() {
 
-        masterClimb = new TalonFX(11);
-        followerClimb = new TalonFX(15);
+        // masterClimb = new TalonFX(11);
+        // followerClimb = new TalonFX(15);
 
         //climbPivot = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
 
-        followerClimb.setControl(new Follower(masterClimb.getDeviceID(), MotorAlignmentValue.Opposed));
+        // followerClimb.setControl(new Follower(masterClimb.getDeviceID(), MotorAlignmentValue.Opposed));
 
         //TODO TUNE THESE
         pidControllerSupported = new ProfiledPIDController(0, 0, 0, null);
@@ -91,7 +91,7 @@ public class ClimbSubsystem extends SubsystemBase {
     }
     
     public void addInstruments(Orchestra orchestra){
-        orchestra.addInstrument(masterClimb);
-        orchestra.addInstrument(followerClimb);
+        // orchestra.addInstrument(masterClimb);
+        // orchestra.addInstrument(followerClimb);
     }
 }

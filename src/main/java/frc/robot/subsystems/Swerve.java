@@ -578,8 +578,8 @@ public class Swerve extends SubsystemBase {
 
     }
 
-    public boolean isInNeutral(){
-        if (swerveEstimator.getEstimatedPosition().getX() >= Constants.redAllianceLineX && swerveEstimator.getEstimatedPosition().getX() <= Constants.blueAllianceLineX){
+    public boolean isInNeutral(Pose2d pose){
+        if (pose.getX() >= Constants.redAllianceLineX && pose.getX() <= Constants.blueAllianceLineX){
             return true;
         }
         
@@ -618,12 +618,8 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Odometry X", odometryX);
         SmartDashboard.putNumber("Odometry Y", odometryY);
 
-        // if (AlignPosition.getIsScoring()) {
-        //     setLimelightOdometryMT2(Constants.limelightLeft);
-        //     setLimelightOdometryMT2(Constants.limelightRight);
-        // } else {
-        //     setLimelightOdometryMT1(Constants.limelightSky);
-        // }  FIXED FOR ERROR
+        setLimelightOdometryMT2(Constants.limelightFront);
+        // setLimelightOdometryMT2(Constants.limelightRight);
 
     }
 

@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
     int index = (int)(Math.random() * music.size());
     orchestra.loadMusic(music.get(index));
 
-    playOrchestra();
+    // playOrchestra();
   }
  
 
