@@ -138,21 +138,25 @@ public class ShooterDefault extends Command {
 
         TurretState initialState = calculateTurretWithPosition(targetPose);
 
-        double period = (2*initialState.initialVelocity*(Math.sin(initialState.hoodDegrees))) / 9.81;
+        double firstPeriod = (2*initialState.initialVelocity*(Math.sin(initialState.hoodDegrees))) / 9.81;
         double botSpeedX = s_Swerve.getEstimatedFieldRelativeSpeeds().vxMetersPerSecond;
         double botSpeedY = s_Swerve.getEstimatedFieldRelativeSpeeds().vyMetersPerSecond;
 
-        Pose3d newPose = new Pose3d(-botSpeedX*period, -botSpeedY*period, targetPose.getZ(), null);
-        TurretState secondState = calculateTurretWithPosition(newPose);
+        Pose3d secondPose = new Pose3d(targetPose.getX() - (botSpeedX*firstPeriod), targetPose.getY() - (botSpeedY*firstPeriod), targetPose.getZ(), null);
+        TurretState secondState = calculateTurretWithPosition(secondPose);
+        
+        double secondPeriod = (2*secondState.initialVelocity*(Math.sin(secondState.hoodDegrees))) / 9.81;
 
+        Pose3d thirdPose = new Pose3d(secondPose.getX() - (botSpeedX*(firstPeriod - secondPeriod)), secondPose.getY() - (botSpeedY*(firstPeriod - secondPeriod)), secondPose.getZ(), null);
+        TurretState thirdState = calculateTurretWithPosition(thirdPose);
 
         // get the theta angle relative to robot rotation converted to encoder values
-        double robotRelativeAngleDegrees = secondState.turretDegrees - botPose.getRotation().getDegrees() + Constants.turretPoseRobotReletive.getRotation().getDegrees();
+        double robotRelativeAngleDegrees = thirdState.turretDegrees - botPose.getRotation().getDegrees() + Constants.turretPoseRobotReletive.getRotation().getDegrees();
 
         double robotRelativeSwivelEncoder = robotRelativeAngleDegrees * Constants.swivelEncoderPerDegrees;
 
         // TODO: Figure out velocity to motor speed scale irl (and if it's linear like this or not)
-        double motorSpeed = secondState.initialVelocity / Constants.maximumBallSpeed;
+        double motorSpeed = thirdState.initialVelocity / Constants.maximumBallSpeed;
         
         // if (thetaDegrees <= -90 && thetaDegrees >= -120) {
         //     s_ShooterSubsystem.setSwivelSetpoint(0);
@@ -164,7 +168,7 @@ public class ShooterDefault extends Command {
         //     s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
         // }
 
-        s_ShooterSubsystem.setHoodSetpoint(secondState.hoodDegrees / Constants.hoodEncoderPerDegree);
+        s_ShooterSubsystem.setHoodSetpoint(thirdState.hoodDegrees / Constants.hoodEncoderPerDegree);
 
 
         // if (s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
