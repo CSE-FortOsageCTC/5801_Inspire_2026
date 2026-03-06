@@ -205,7 +205,7 @@ public class ShooterDefault extends Command {
             return;
         } 
         else {
-        s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees / Constants.hoodEncoderPerDegree);
+            s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees / Constants.hoodEncoderPerDegree);
         }
 
         // if (s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
