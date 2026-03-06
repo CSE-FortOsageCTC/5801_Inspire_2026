@@ -37,7 +37,7 @@ public class LimeLightSubsystem extends SubsystemBase {
 
     public static LimeLightSubsystem getRightInstance() {
         if (limelightRight == null) {
-            limelightRight = new LimeLightSubsystem(Constants.limelightRight);
+            limelightRight = new LimeLightSubsystem(Constants.limelightBack);
 
             //setCamera(Constants.limelightRight, -.003175, .28575, 0.2159, 0, 0, 172);
         }
@@ -46,7 +46,7 @@ public class LimeLightSubsystem extends SubsystemBase {
 
     public static LimeLightSubsystem getLeftInstance() {
         if (limelightLeft == null) {
-            limelightLeft = new LimeLightSubsystem(Constants.limelightLeft);
+            limelightLeft = new LimeLightSubsystem(Constants.limelightFront);
             //setCamera(Constants.limelightLeft, 0, -0.2921, 0.2159, 0, 0, -171);
 
         }
@@ -64,9 +64,9 @@ public class LimeLightSubsystem extends SubsystemBase {
 
     public static LimeLightSubsystem getInstance(String limelight) {
             switch (limelight) {
-                case Constants.limelightLeft:
+                case Constants.limelightFront:
                     return getLeftInstance();
-                case Constants.limelightRight:
+                case Constants.limelightBack:
                     return getRightInstance();
                 case Constants.limelightSky:
                     return getSkyInstance();

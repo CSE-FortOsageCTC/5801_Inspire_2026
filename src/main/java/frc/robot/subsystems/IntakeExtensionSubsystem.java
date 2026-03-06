@@ -31,7 +31,7 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     
     private IntakeExtensionSubsystem() {
 
-        intakeExtentionSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
+        intakeExtentionSolenoid = new DoubleSolenoid(41, PneumaticsModuleType.CTREPCM, 1, 0);
 
         isExtended = false;
 
