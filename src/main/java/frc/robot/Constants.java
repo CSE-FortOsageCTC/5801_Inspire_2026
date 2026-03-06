@@ -8,16 +8,12 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
@@ -49,6 +45,12 @@ public final class Constants {
     public static final Pose3d blueSouthShuttleTarget = new Pose3d(14.207236, 2.010664, 0, null);
     public static final double redAllianceLineX = 3.977894;
     public static final double blueAllianceLineX = 12.563094;
+    public static final double redTrenchAreaLeftX = 3.977894;
+    public static final double redTrenchAreaRightX = 5.222494;
+    public static final double TrenchAreaTopY = 6.79069;
+    public static final double TrenchAreaBottomY = 1.278636;
+    public static final double blueTrenchAreaLeftX = 11.318494;
+    public static final double blueTrenchAreaRightX = 12.563094;
     public static final double minimumHubDist = 0.61; // in meters
     public static final double maximumHubDist = 5.4; // in meters
     public static final double minimumHoodAngle = 75; // in degrees
