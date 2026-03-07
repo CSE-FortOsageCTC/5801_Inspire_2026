@@ -33,6 +33,7 @@ public class ShooterDefault extends Command {
 
     private int delayCounter = 0;
 
+    private boolean isUnderTrench = false;
 
     private boolean isManual = false;
 
@@ -169,7 +170,14 @@ public class ShooterDefault extends Command {
         //     s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
         // }
 
-        s_ShooterSubsystem.setHoodSetpoint(thirdState.hoodDegrees / Constants.hoodEncoderPerDegree);
+        if (((turretPoseFieldRelative.getX() >= Constants.redTrenchAreaLeftX && turretPoseFieldRelative.getX() <= Constants.redTrenchAreaRightX) || (turretPoseFieldRelative.getX() >= Constants.blueTrenchAreaLeftX && turretPoseFieldRelative.getX() <= Constants.blueTrenchAreaRightX)) && (turretPoseFieldRelative.getY() >= Constants.TrenchAreaTopY || turretPoseFieldRelative.getY() <= Constants.TrenchAreaBottomY)) {
+            s_ShooterSubsystem.setHoodSetpoint(Constants.minimumHoodEncoder);
+            isUnderTrench = true;
+        } 
+        else {
+            s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees / Constants.hoodEncoderPerDegree);
+            isUnderTrench = false;
+        }
 
 
         // if (s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
@@ -222,7 +230,6 @@ public class ShooterDefault extends Command {
 
         // Initial velocity in m/s that the ball should have to travel to score (9.81 is gravity)
         double vO = Math.sqrt((shootingTargetDistance * 9.81) / Math.sin(2 * Math.toRadians(launchAngleDegrees)));
-
 
         return new TurretState(thetaDegrees, launchAngleDegrees, vO);
 

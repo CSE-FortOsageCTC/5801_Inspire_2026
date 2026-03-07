@@ -49,6 +49,12 @@ public final class Constants {
     public static final Pose3d blueSouthShuttleTarget = new Pose3d(14.207236, 2.010664, 0, null);
     public static final double redAllianceLineX = 3.977894;
     public static final double blueAllianceLineX = 12.563094;
+    public static final double redTrenchAreaLeftX = 3.977894;
+    public static final double redTrenchAreaRightX = 5.222494;
+    public static final double TrenchAreaTopY = 6.79069;
+    public static final double TrenchAreaBottomY = 1.278636;
+    public static final double blueTrenchAreaLeftX = 11.318494;
+    public static final double blueTrenchAreaRightX = 12.563094;
     public static final double minimumHubDist = 0.61; // in meters
     public static final double maximumHubDist = 5.4; // in meters
     public static final double minimumHoodAngle = 75; // in degrees
