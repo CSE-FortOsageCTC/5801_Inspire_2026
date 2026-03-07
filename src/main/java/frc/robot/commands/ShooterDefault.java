@@ -146,8 +146,9 @@ public class ShooterDefault extends Command {
         TurretState secondState = calculateTurretWithPosition(secondPose);
         
         double secondPeriod = (2*secondState.initialVelocity*(Math.sin(secondState.hoodDegrees))) / 9.81;
+        double periodCalculation = firstPeriod - secondPeriod;
 
-        Pose3d thirdPose = new Pose3d(secondPose.getX() - (botSpeedX*(firstPeriod - secondPeriod)), secondPose.getY() - (botSpeedY*(firstPeriod - secondPeriod)), secondPose.getZ(), null);
+        Pose3d thirdPose = new Pose3d(secondPose.getX() - (botSpeedX*(periodCalculation)), secondPose.getY() - (botSpeedY*(periodCalculation)), secondPose.getZ(), null);
         TurretState thirdState = calculateTurretWithPosition(thirdPose);
 
         // get the theta angle relative to robot rotation converted to encoder values
