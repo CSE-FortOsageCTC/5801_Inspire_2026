@@ -37,6 +37,8 @@ public final class Constants {
     
     public static final double feedForwardAngle = 30;
 
+    public static final double maximumVoltage = 10;
+
     public static final double climbingDx = Units.inchesToMeters(16.125); //TODO: adjust values as needed
     public static final double climbingDy = Units.inchesToMeters(39); //TODO: adjust values as needed
 

@@ -98,14 +98,14 @@ public class ShooterDefault extends Command {
             if (delayCounter >= 25){ //0.5 second delay
                 s_ShooterSubsystem.setKicker(1);
                 if (delayCounter >= 50){ //another 0.5 sec delay
-                    s_ShooterSubsystem.setSpindexer(0.1);
+                    s_ShooterSubsystem.setSpindexer(0.1, 0.1);
                 }
             }
             delayCounter++;
         } else {
             s_ShooterSubsystem.setFlywheels(0);
             s_ShooterSubsystem.setKicker(0);
-            s_ShooterSubsystem.setSpindexer(0);
+            s_ShooterSubsystem.setSpindexer(0, 0);
             delayCounter = 0;
         }
     }
