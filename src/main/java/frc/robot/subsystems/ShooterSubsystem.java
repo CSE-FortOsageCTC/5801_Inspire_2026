@@ -39,7 +39,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double highSpindexterCurrentCounter = 0;
   public double unjammingCounter = 0;
-  public boolean isJammed = false;
 
   private ProfiledPIDController swivelPID;
   private ProfiledPIDController hoodPID;
@@ -191,7 +190,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setSpindexer(double speed){
-    if (isJammed || unjammingCounter <= 25) {
+    if (unjammingCounter <= 25) {
       spindexerMaster.set(-0.15);
       unjammingCounter += 1;
     }
@@ -231,11 +230,9 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     else {
       highSpindexterCurrentCounter = 0;
-      isJammed = false;
     }
 
-    if (highSpindexterCurrentCounter >= 25) {
-      isJammed = true;
+    if (highSpindexterCurrentCounter == 25) {
       unjammingCounter = 0;
     }
   }
