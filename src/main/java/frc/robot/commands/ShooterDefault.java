@@ -190,8 +190,8 @@ public class ShooterDefault extends Command {
 
         double robotRelativeSwivelEncoder = robotRelativeAngleDegrees * Constants.swivelEncoderPerDegrees;
 
-            ledSubsystem.setIsRotationAligned(false);
-            ledSubsystem.setIsRotationNearUnaligned(false);
+        ledSubsystem.setIsRotationAligned(false);
+        ledSubsystem.setIsRotationNearUnaligned(false);
 
         if (thetaDegrees >= -90 && thetaDegrees <= 90) {
             ledSubsystem.setIsRotationAligned(true);
