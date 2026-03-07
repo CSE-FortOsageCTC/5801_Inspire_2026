@@ -197,7 +197,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     else {
       spindexerMaster.set(speed);
-      unjammingCounter = 0;
     }
   }
   
@@ -227,7 +226,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Hood Setpoint", hoodSetpoint);
 
 
-    if (Math.abs(spindexerMaster.getStatorCurrent().getValueAsDouble()) >= 300) {
+    if (Math.abs(spindexerMaster.getStatorCurrent().getValueAsDouble()) >= 60) {
       highSpindexterCurrentCounter += 1;
     }
     else {
@@ -237,6 +236,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     if (highSpindexterCurrentCounter >= 25) {
       isJammed = true;
+      unjammingCounter = 0;
     }
   }
 }
