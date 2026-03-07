@@ -195,11 +195,9 @@ public class ShooterSubsystem extends SubsystemBase {
       spindexerMaster.set(-0.15);
       unjammingCounter += 1;
     }
-    else if (unjammingCounter >= 25) {
-      unjammingCounter = 0;
-    }
     else {
       spindexerMaster.set(speed);
+      unjammingCounter = 0;
     }
   }
   
