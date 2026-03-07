@@ -13,12 +13,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
 
 public class ShooterDefault extends Command {
     
     private ShooterSubsystem s_ShooterSubsystem;
+    private LEDSubsystem ledSubsystem;
 
     private Swerve s_Swerve;
 
@@ -39,7 +41,8 @@ public class ShooterDefault extends Command {
     public ShooterDefault(Joystick operator) {
         s_ShooterSubsystem = ShooterSubsystem.getInstance();
         this.operator = operator;
-        s_Swerve = Swerve.getInstance();    
+        s_Swerve = Swerve.getInstance();
+        ledSubsystem = LEDSubsystem.getInstance();    
 
         SmartDashboard.putNumber("TestX", 0);
         SmartDashboard.putNumber("TestY", 0);
@@ -189,17 +192,31 @@ public class ShooterDefault extends Command {
 
         double robotRelativeSwivelEncoder = robotRelativeAngleDegrees * Constants.swivelEncoderPerDegrees;
 
+        ledSubsystem.setIsRotationAligned(false);
+        ledSubsystem.setIsRotationNearUnaligned(false);
 
-        
-        // if (thetaDegrees <= -90 && thetaDegrees >= -120) {
-        //     s_ShooterSubsystem.setSwivelSetpoint(0);
-        // }
-        // else if (thetaDegrees >= 90 && thetaDegrees <= 120){
-        //     s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
-        // }
-        // else {
-        //     s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
-        // }
+        if (thetaDegrees >= -90 && thetaDegrees <= 90) {
+            ledSubsystem.setIsRotationAligned(true);
+            s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
+            if (thetaDegrees <= -70 && thetaDegrees >= -90 || thetaDegrees <= 90 && thetaDegrees >= 70) {
+                ledSubsystem.setIsRotationNearUnaligned(true);
+            }
+        }
+        else if (thetaDegrees <= -90 && thetaDegrees >= -120) {
+            s_ShooterSubsystem.setSwivelSetpoint(0);
+        }
+        else if (thetaDegrees >= 90 && thetaDegrees <= 120){
+            s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
+        }   
+        else {
+            s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
+        }
+
+        ledSubsystem.setIsHoodReady(s_ShooterSubsystem.isHoodReadyToShoot());
+        ledSubsystem.setIsTurretAimed(s_ShooterSubsystem.isSwivelReadyToShoot());
+
+        //logic for LEDs: turn red if swerve is unaligned (180 degrees), yellow if close, blue if aligned but not ready to shoot, green ready to shoot (hood and align) - logic as i understand it
+        // s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
 
         if (((turretPoseFieldRelative.getX() >= Constants.redTrenchAreaLeftX && turretPoseFieldRelative.getX() <= Constants.redTrenchAreaRightX) || (turretPoseFieldRelative.getX() >= Constants.blueTrenchAreaLeftX && turretPoseFieldRelative.getX() <= Constants.blueTrenchAreaRightX)) && (turretPoseFieldRelative.getY() >= Constants.TrenchAreaTopY || turretPoseFieldRelative.getY() <= Constants.TrenchAreaBottomY)) {
             s_ShooterSubsystem.setHoodSetpoint(Constants.minimumHoodEncoder);
@@ -214,6 +231,5 @@ public class ShooterDefault extends Command {
             // attemptToShoot(motorSpeed);
 
     }
-
 
 }
