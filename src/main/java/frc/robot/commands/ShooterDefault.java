@@ -166,6 +166,9 @@ public class ShooterDefault extends Command {
         ledSubsystem.setIsRotationAligned(false);
         ledSubsystem.setIsRotationNearUnaligned(false);
 
+        double thetaDegrees = thirdState.turretDegrees;
+        double launchAngleDegrees = thirdState.hoodDegrees;
+
         if (thetaDegrees >= -90 && thetaDegrees <= 90) {
             ledSubsystem.setIsRotationAligned(true);
             s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
@@ -186,7 +189,7 @@ public class ShooterDefault extends Command {
         ledSubsystem.setIsHoodReady(s_ShooterSubsystem.isHoodReadyToShoot());
         ledSubsystem.setIsTurretAimed(s_ShooterSubsystem.isSwivelReadyToShoot());
 
-        if (((turretPoseFieldRelative.getX() >= Constants.redTrenchAreaLeftX && turretPoseFieldRelative.getX() <= Constants.redTrenchAreaRightX) || (turretPoseFieldRelative.getX() >= Constants.blueTrenchAreaLeftX && turretPoseFieldRelative.getX() <= Constants.blueTrenchAreaRightX)) && (turretPoseFieldRelative.getY() >= Constants.TrenchAreaTopY || turretPoseFieldRelative.getY() <= Constants.TrenchAreaBottomY)) {
+        if (((thirdState.fieldRelativePose.getX() >= Constants.redTrenchAreaLeftX && thirdState.fieldRelativePose.getX() <= Constants.redTrenchAreaRightX) || (thirdState.fieldRelativePose.getX() >= Constants.blueTrenchAreaLeftX && thirdState.fieldRelativePose.getX() <= Constants.blueTrenchAreaRightX)) && (thirdState.fieldRelativePose.getY() >= Constants.TrenchAreaTopY || thirdState.fieldRelativePose.getY() <= Constants.TrenchAreaBottomY)) {
             s_ShooterSubsystem.setHoodSetpoint(Constants.minimumHoodEncoder);
             isUnderTrench = true;
         } 
@@ -247,7 +250,7 @@ public class ShooterDefault extends Command {
         // Initial velocity in m/s that the ball should have to travel to score (9.81 is gravity)
         double vO = Math.sqrt((shootingTargetDistance * 9.81) / Math.sin(2 * Math.toRadians(launchAngleDegrees)));
 
-        return new TurretState(thetaDegrees, launchAngleDegrees, vO);
+        return new TurretState(thetaDegrees, launchAngleDegrees, vO, turretPoseFieldRelative);
 
     }
 
