@@ -37,6 +37,9 @@ public class ShooterSubsystem extends SubsystemBase {
   public double swivelSetpoint = 0;
   public double hoodSetpoint = 0;
 
+  public double highSpindexterCurrentCounter = 0;
+  public double unjammingCounter = 26;
+
   private ProfiledPIDController swivelPID;
   private ProfiledPIDController hoodPID;
   
@@ -187,7 +190,13 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setSpindexer(double speed){
-    spindexerMaster.set(speed);
+    if (unjammingCounter <= 25 && speed != 0) {
+      spindexerMaster.set(-0.15);
+      unjammingCounter += 1;
+    }
+    else {
+      spindexerMaster.set(speed);
+    }
   }
   
   public boolean getIsShooting(){
@@ -214,5 +223,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Hood Internal Encoder", getHoodEncoder());
     SmartDashboard.putNumber("Hood Setpoint", hoodSetpoint);
+
+
+    if (Math.abs(spindexerMaster.getStatorCurrent().getValueAsDouble()) >= 60) {
+      highSpindexterCurrentCounter += 1;
+    }
+    else {
+      highSpindexterCurrentCounter = 0;
+    }
+
+    if (highSpindexterCurrentCounter == 25) {
+      unjammingCounter = 0;
+    }
   }
 }
