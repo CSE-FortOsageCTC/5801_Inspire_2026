@@ -189,7 +189,7 @@ public class ShooterDefault extends Command {
         ledSubsystem.setIsHoodReady(s_ShooterSubsystem.isHoodReadyToShoot());
         ledSubsystem.setIsTurretAimed(s_ShooterSubsystem.isSwivelReadyToShoot());
 
-        if (((thirdState.fieldRelativeFieldPose.getX() >= Constants.redTrenchAreaLeftX && thirdState.fieldRelativeFieldPose.getX() <= Constants.redTrenchAreaRightX) || (thirdState.fieldRelativeFieldPose.getX() >= Constants.blueTrenchAreaLeftX && thirdState.fieldRelativeFieldPose.getX() <= Constants.blueTrenchAreaRightX)) && (thirdState.fieldRelativeFieldPose.getY() >= Constants.TrenchAreaTopY || thirdState.fieldRelativeFieldPose.getY() <= Constants.TrenchAreaBottomY)) {
+        if (((thirdState.fieldRelativePose.getX() >= Constants.redTrenchAreaLeftX && thirdState.fieldRelativePose.getX() <= Constants.redTrenchAreaRightX) || (thirdState.fieldRelativePose.getX() >= Constants.blueTrenchAreaLeftX && thirdState.fieldRelativePose.getX() <= Constants.blueTrenchAreaRightX)) && (thirdState.fieldRelativePose.getY() >= Constants.TrenchAreaTopY || thirdState.fieldRelativePose.getY() <= Constants.TrenchAreaBottomY)) {
             s_ShooterSubsystem.setHoodSetpoint(Constants.minimumHoodEncoder);
             isUnderTrench = true;
         } 
