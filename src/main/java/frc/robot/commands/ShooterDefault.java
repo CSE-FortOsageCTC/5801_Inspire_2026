@@ -110,8 +110,28 @@ public class ShooterDefault extends Command {
         }
     }
 
+    private void autoShooting() {
+        if (DriverStation.isAutonomousEnabled()) {
+            if (DriverStation.Alliance.Blue.equals(DriverStation.getAlliance())) {
+                if (s_Swerve.getEstimatedPosition().getX() <= Constants.blueAllianceLineX) {
+                    s_ShooterSubsystem.setIsShooting(true);
+                } else {
+                    s_ShooterSubsystem.setIsShooting(false);
+                }
+            } else {
+                if (s_Swerve.getEstimatedPosition().getX() >= Constants.redAllianceLineX) {
+                    s_ShooterSubsystem.setIsShooting(true);
+                } else {
+                    s_ShooterSubsystem.setIsShooting(false);
+                }
+            }
+        }
+    }
+
     @Override
     public void execute() {
+
+        autoShooting();
 
         if (operator.getRawButtonPressed(XboxController.Button.kRightStick.value)) {
             isManual = !isManual;

@@ -212,6 +212,10 @@ public class ShooterSubsystem extends SubsystemBase {
     isShooting = !isShooting;
   }
 
+  public void setIsShooting(boolean bool) {
+    isShooting = bool;
+  }
+
   public void addInstruments(Orchestra orchestra){
     // orchestra.addInstrument(swivel);
     // orchestra.addInstrument(flywheelFollower);
