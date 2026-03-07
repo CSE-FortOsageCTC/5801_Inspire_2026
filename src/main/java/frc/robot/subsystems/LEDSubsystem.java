@@ -111,7 +111,7 @@ public class LEDSubsystem extends SubsystemBase {
         this.isRotationAligned = isRotationAligned;
     }
 
-        public void setIsHoodReady(boolean isHoodReady) {
+    public void setIsHoodReady(boolean isHoodReady) {
         this.isHoodReady = isHoodReady;
     }
 
@@ -121,25 +121,21 @@ public class LEDSubsystem extends SubsystemBase {
         // candle1.setLEDs(255, 255, 0);
         //logic for LEDs: turn red if swerve is unaligned (180 degrees), yellow if close, blue if aligned and close but not ready to shoot, green ready to shoot (hood and align) - logic as i understand it
 
-        if(isHoodReady) {
-            setIsTurretAimed(true);
-        }
-
         if(isClimbAligned)
         {
             setRainbow();
+        }
+        else if(isRotationNearUnaligned && isTurretAimed && isHoodReady)
+        {
+            setYellow();
         }
         else if(isRotationAligned && isTurretAimed && isHoodReady)
         {
             setGreen();
         }
-        else if(isTurretAimed && isRotationAligned)
+        else if(!isTurretAimed && isRotationAligned)
         {
             setBlue();
-        }
-        else if(isRotationNearUnaligned)
-        {
-            setYellow();
         }
         else
         {

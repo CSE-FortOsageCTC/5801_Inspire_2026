@@ -190,35 +190,28 @@ public class ShooterDefault extends Command {
 
         double robotRelativeSwivelEncoder = robotRelativeAngleDegrees * Constants.swivelEncoderPerDegrees;
 
+            ledSubsystem.setIsRotationAligned(false);
+            ledSubsystem.setIsRotationNearUnaligned(false);
+
         if (thetaDegrees >= -90 && thetaDegrees <= 90) {
             ledSubsystem.setIsRotationAligned(true);
             s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
             if (thetaDegrees <= -70 && thetaDegrees >= -90 || thetaDegrees <= 90 && thetaDegrees >= 70) {
                 ledSubsystem.setIsRotationNearUnaligned(true);
-                ledSubsystem.setIsRotationAligned(false);
             }
         }
         else if (thetaDegrees <= -90 && thetaDegrees >= -120) {
             s_ShooterSubsystem.setSwivelSetpoint(0);
-            ledSubsystem.setIsRotationNearUnaligned(false);
-            ledSubsystem.setIsRotationAligned(false);
         }
         else if (thetaDegrees >= 90 && thetaDegrees <= 120){
             s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
-            ledSubsystem.setIsRotationNearUnaligned(false);
-            ledSubsystem.setIsRotationAligned(false);            
         }   
         else {
             s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
-            ledSubsystem.setIsRotationAligned(false);
-            ledSubsystem.setIsRotationNearUnaligned(false);
         }
 
-        if(s_ShooterSubsystem.isHoodReadyToShoot()) {
-            ledSubsystem.setIsHoodReady(true);
-        } else {
-            ledSubsystem.setIsHoodReady(false);
-        }
+        ledSubsystem.setIsHoodReady(s_ShooterSubsystem.isHoodReadyToShoot());
+        ledSubsystem.setIsTurretAimed(s_ShooterSubsystem.isSwivelReadyToShoot());
 
         //logic for LEDs: turn red if swerve is unaligned (180 degrees), yellow if close, blue if aligned but not ready to shoot, green ready to shoot (hood and align) - logic as i understand it
         // s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
