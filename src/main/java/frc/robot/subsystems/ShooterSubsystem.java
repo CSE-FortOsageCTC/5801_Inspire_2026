@@ -17,6 +17,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -32,6 +33,7 @@ public class ShooterSubsystem extends SubsystemBase {
   // private TalonFX spindexerFollower;
   private SparkMax hood;
   private TalonFX kicker;
+  private TalonFX spinKicker;
   //TODO: Add kicker motor
 
   public double swivelSetpoint = 0;
@@ -59,7 +61,8 @@ public class ShooterSubsystem extends SubsystemBase {
     spindexerMaster = new TalonFX(22);
     // spindexerFollower = new TalonFX(22);
     hood = new SparkMax(56, MotorType.kBrushless);
-    kicker = new TalonFX(13);
+    kicker = new TalonFX(15);
+    spinKicker = new TalonFX(22);
     //Change configs as need be
     
     /* Only need this logic if we are using an absolute encoder (which we just got rid of) */
@@ -93,7 +96,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setFlywheels(double speed){
-    flywheelMaster.set(speed);
+    flywheelMaster.setVoltage(speed * Constants.maximumVoltage);
   }
 
   public void setKicker(double speed) {
@@ -101,7 +104,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private void privSetSwivel(double speed) {
-    swivel.set(speed);
+    swivel.setVoltage(speed * Constants.maximumVoltage);
   }
   public double getSwivelSetpoint() {
     return swivelSetpoint;
@@ -147,7 +150,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private void privSetHood(double speed) {
-    hood.set(speed);
+    hood.setVoltage(speed * Constants.maximumVoltage);
   }
 
   public double getHoodSetpoint() {
@@ -189,13 +192,15 @@ public class ShooterSubsystem extends SubsystemBase {
     return Math.abs(getHoodEncoder() - hoodSetpoint) <= 1;
   }
 
-  public void setSpindexer(double speed){
-    if (unjammingCounter <= 25 && speed != 0) {
+  public void setSpindexer(double spinSpeed, double kickerSpeed){
+    if (unjammingCounter <= 25 && spinSpeed != 0) {
       spindexerMaster.set(-0.15);
+      spinKicker.set(-0.1);
       unjammingCounter += 1;
     }
     else {
-      spindexerMaster.set(speed);
+      spindexerMaster.set(spinSpeed);
+      spinKicker.set(kickerSpeed);
     }
   }
   
