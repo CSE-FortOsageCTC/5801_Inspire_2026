@@ -5,6 +5,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -307,7 +308,8 @@ public class ShooterDefault extends Command {
         // SmartDashboard.putNumber("dX", dx);
         // SmartDashboard.putNumber("dY", dy);
         // angle in radians of the theoretical setpoint while stood still.
-        double thetaDegrees = Math.toDegrees(Math.atan2(dy, dx));
+        // double thetaDegrees = Math.toDegrees(Math.atan2(dy, dx));
+        Rotation2d thetaDegrees = getTurretTargetAngle(botPose, targetPosition);
 
         // distance away from center point of the turret to the center of the hub
         double distanceFromTarget = Math.hypot(dx, dy);
@@ -323,8 +325,34 @@ public class ShooterDefault extends Command {
         // Initial velocity in m/s that the ball should have to travel to score (9.81 is gravity)
         double vO = Math.sqrt((shootingTargetDistance * 9.81) / Math.sin(2 * Math.toRadians(launchAngleDegrees)));
 
-        return new TurretState(thetaDegrees, launchAngleDegrees, vO, turretPoseFieldRelative);
+        return new TurretState(thetaDegrees.getDegrees(), launchAngleDegrees, vO, turretPoseFieldRelative);
 
+    }
+
+    public Rotation2d getTurretTargetAngle(Pose2d robotPose, Pose3d hubPose) {
+
+        // Convert hub to 2D
+        Pose2d hub2d = hubPose.toPose2d();
+
+        // Get turret pose relative to robot
+        Pose2d turretRelative = Constants.turretPoseRobotReletive;
+
+        // Convert turret pose into field coordinates
+        Pose2d turretFieldPose = robotPose.transformBy(
+            new Transform2d(
+                turretRelative.getTranslation(),
+                turretRelative.getRotation()
+            )
+        );
+
+        // Transform from turret -> hub
+        Transform2d turretToHub = new Transform2d(
+            turretFieldPose,
+            hub2d
+        );
+
+        // Angle turret must rotate
+        return turretToHub.getTranslation().getAngle();
     }
 
 }
