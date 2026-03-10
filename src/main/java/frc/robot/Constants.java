@@ -16,6 +16,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -43,35 +44,35 @@ public final class Constants {
     public static final double climbingDy = Units.inchesToMeters(39); //TODO: adjust values as needed
 
     // position (x and y) of the hub from a top down perspective. height (z) of target of the hub
-    public static final Pose3d redHubPosition = new Pose3d(4.625594, 4.034536, 1.8288, null);
-    public static final Pose3d blueHubPosition = new Pose3d(11.901424, 4.034536, 1.8288, null);
-    public static final Pose3d redNorthShuttleTarget = new Pose3d(2.305812, 6.031992, 0, null);
-    public static final Pose3d redSouthShuttleTarget = new Pose3d(2.305812, 2.010664, 0, null);
-    public static final Pose3d blueNorthShuttleTarget = new Pose3d(14.207236, 6.031992, 0, null);
-    public static final Pose3d blueSouthShuttleTarget = new Pose3d(14.207236, 2.010664, 0, null);
+    public static final Pose3d redHubPosition = new Pose3d(11.901424, 4.034536, 1.8288, new Rotation3d());
+    public static final Pose3d blueHubPosition = new Pose3d(4.625594, 4.034536, 1.8288, new Rotation3d());
+    public static final Pose3d redNorthShuttleTarget = new Pose3d(14.207236, 6.031992, 0, new Rotation3d());
+    public static final Pose3d redSouthShuttleTarget = new Pose3d(14.207236, 2.010664, 0, new Rotation3d());
+    public static final Pose3d blueNorthShuttleTarget = new Pose3d(2.305812, 6.031992, 0, new Rotation3d());
+    public static final Pose3d blueSouthShuttleTarget = new Pose3d(2.305812, 2.010664, 0, new Rotation3d());
     public static final double redAllianceLineX = 3.977894;
     public static final double blueAllianceLineX = 12.563094;
     public static final double redTrenchAreaLeftX = 3.977894;
     public static final double redTrenchAreaRightX = 5.222494;
     public static final double TrenchAreaTopY = 6.79069;
     public static final double TrenchAreaBottomY = 1.278636;
-    public static final double blueTrenchAreaLeftX = 11.318494;
+    public static final double blueTrenchAreaLeftX = 10.318494;
     public static final double blueTrenchAreaRightX = 12.563094;
     public static final double minimumHubDist = 0.61; // in meters
     public static final double maximumHubDist = 5.4; // in meters
-    public static final double minimumHoodAngle = 75; // in degrees
-    public static final double maximumHoodAngle = 80; // in degrees
+    public static final double minimumHoodAngle = 65; // in degrees
+    public static final double maximumHoodAngle = 65; // in degrees
     public static final double totalHoodRangeDegrees = 40;
     public static final double minimumHoodEncoder = 0;
-    public static final double maximumHoodEncoder = 76; // TODO: Figure this out!
+    public static final double maximumHoodEncoder = 82; // TODO: Figure this out!
     public static final double hoodEncoderPerDegree = maximumHoodEncoder / totalHoodRangeDegrees; // TODO: Figure this out too!
-    public static final double maximumBallSpeed = 10.7; // (in m/s) TODO: Test m/s of ball on release at max flywheel speed
+    public static final double maximumBallSpeed = 7.7; // (in m/s) TODO: Test m/s of ball on release at max flywheel speed
     public static final double minimumSwivelEncoder = 0;
-    public static final double maximumSwivelEncoder = 122; // TODO: Find this out :)
+    public static final double maximumSwivelEncoder = 175; // TODO: Find this out :)
     public static final double swivelEncoderToAbsolute = 49.2854;
-    public static final double swivelEncoderPerDegrees = 453.0 / 360.0; // TODO: Find this out :)
-    public static final double totalSwivelRange = 180; // In Degrees TODO: Find this out :)
-    public static final Pose2d turretPoseRobotReletive = new Pose2d(0.2032, -0.1016, Rotation2d.fromDegrees(90)); // TODO: find x and y meters offset that the robot is from the center of the robot
+    public static final double totalSwivelRangeDegrees = 255; // In Degrees TODO: Find this out :)
+    public static final double swivelEncoderPerDegrees = maximumSwivelEncoder / totalSwivelRangeDegrees; // TODO: Find this out :)
+    public static final Pose2d turretPoseRobotReletive = new Pose2d(-0.2032, 0.1016, Rotation2d.fromDegrees(90)); // TODO: find x and y meters offset that the robot is from the center of the robot
     public static final double stickDeadband = 0.125;
 
     //Set Points
