@@ -189,6 +189,11 @@ public class ShooterDefault extends Command {
 
         // get the theta angle relative to robot rotation converted to encoder values
         double robotRelativeAngleDegrees = (thirdState.turretDegrees - botPose.getRotation().getDegrees() + Constants.turretPoseRobotReletive.getRotation().getDegrees()) % 360;
+        
+        if (robotRelativeAngleDegrees <= 0 && robotRelativeAngleDegrees >= -Constants.autoRotateRange) {
+            isWithinAutoTurn = true;
+        }
+
         if (robotRelativeAngleDegrees > 360) {
             robotRelativeAngleDegrees -= 360;
         }
@@ -214,9 +219,7 @@ public class ShooterDefault extends Command {
         ledSubsystem.setIsRotationAligned(false);
         ledSubsystem.setIsRotationNearUnaligned(false);
 
-        if (robotRelativeAngleDegrees <= 0 && robotRelativeAngleDegrees >= -Constants.autoRotateRange) {
-            isWithinAutoTurn = true;
-        }
+       
 
         double fieldRelativeAngleDegrees = thirdState.turretDegrees % 360;
         double launchAngleDegrees = thirdState.hoodDegrees;
@@ -235,12 +238,12 @@ public class ShooterDefault extends Command {
             ledSubsystem.setIsRotationAligned(true);
             s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
 
-            // if where the swivel should be is within 60 degrees of being out of range (still in range)
-            if (robotRelativeAngleDegrees <= Constants.autoRotateRange && robotRelativeAngleDegrees >= 0 || robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees - Constants.autoRotateRange) {
+            // if where the swivel should be is within 20 degrees of being out of range (still in range)
+            if (robotRelativeAngleDegrees <= 20 && robotRelativeAngleDegrees >= 0 || robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees - 20) {
                 ledSubsystem.setIsRotationNearUnaligned(true);
             }
         } // if where the swivel should be is within 60 degrees out of range towards minimum
-        else if (isWithinAutoTurn == true) {
+        else if (isWithinAutoTurn) {
             s_ShooterSubsystem.setSwivelSetpoint(0);
             isWithinAutoTurn = false;
         } // if where the swivel should be is within 60 degrees out of range towards maximum
