@@ -15,6 +15,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
@@ -44,6 +45,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private ProfiledPIDController swivelPID;
   private ProfiledPIDController hoodPID;
+
+  private SimpleMotorFeedforward swivelFeedforward;
   
   private boolean isShooting = false;
  
@@ -62,7 +65,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // spindexerFollower = new TalonFX(22);
     hood = new SparkMax(56, MotorType.kBrushless);
     kicker = new TalonFX(15);
-    spinKicker = new TalonFX(22);
+    spinKicker = new TalonFX(21);
     //Change configs as need be
     
     /* Only need this logic if we are using an absolute encoder (which we just got rid of) */
@@ -81,10 +84,12 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
     // spindexerFollower.setControl(new Follower(spindexerMaster.getDeviceID(), MotorAlignmentValue.Aligned));
 
-    swivelPID = new ProfiledPIDController(0.04, 0.001, 0.001, new TrapezoidProfile.Constraints(500, 500));
-    swivelPID.setTolerance(0.75);
+    swivelPID = new ProfiledPIDController(0.09, 0.001, 0.001, new TrapezoidProfile.Constraints(500, 500));
+    swivelPID.setTolerance(0.25);
 
-    hoodPID = new ProfiledPIDController(0.07, 0, 0, new TrapezoidProfile.Constraints(0, 0));
+    swivelFeedforward = new SimpleMotorFeedforward(0.01, 0.015);
+
+    hoodPID = new ProfiledPIDController(0.09, 0, 0, new TrapezoidProfile.Constraints(0, 0));
     hoodPID.setTolerance(0.5);
 
     swivelSetpoint = getSwivelEncoder();
@@ -96,6 +101,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setFlywheels(double speed){
+    speed = MathUtil.clamp(speed, -1, 1);
     flywheelMaster.setVoltage(speed * Constants.maximumVoltage);
   }
 
@@ -104,6 +110,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private void privSetSwivel(double speed) {
+    if ((getSwivelEncoder() >= Constants.maximumSwivelEncoder && speed > 0) || (getSwivelEncoder() <= Constants.minimumSwivelEncoder && speed < 0)){
+      System.out.println("WARNING: Above or below max Swivel value!!!! >:(");
+      swivel.setVoltage(0);
+      return;
+    }
     swivel.setVoltage(speed * Constants.maximumVoltage);
   }
   public double getSwivelSetpoint() {
@@ -126,11 +137,14 @@ public class ShooterSubsystem extends SubsystemBase {
       swivelPID.reset(getSwivelEncoder());
     }
 
+    double feed = swivelFeedforward.calculate(swivelPID.getSetpoint().velocity);
+
     // if (!swivelPID.atSetpoint()) {
     //   privSetSwivel(MathUtil.clamp(calculation, -1, 1));
     // }
 
-    privSetSwivel(MathUtil.clamp(calculation, -1, 1));
+    // privSetSwivel(MathUtil.clamp(calculation, -1, 1));
+    privSetSwivel(MathUtil.clamp(feed + calculation, -1, 1));
 
     SmartDashboard.putNumber("Swivel Speed", calculation);
     
@@ -150,6 +164,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private void privSetHood(double speed) {
+    if ((getHoodEncoder() >= Constants.maximumHoodEncoder && speed > 0) || (getHoodEncoder() <= Constants.minimumHoodEncoder && speed < 0)){
+      System.out.println("WARNING: Above or below max Hood value!!!! >:(");
+      hood.setVoltage(0);
+      return;
+    }
     hood.setVoltage(speed * Constants.maximumVoltage);
   }
 
@@ -233,6 +252,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Hood Internal Encoder", getHoodEncoder());
     SmartDashboard.putNumber("Hood Setpoint", hoodSetpoint);
 
+    // SmartDashboard.putNumber("Flywheel vel", flywheelMaster.getVelocity().getValueAsDouble());
 
     if (Math.abs(spindexerMaster.getStatorCurrent().getValueAsDouble()) >= 60) {
       highSpindexterCurrentCounter += 1;

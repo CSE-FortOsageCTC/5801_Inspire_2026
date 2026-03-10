@@ -84,7 +84,7 @@ public class TeleopDrive extends Command {
         Translation2d translation = new Translation2d(translationVal, strafeVal)
                 .times(-Constants.Swerve.maxSpeed * throttleCalc);
 
-        s_Swerve.teleopDrive(translation, rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
+        s_Swerve.teleopDrive(translation, -rotationVal * Constants.Swerve.maxAngularVelocity, robotCentricSup, true);
 
     }
 

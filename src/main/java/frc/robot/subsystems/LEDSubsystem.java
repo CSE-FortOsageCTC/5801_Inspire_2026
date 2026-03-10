@@ -13,7 +13,7 @@ import com.ctre.phoenix6.hardware.CANdle;
 import frc.robot.Constants;
 
 public class LEDSubsystem extends SubsystemBase {
-    private CANdle candle1 = new CANdle(42); //Change this when we know
+    private CANdle candle1 = new CANdle(40); //Change this when we know
     private RainbowAnimation rainbowAnimation = new RainbowAnimation(0,  Constants.numberOfLEDs);
     // private TwinkleAnimation larsonAnimation = new TwinkleAnimation(65,105,225);
     private StrobeAnimation strobeAnimation = new StrobeAnimation(0, Constants.numberOfLEDs);
