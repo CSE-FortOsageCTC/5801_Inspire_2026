@@ -43,6 +43,8 @@ public final class Constants {
     public static final double climbingDx = Units.inchesToMeters(16.125); //TODO: adjust values as needed
     public static final double climbingDy = Units.inchesToMeters(39); //TODO: adjust values as needed
 
+    public static final double autoRotateRange = 60;
+
     // position (x and y) of the hub from a top down perspective. height (z) of target of the hub
     public static final Pose3d redHubPosition = new Pose3d(11.901424, 4.034536, 1.8288, new Rotation3d());
     public static final Pose3d blueHubPosition = new Pose3d(4.625594, 4.034536, 1.8288, new Rotation3d());
@@ -74,6 +76,7 @@ public final class Constants {
     public static final double swivelEncoderPerDegrees = 0.67367; // maximumSwivelEncoder / totalSwivelRangeDegrees; // TODO: Find this out :)
     public static final Pose2d turretPoseRobotReletive = new Pose2d(0.2032, -0.1016, Rotation2d.fromDegrees(90)); // TODO: find x and y meters offset that the robot is from the center of the robot
     public static final double stickDeadband = 0.125;
+
 
     //Set Points
     public static double primaryL1ClimbSetpoint = 0; //TODO: find this

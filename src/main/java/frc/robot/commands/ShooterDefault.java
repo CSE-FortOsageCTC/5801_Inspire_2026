@@ -41,6 +41,8 @@ public class ShooterDefault extends Command {
 
     private boolean isUnderTrench = false;
 
+    private boolean isWithinAutoTurn = false;
+
     private boolean isManual = false;
 
     public ShooterDefault(Joystick operator) {
@@ -116,8 +118,11 @@ public class ShooterDefault extends Command {
 
             if (delayCounter >= 50){ //0.5 second delay
                 s_ShooterSubsystem.setKicker(-0.2);
-                if (delayCounter >= 100){ //another 0.5 sec delay
+                if (delayCounter >= 100 && s_ShooterSubsystem.isHoodReadyToShoot() && s_ShooterSubsystem.isSwivelReadyToShoot()){ //another 0.5 sec delay
                     s_ShooterSubsystem.setSpindexer(0.4, 0.1);
+                }
+                else {
+                    s_ShooterSubsystem.setSpindexer(0,0);
                 }
             }
             delayCounter++;
@@ -200,11 +205,19 @@ public class ShooterDefault extends Command {
         Pose3d thirdPose = new Pose3d(secondPose.getX() + (botSpeedX*(periodError)), secondPose.getY() + (botSpeedY*(periodError)), secondPose.getZ(), new Rotation3d());
         TurretState thirdState = calculateTurretWithPosition(thirdPose);
 
+
+
         // get the theta angle relative to robot rotation converted to encoder values
         double robotRelativeAngleDegrees = (thirdState.turretDegrees) % 360; //  - botPose.getRotation().getDegrees() + Constants.turretPoseRobotReletive.getRotation().getDegrees()
+
+        if (robotRelativeAngleDegrees <= 0 && robotRelativeAngleDegrees >= -Constants.autoRotateRange) {
+            isWithinAutoTurn = true;
+        }
+      
         if (robotRelativeAngleDegrees > 360) {
             robotRelativeAngleDegrees -= 360;
         }
+      
         if (robotRelativeAngleDegrees < 0) {
             robotRelativeAngleDegrees += 360;
         }
@@ -229,6 +242,8 @@ public class ShooterDefault extends Command {
         ledSubsystem.setIsRotationAligned(false);
         ledSubsystem.setIsRotationNearUnaligned(false);
 
+       
+
         double fieldRelativeAngleDegrees = thirdState.turretDegrees % 360;
         double launchAngleDegrees = thirdState.hoodDegrees;
 
@@ -250,13 +265,14 @@ public class ShooterDefault extends Command {
             if (robotRelativeAngleDegrees <= 20 && robotRelativeAngleDegrees >= 0 || robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees - 20) {
                 ledSubsystem.setIsRotationNearUnaligned(true);
             }
-        } // if where the swivel should be is within 20 degrees out of range towards minimum
-        else if (robotRelativeAngleDegrees <= 0 && robotRelativeAngleDegrees >= -20) {
+        } // if where the swivel should be is within 60 degrees out of range towards minimum
+        else if (isWithinAutoTurn) {
             s_ShooterSubsystem.setSwivelSetpoint(0);
-        } // if where the swivel should be is within 20 degrees out of range towards maximum
-        else if (robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees + 20.0){
+            isWithinAutoTurn = false;
+        } // if where the swivel should be is within 60 degrees out of range towards maximum
+        else if (robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees + Constants.autoRotateRange){
             s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
-        } // if where the swivel should be is out of range more than 20 degrees both ways
+        } // if where the swivel should be is out of range more than 60 degrees both ways
         else {
             s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
         }
@@ -279,9 +295,6 @@ public class ShooterDefault extends Command {
 
         SmartDashboard.putNumber("Flywheel Speed", motorSpeed);
         SmartDashboard.putNumber("Initial Velocity", thirdState.initialVelocity);
-        // if (s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
-            
-        // }
 
         attemptToShoot(motorSpeed);
 
