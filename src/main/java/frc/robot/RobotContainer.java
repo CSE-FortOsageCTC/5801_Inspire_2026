@@ -157,6 +157,7 @@ public class RobotContainer {
 
     driver_A_Function.onTrue(new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()));
     driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
+    driver_LeftBumper_Function.whileTrue(new IntakeCommand(false));
     driver_Start_Function.onTrue(new IntakeExtensionCommand());
     // driverLeftDpad.whileTrue(new AutoAlignClimb(AlignPosition.LeftOffset, 0));
     // driverRightDpad.whileTrue(new AutoAlignClimb(AlignPosition.RightOffset, 0));
