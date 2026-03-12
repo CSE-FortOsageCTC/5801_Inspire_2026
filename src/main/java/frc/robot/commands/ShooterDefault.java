@@ -99,8 +99,11 @@ public class ShooterDefault extends Command {
 
             if (delayCounter >= 50){ //0.5 second delay
                 s_ShooterSubsystem.setKicker(-0.2);
-                if (delayCounter >= 100){ //another 0.5 sec delay
+                if (delayCounter >= 100 && s_ShooterSubsystem.isHoodReadyToShoot() && s_ShooterSubsystem.isSwivelReadyToShoot()){ //another 0.5 sec delay
                     s_ShooterSubsystem.setSpindexer(0.4, 0.1);
+                }
+                else {
+                    s_ShooterSubsystem.setSpindexer(0,0);
                 }
             }
             delayCounter++;
@@ -260,9 +263,6 @@ public class ShooterDefault extends Command {
 
         SmartDashboard.putNumber("Flywheel Speed", motorSpeed);
         SmartDashboard.putNumber("Initial Velocity", thirdState.initialVelocity);
-        // if (s_ShooterSubsystem.isSwivelReadyToShoot() && s_ShooterSubsystem.isHoodReadyToShoot()) { 
-            
-        // }
 
         attemptToShoot(-motorSpeed);
 
