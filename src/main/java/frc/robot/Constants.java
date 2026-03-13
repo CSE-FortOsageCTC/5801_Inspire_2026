@@ -62,11 +62,13 @@ public final class Constants {
     public static final double blueTrenchAreaRightX = 12.563094;
     public static final double minimumHubDist = 0.61; // in meters
     public static final double maximumHubDist = 5.4; // in meters
-    public static final double minimumHoodAngle = 65; // in degrees
-    public static final double maximumHoodAngle = 65; // in degrees
+    public static final double minimumHoodAngle = 50; // in degrees
+    public static final double maximumHoodAngle = 90; // in degrees
+    public static final double minimumHoodShotDegrees = 70;
+    public static final double maximumHoodShotDegrees = 80;
     public static final double totalHoodRangeDegrees = 40;
     public static final double minimumHoodEncoder = 0;
-    public static final double maximumHoodEncoder = 82; // TODO: Figure this out!
+    public static final double maximumHoodEncoder = 70; // TODO: Figure this out!
     public static final double hoodEncoderPerDegree = maximumHoodEncoder / totalHoodRangeDegrees; // TODO: Figure this out too!
     public static final double maximumBallSpeed = 7.7; // (in m/s) TODO: Test m/s of ball on release at max flywheel speed
     public static final double minimumSwivelEncoder = 0;
@@ -76,6 +78,7 @@ public final class Constants {
     public static final double swivelEncoderPerDegrees = 0.67367; // maximumSwivelEncoder / totalSwivelRangeDegrees; // TODO: Find this out :)
     public static final Pose2d turretPoseRobotReletive = new Pose2d(0.2032, -0.1016, Rotation2d.fromDegrees(90)); // TODO: find x and y meters offset that the robot is from the center of the robot
     public static final double stickDeadband = 0.125;
+    public static final double flywheelMaxVelocity = -83.5;
 
 
     //Set Points

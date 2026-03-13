@@ -105,6 +105,10 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelMaster.setVoltage(speed * Constants.maximumVoltage);
   }
 
+  public boolean isFlywheelReady(double motorSpeed) {
+    return Math.abs(flywheelMaster.getVelocity().getValueAsDouble() - (motorSpeed * Constants.flywheelMaxVelocity)) <= 2;
+  }
+
   public void setKicker(double speed) {
     kicker.set(speed);
   }
@@ -160,7 +164,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isSwivelReadyToShoot() {
-    return Math.abs(getSwivelEncoder() - swivelSetpoint) <= 1;
+    return Math.abs(getSwivelEncoder() - swivelSetpoint) <= 2 * Constants.swivelEncoderPerDegrees;
   }
 
   private void privSetHood(double speed) {
@@ -208,7 +212,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isHoodReadyToShoot() {
-    return Math.abs(getHoodEncoder() - hoodSetpoint) <= 1;
+    return Math.abs(getHoodEncoder() - hoodSetpoint) <= 0.5 * Constants.hoodEncoderPerDegree;
   }
 
   public void setSpindexer(double spinSpeed, double kickerSpeed){
@@ -252,7 +256,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Hood Internal Encoder", getHoodEncoder());
     SmartDashboard.putNumber("Hood Setpoint", hoodSetpoint);
 
-    // SmartDashboard.putNumber("Flywheel vel", flywheelMaster.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Flywheel vel", flywheelMaster.getVelocity().getValueAsDouble());
 
     if (Math.abs(spindexerMaster.getStatorCurrent().getValueAsDouble()) >= 60) {
       highSpindexterCurrentCounter += 1;
