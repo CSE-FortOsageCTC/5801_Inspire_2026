@@ -8,7 +8,8 @@ public class IntakeCommand extends Command{
     
     private IntakeSubsystem intakeSubsystem;
     public boolean intaking;
-    public double speed=0.5;
+    public double topSpeed = 0.3;
+    public double bottomSpeed = 0.4;
 
     public IntakeCommand(boolean intaking) {
         this.intaking = intaking;
@@ -19,18 +20,29 @@ public class IntakeCommand extends Command{
     }
 
     @Override
+    public void initialize() {
+        intakeSubsystem.setIntaking(true);
+    }
+
+    @Override
     public void execute(){
         if (intaking) {
-            intakeSubsystem.setIntakeSpeed(-speed);
+            intakeSubsystem.setIntakeSpeed(topSpeed, -bottomSpeed);
         }
         else {
-            intakeSubsystem.setIntakeSpeed(speed);
+            intakeSubsystem.setIntakeSpeed(-topSpeed, bottomSpeed);
         }
         
     }
 
     @Override
+    public boolean isFinished() {
+        return !intakeSubsystem.isIntaking();
+    }
+
+    @Override
     public void end(boolean isFinished) {
-        intakeSubsystem.setIntakeSpeed(0);
+        intakeSubsystem.setIntaking(false);
+        intakeSubsystem.setIntakeSpeed(0, 0);
     }
 }

@@ -52,8 +52,8 @@ public final class Constants {
     public static final Pose3d redSouthShuttleTarget = new Pose3d(14.207236, 2.010664, 0, new Rotation3d());
     public static final Pose3d blueNorthShuttleTarget = new Pose3d(2.305812, 6.031992, 0, new Rotation3d());
     public static final Pose3d blueSouthShuttleTarget = new Pose3d(2.305812, 2.010664, 0, new Rotation3d());
-    public static final double redAllianceLineX = 3.977894;
-    public static final double blueAllianceLineX = 12.563094;
+    public static final double redAllianceLineX = 3.977894 + 0.3048; // line + robot length
+    public static final double blueAllianceLineX = 12.563094 - 0.3048; // line - robot length
     public static final double redTrenchAreaLeftX = 3.977894;
     public static final double redTrenchAreaRightX = 5.222494;
     public static final double TrenchAreaTopY = 6.79069;
@@ -64,7 +64,7 @@ public final class Constants {
     public static final double maximumHubDist = 5.4; // in meters
     public static final double minimumHoodAngle = 50; // in degrees
     public static final double maximumHoodAngle = 90; // in degrees
-    public static final double minimumHoodShotDegrees = 70;
+    public static final double minimumHoodShotDegrees = 45;
     public static final double maximumHoodShotDegrees = 80;
     public static final double totalHoodRangeDegrees = 40;
     public static final double minimumHoodEncoder = 0;
@@ -76,7 +76,7 @@ public final class Constants {
     public static final double swivelEncoderToAbsolute = 49.2854;
     public static final double totalSwivelRangeDegrees = 255; // In Degrees TODO: Find this out :)
     public static final double swivelEncoderPerDegrees = 0.67367; // maximumSwivelEncoder / totalSwivelRangeDegrees; // TODO: Find this out :)
-    public static final Pose2d turretPoseRobotReletive = new Pose2d(0.2032, -0.1016, Rotation2d.fromDegrees(90)); // TODO: find x and y meters offset that the robot is from the center of the robot
+    public static final Pose2d turretPoseRobotReletive = new Pose2d(-0.1016, -0.1778, Rotation2d.fromDegrees(90)); // TODO: find x and y meters offset that the robot is from the center of the robot
     public static final double stickDeadband = 0.125;
     public static final double flywheelMaxVelocity = -83.5;
 

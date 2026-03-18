@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 // import frc.robot.AlignPosition; Error
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -17,6 +18,7 @@ import frc.robot.commands.AutoAlignClimb;
 // import frc.robot.Constants.ArmPosition; Error
 // import frc.robot.commands.AlignToApril; Error
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeExtensionCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.Swerve;
@@ -62,8 +64,8 @@ public class ChoreoManager {
                 s_Swerve);
 
         // autoFactory.bind("ArmGround", new InstantCommand(() -> ArmPosition.setPosition(ArmPosition.Ground)));
-        autoFactory.bind("Intake", new InstantCommand(() -> IntakeSubsystem.getInstance().setIntakeSpeed(-1)));
-        autoFactory.bind("IntakeEnd", new InstantCommand(() -> IntakeSubsystem.getInstance().setIntakeSpeed(0)));
+        autoFactory.bind("Intake", new IntakeCommand(true));
+        autoFactory.bind("IntakeEnd", new InstantCommand(() -> IntakeSubsystem.getInstance().setIntaking(false)));
     }
 
     private void switchPipelines(int pipeline) {
@@ -96,6 +98,38 @@ public class ChoreoManager {
 
         return autoFactory.newRoutine(traj).cmd();
 
+    }
+
+    // MARK: Pre-Load Auto
+    public AutoRoutine preLoadAuto(boolean willClimb, boolean isRightClimb) {
+        // System.out.println("this is before the auto routine");
+        AutoRoutine routine = autoFactory.newRoutine("PreLoadAuto");
+
+        // System.out.println("this is the top of the auto code");
+
+        // Load the routine's trajectories
+        AutoTrajectory traj_PreLoadAuto = routine.trajectory("PreLoadAuto");
+        // AlignPosition alignPosition = isRightClimb ? AlignPosition.RightOffset : AlignPosition.LeftOffset;
+        // if (!willClimb)
+        // {
+        //     alignPosition = AlignPosition.NoPos;
+        // }
+        // When the routine begins, reset odometry and start the first trajectory
+        routine.active().onTrue(
+            Commands.sequence(
+                traj_PreLoadAuto.resetOdometry(),
+                // new InstantCommand(%() ->
+                // ArmPosition.setPosition(ArmPosition.StartingConfig)),
+                new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
+                traj_PreLoadAuto.cmd().withTimeout(10),
+                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
+                new IntakeExtensionCommand(),
+                new WaitCommand(2),
+                new IntakeCommand(true)
+                // new AutoAlignClimb(alignPosition, 0)
+
+        ));
+        return routine;
     }
 
     // MARK: Non Neutral Auto
@@ -149,7 +183,7 @@ public class ChoreoManager {
                 // new InstantCommand(() ->
                 // ArmPosition.setPosition(ArmPosition.StartingConfig)),
                 new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
-                traj_SweepAuto.cmd().withTimeout(10),
+                traj_SweepAuto.cmd(),
                 new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
                 new AutoAlignClimb(alignPosition, 0)
 
@@ -166,22 +200,22 @@ public class ChoreoManager {
         // System.out.println("this is the top of the auto code");
 
         // Load the routine's trajectories
-        AutoTrajectory traj_RightHalfAuto = routine.trajectory("RightHalfAuto");
-        AlignPosition alignPosition = isRightClimb ? AlignPosition.RightOffset : AlignPosition.LeftOffset;
-        if (!willClimb)
-        {
-            alignPosition = AlignPosition.NoPos;
-        }
+        // AutoTrajectory traj_RightHalfAuto = routine.trajectory("RightHalfAuto");
+        // AlignPosition alignPosition = isRightClimb ? AlignPosition.RightOffset : AlignPosition.LeftOffset;
+        // if (!willClimb)
+        // {
+        //     alignPosition = AlignPosition.NoPos;
+        // }
         // When the routine begins, reset odometry and start the first trajectory
         routine.active().onTrue(
             Commands.sequence(
                 // traj_startToIJ.resetOdometry(),
                 // new InstantCommand(() ->
                 // ArmPosition.setPosition(ArmPosition.StartingConfig)),
-                new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
-                traj_RightHalfAuto.cmd().withTimeout(10),
-                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
-                new AutoAlignClimb(alignPosition, 0)
+                new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(90))),
+                // traj_RightHalfAuto.cmd().withTimeout(10),
+                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true))
+                // new AutoAlignClimb(alignPosition, 0)
 
         ));
         return routine;
@@ -196,21 +230,22 @@ public class ChoreoManager {
 
         // Load the routine's trajectories
         AutoTrajectory traj_LeftAuto = routine.trajectory("LeftAuto");
-        AlignPosition alignPosition = isRightClimb ? AlignPosition.RightOffset : AlignPosition.LeftOffset;
-        if (!willClimb)
-        {
-            alignPosition = AlignPosition.NoPos;
-        }
+        // AlignPosition alignPosition = isRightClimb ? AlignPosition.RightOffset : AlignPosition.LeftOffset;
+        // if (!willClimb)
+        // {
+        //     alignPosition = AlignPosition.NoPos;
+        // }
         // When the routine begins, reset odometry and start the first trajectory
         routine.active().onTrue(
             Commands.sequence(
-                // traj_startToIJ.resetOdometry(),
+                traj_LeftAuto.resetOdometry(),
                 // new InstantCommand(() ->
                 // ArmPosition.setPosition(ArmPosition.StartingConfig)),
+                new IntakeExtensionCommand(),
                 new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
-                traj_LeftAuto.cmd().withTimeout(10),
-                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
-                new AutoAlignClimb(alignPosition, 0)
+                traj_LeftAuto.cmd(),
+                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true))
+                // new AutoAlignClimb(alignPositioAn, 0)
 
         ));
         return routine;

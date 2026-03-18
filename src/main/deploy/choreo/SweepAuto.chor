@@ -9,31 +9,31 @@
  "config":{
   "frontLeft":{
    "x":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"13.5 in",
+    "val":0.3429
    },
    "y":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"16.5 in",
+    "val":0.4191
    }
   },
   "backLeft":{
    "x":{
-    "exp":"-11 in",
-    "val":-0.2794
+    "exp":"-13.5 in",
+    "val":-0.3429
    },
    "y":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"16.5 in",
+    "val":0.4191
    }
   },
   "mass":{
-   "exp":"150 lbs",
-   "val":68.0388555
+   "exp":"126 lbs",
+   "val":57.152638620000005
   },
   "inertia":{
-   "exp":"6 kg m ^ 2",
-   "val":6.0
+   "exp":"7.583 kg m ^ 2",
+   "val":7.583
   },
   "gearing":{
    "exp":"6.5",
@@ -44,12 +44,12 @@
    "val":0.0508
   },
   "vmax":{
-   "exp":"6000 RPM",
-   "val":628.3185307179587
+   "exp":"5000 RPM",
+   "val":523.5987755982989
   },
   "tmax":{
-   "exp":"1.2 N * m",
-   "val":1.2
+   "exp":"7.09 N * m",
+   "val":7.09
   },
   "cof":{
    "exp":"1.5",
@@ -57,16 +57,16 @@
   },
   "bumper":{
    "front":{
-    "exp":"12 in",
-    "val":0.30479999999999996
+    "exp":"16 in",
+    "val":0.4064
    },
    "side":{
-    "exp":"15 in",
-    "val":0.381
+    "exp":"19 in",
+    "val":0.4826
    },
    "back":{
-    "exp":"12 in",
-    "val":0.30479999999999996
+    "exp":"16 in",
+    "val":0.4064
    }
   },
   "differentialTrackWidth":{
@@ -76,7 +76,7 @@
  },
  "generationFeatures":[],
  "codegen":{
-  "root":null,
+  "root":"choreo",
   "genVars":true,
   "genTrajData":true,
   "useChoreoLib":true

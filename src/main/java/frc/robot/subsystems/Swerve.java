@@ -65,6 +65,7 @@ public class Swerve extends SubsystemBase {
     public StructArrayPublisher<Pose3d> arrayPublisher;
     public Pose3d poseA = new Pose3d();
     public Pose3d poseB = new Pose3d();
+    private Rotation2d turretHeading;
 
     
    
@@ -80,7 +81,7 @@ public class Swerve extends SubsystemBase {
 
     private final PIDController autoXController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController autoYController = new PIDController(10.0, 0.0, 0.0);
-    private final PIDController autoHeadingController = new PIDController(8.0, 0.0, 0.0);
+    private final PIDController autoHeadingController = new PIDController(0.085, 0.0, 0.0);
 
     public DriveParams autoPickupDriveParams;
 
@@ -102,6 +103,7 @@ public class Swerve extends SubsystemBase {
 
 
         gyro.reset();
+        turretHeading = new Rotation2d();
         //gyro.setYaw(isRed? 180:0);
         f_Limelight = LimeLightSubsystem.getRightInstance();
         s_AutoRotateUtil = new AutoRotateUtil(0);
@@ -243,16 +245,15 @@ public class Swerve extends SubsystemBase {
         ChassisSpeeds speeds = new ChassisSpeeds(
                 sample.vx + autoXController.calculate(pose.getX(), sample.x),
                 sample.vy + autoYController.calculate(pose.getY(), sample.y),
-                sample.omega + autoHeadingController.calculate(MathUtil.angleModulus(pose.getRotation().getRadians()),
-                        MathUtil.angleModulus(sample.heading)));
+                sample.omega + autoHeadingController.calculate(pose.getRotation().getRadians(), sample.heading));
 
         // SmartDashboard.putNumber("auto Measurement",
         // MathUtil.angleModulus(pose.getRotation().getRadians()));
         // SmartDashboard.putNumber("auto Setpoint",
         // MathUtil.angleModulus(sample.heading));
-
+        s_AutoRotateUtil.updateTargetAngle(Math.toDegrees(swerveEstimator.getEstimatedPosition().getRotation().getRadians() - sample.heading));
         // Apply the generated speeds
-        drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), -speeds.omegaRadiansPerSecond,
+        drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), s_AutoRotateUtil.calculateRotationSpeed() + sample.omega,
                 true, true);
     } 
 
@@ -357,6 +358,7 @@ public class Swerve extends SubsystemBase {
         // Pose2d(limeLightSwerveEstimator.getEstimatedPosition().getTranslation(),
         // heading));
         gyroOffset = gyroYaw.getDegrees() - heading.getDegrees();
+        turretHeading = heading;
         // gyro.setYaw(gyroOffset);
     }
 
@@ -373,6 +375,10 @@ public class Swerve extends SubsystemBase {
         // swerveEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0
         // ,0);
 
+    }
+
+    public Rotation2d getTurretHeading() {
+        return turretHeading;
     }
 
     public Rotation2d getGyroYaw() {
@@ -526,7 +532,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void setLimelightOdometryMT2(String limelightName) {
-        double robotAngle = swerveEstimator.getEstimatedPosition().getRotation().getDegrees();
+        double robotAngle = swerveEstimator.getEstimatedPosition().getRotation().plus(turretHeading.times(2)).getDegrees();
         boolean doRejectUpdate = false;
 
         LimelightHelpers.SetIMUMode(limelightName, 0);
