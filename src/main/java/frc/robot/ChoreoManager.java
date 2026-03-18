@@ -21,6 +21,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeExtensionCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
 
 import java.sql.Driver;
@@ -35,6 +36,7 @@ import choreo.trajectory.*;
 public class ChoreoManager {
 
     private Swerve s_Swerve;
+    private ShooterSubsystem s_ShooterSubsystem;
     private AutoFactory autoFactory;
 
     private PIDController autoXPID = new PIDController(Constants.AutoConstants.kPXController, 0, 0);
@@ -55,6 +57,7 @@ public class ChoreoManager {
     private ChoreoManager() {
 
         s_Swerve = Swerve.getInstance();
+        s_ShooterSubsystem = ShooterSubsystem.getInstance();
 
         autoFactory = new AutoFactory(
                 this::getPose,
@@ -244,6 +247,7 @@ public class ChoreoManager {
                 new IntakeExtensionCommand(),
                 new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
                 traj_LeftAuto.cmd(),
+                new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
                 new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true))
                 // new AutoAlignClimb(alignPositioAn, 0)
 

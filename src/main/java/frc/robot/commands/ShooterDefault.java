@@ -60,18 +60,20 @@ public class ShooterDefault extends Command {
         SmartDashboard.putNumber("TurretX", 0);
         SmartDashboard.putNumber("TurretY", 0);
         SmartDashboard.putNumber("FlywheelSpeed", 0);
+        SmartDashboard.putNumber("FlyWheel Mult", 0);
 
         shooterMap = new InterpolatingDoubleTreeMap();
 
         shooterMap.put(0.0, 0.0); // 0 meters
-        shooterMap.put(5.55, -0.39); // 1.5 meters
-        shooterMap.put(6.02, -0.4); // 2 meters
-        shooterMap.put(6.42, -0.46); // 2.5 meters
-        shooterMap.put(6.8, -0.47); // 3 meters
-        shooterMap.put(7.12, -0.51); // 3.5 meters
-        shooterMap.put(7.44, -0.522); // 4 meters
-        shooterMap.put(7.74, -0.55); // 4.5 meters
-        shooterMap.put(8.37, -0.66); // 5.5 meters
+        shooterMap.put(5.4, -0.45); // 1 meter
+        shooterMap.put(5.78, -0.42); // 1.51 meters
+        shooterMap.put(6.18, -0.48); // 2.04 meters
+        shooterMap.put(6.49, -0.51); // 2.5 meters
+        shooterMap.put(6.8, -0.53); // 3.01 meters
+        shooterMap.put(7.11, -0.56); // 3.51 meters
+        shooterMap.put(7.41, -0.61); // 4 meters
+        shooterMap.put(7.75, -0.61); // 4.5 meters
+        shooterMap.put(8.14, -0.8); // 5.04 meters
 
         fieldTest = new Field2d();
 
@@ -118,10 +120,10 @@ public class ShooterDefault extends Command {
     private void attemptToShoot(double motorSpeed){
         if (s_ShooterSubsystem.getIsShooting()) {
             s_ShooterSubsystem.setFlywheels(-motorSpeed);
-            s_ShooterSubsystem.setKicker(-0.6);
+            s_ShooterSubsystem.setKicker(-0.2);
 
             if (s_ShooterSubsystem.isFlywheelReady(motorSpeed) && s_ShooterSubsystem.isHoodReadyToShoot() && s_ShooterSubsystem.isSwivelReadyToShoot() && isSwivelInBounds){ //another 0.5 sec delay
-                s_ShooterSubsystem.setSpindexer(0.6, 0.3);
+                s_ShooterSubsystem.setSpindexer(0.4, 0.3);
             }
             else {
                 s_ShooterSubsystem.setSpindexer(0,0);
@@ -189,7 +191,7 @@ public class ShooterDefault extends Command {
                 targetPose = getHubTargetPose();
             }
 
-            autoShooting(isInNeutral);
+            // autoShooting(isInNeutral);
 
             // targetPose = getHubTargetPose();
 
@@ -215,9 +217,7 @@ public class ShooterDefault extends Command {
             // get the theta angle relative to robot rotation converted to encoder values
             double robotRelativeAngleDegrees = ((thirdState.turretDegrees) - botPose.getRotation().getDegrees() + Constants.turretPoseRobotReletive.getRotation().plus(s_Swerve.getTurretHeading().times(2)).getDegrees()) % 360;
 
-            if (robotRelativeAngleDegrees <= 0 && robotRelativeAngleDegrees >= -Constants.autoRotateRange) {
-                isWithinAutoTurn = true;
-            }
+            isWithinAutoTurn = robotRelativeAngleDegrees <= 0 && robotRelativeAngleDegrees >= -Constants.autoRotateRange;
         
             if (robotRelativeAngleDegrees > 360) {
                 robotRelativeAngleDegrees -= 360;
@@ -241,8 +241,11 @@ public class ShooterDefault extends Command {
 
             // TODO: Figure out velocity to motor speed scale irl (and if it's linear like this or not)
             // double motorSpeed = 2 * ((0.0100928 * (thirdState.initialVelocity * thirdState.initialVelocity)) + (0.00755809 * thirdState.initialVelocity));
-            double motorSpeed = shooterMap.get(thirdState.initialVelocity);
-            // double motorSpeed = (-0.0183 * (Math.pow(thirdState.initialVelocity, 2))) + (0.163 * thirdState.initialVelocity) - 0.73;
+            double speedMult = 1 + (SmartDashboard.getNumber("FlyWheel Mult", 0) * 0.01);
+            double motorSpeed = shooterMap.get(thirdState.initialVelocity) * speedMult;
+            // double motorSpeed = (-0.0432 * (Math.pow(thirdState.initialVelocity, 2))) + (0.468 * thirdState.initialVelocity) - 1.7;
+
+            SmartDashboard.putNumber("FlyWheel Calc Speed", motorSpeed);
 
             ledSubsystem.setIsRotationAligned(false);
             ledSubsystem.setIsRotationNearUnaligned(false);
@@ -274,13 +277,12 @@ public class ShooterDefault extends Command {
                 }
                 isSwivelInBounds = true;
             } // if where the swivel should be is within 60 degrees out of range towards minimum
-            // else if (isWithinAutoTurn) {
-            //     s_ShooterSubsystem.setSwivelSetpoint(0);
-            //     isWithinAutoTurn = false;
-            // } // if where the swivel should be is within 60 degrees out of range towards maximum
-            // else if (robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees + Constants.autoRotateRange){
-            //     s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
-            // } // if where the swivel should be is out of range more than 60 degrees both ways
+            else if (isWithinAutoTurn) {
+                s_ShooterSubsystem.setSwivelSetpoint(0);
+            } // if where the swivel should be is within 60 degrees out of range towards maximum
+            else if (robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees + Constants.autoRotateRange){
+                s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
+            } // if where the swivel should be is out of range more than 60 degrees both ways
             else {
                 isSwivelInBounds = false;
                 s_ShooterSubsystem.setSwivelSetpoint(MathUtil.clamp(robotRelativeSwivelEncoder, Constants.minimumSwivelEncoder, Constants.maximumSwivelEncoder));

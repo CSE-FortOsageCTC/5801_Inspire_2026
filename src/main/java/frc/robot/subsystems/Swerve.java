@@ -253,7 +253,7 @@ public class Swerve extends SubsystemBase {
         // MathUtil.angleModulus(sample.heading));
         s_AutoRotateUtil.updateTargetAngle(Math.toDegrees(swerveEstimator.getEstimatedPosition().getRotation().getRadians() - sample.heading));
         // Apply the generated speeds
-        drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), s_AutoRotateUtil.calculateRotationSpeed() + sample.omega,
+        drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), (s_AutoRotateUtil.calculateRotationSpeed() * 2) + sample.omega,
                 true, true);
     } 
 
