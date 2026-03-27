@@ -45,7 +45,7 @@ public class LinearRegressor {
         intercept = (ySum / count) - (slope * xSum) / count;
     }
     public double getNextPosition() {
-        return count * slope + intercept;
+        return (count + 1) * slope + intercept;
     }
     public double getSlope() {
         return slope;
