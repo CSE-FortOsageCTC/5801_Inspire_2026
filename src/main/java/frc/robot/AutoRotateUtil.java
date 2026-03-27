@@ -40,7 +40,7 @@ public class AutoRotateUtil {
         // double kI = SmartDashboard.getNumber("kI", 0.0);
         // double kD = SmartDashboard.getNumber("kD", 0.0);
 
-        this.pidController.setP(.01);
+        this.pidController.setP(0.1);
         this.pidController.setI(0);
         this.pidController.setD(0);
 

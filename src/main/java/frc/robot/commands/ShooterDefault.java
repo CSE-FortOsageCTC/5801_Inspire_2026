@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.TurretState;
+import frc.robot.subsystems.IntakeExtensionSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
@@ -25,6 +26,7 @@ public class ShooterDefault extends Command {
     
     private ShooterSubsystem s_ShooterSubsystem;
     private LEDSubsystem ledSubsystem;
+    private IntakeExtensionSubsystem s_IntakeExtensionSubsystem;
 
     private Swerve s_Swerve;
 
@@ -37,16 +39,17 @@ public class ShooterDefault extends Command {
     private Joystick operator;
     private Pose3d targetPose;
 
-    private int delayCounter = 0;
-
     private boolean isUnderTrench = false;
 
     private boolean isWithinAutoTurn = false;
+
+    private boolean isSwivelInBounds = false;
 
     private boolean isManual = false;
 
     public ShooterDefault(Joystick operator) {
         s_ShooterSubsystem = ShooterSubsystem.getInstance();
+        s_IntakeExtensionSubsystem = IntakeExtensionSubsystem.getInstance();
         this.operator = operator;
         s_Swerve = Swerve.getInstance();
         ledSubsystem = LEDSubsystem.getInstance();
@@ -57,18 +60,20 @@ public class ShooterDefault extends Command {
         SmartDashboard.putNumber("TurretX", 0);
         SmartDashboard.putNumber("TurretY", 0);
         SmartDashboard.putNumber("FlywheelSpeed", 0);
+        SmartDashboard.putNumber("FlyWheel Mult", 25);
 
         shooterMap = new InterpolatingDoubleTreeMap();
 
         shooterMap.put(0.0, 0.0); // 0 meters
-        shooterMap.put(3.172, -0.35); // 2 meters
-        shooterMap.put(4.011, -0.37); // 2.5 meters
-        shooterMap.put(4.749, -0.39); // 3 meters
-        shooterMap.put(5.381, -0.41); // 3.5 meters
-        shooterMap.put(5.975, -0.43); // 4 meters
-        shooterMap.put(6.473, -0.47); // 4.5 meters
-        shooterMap.put(6.943, -0.49); // 5 meters
-        shooterMap.put(7.139, -0.52); // 5.22 meters
+        shooterMap.put(5.4, -0.45); // 1 meter
+        shooterMap.put(5.78, -0.42); // 1.51 meters
+        shooterMap.put(6.18, -0.48); // 2.04 meters
+        shooterMap.put(6.49, -0.51); // 2.5 meters
+        shooterMap.put(6.8, -0.53); // 3.01 meters
+        shooterMap.put(7.11, -0.56); // 3.51 meters
+        shooterMap.put(7.41, -0.61); // 4 meters
+        shooterMap.put(7.75, -0.61); // 4.5 meters
+        shooterMap.put(8.14, -0.8); // 5.04 meters
 
         fieldTest = new Field2d();
 
@@ -114,28 +119,24 @@ public class ShooterDefault extends Command {
 
     private void attemptToShoot(double motorSpeed){
         if (s_ShooterSubsystem.getIsShooting()) {
-            s_ShooterSubsystem.setFlywheels(motorSpeed);
+            s_ShooterSubsystem.setFlywheels(-motorSpeed);
+            s_ShooterSubsystem.setKicker(-0.2);
 
-            if (delayCounter >= 50){ //0.5 second delay
-                s_ShooterSubsystem.setKicker(-0.2);
-                if (delayCounter >= 100 && s_ShooterSubsystem.isHoodReadyToShoot() && s_ShooterSubsystem.isSwivelReadyToShoot()){ //another 0.5 sec delay
-                    s_ShooterSubsystem.setSpindexer(0.4, 0.1);
-                }
-                else {
-                    s_ShooterSubsystem.setSpindexer(0,0);
-                }
+            if (s_ShooterSubsystem.isFlywheelReady(motorSpeed) && s_ShooterSubsystem.isHoodReadyToShoot() && s_ShooterSubsystem.isSwivelReadyToShoot() && isSwivelInBounds){ //another 0.5 sec delay
+                s_ShooterSubsystem.setSpindexer(0.4, 0.3);
             }
-            delayCounter++;
+            else {
+                s_ShooterSubsystem.setSpindexer(0,0);
+            }
         } else {
             s_ShooterSubsystem.setFlywheels(0);
             s_ShooterSubsystem.setKicker(0);
             s_ShooterSubsystem.setSpindexer(0, 0);
-            delayCounter = 0;
         }
     }
 
-    private void autoShooting() {
-        if (DriverStation.isAutonomousEnabled()) {
+    private void autoShooting(boolean inNeutral) {
+        if (DriverStation.isAutonomousEnabled() && !inNeutral) {
             if (DriverStation.Alliance.Blue.equals(DriverStation.getAlliance())) {
                 if (s_Swerve.getEstimatedPosition().getX() <= Constants.blueAllianceLineX) {
                     s_ShooterSubsystem.setIsShooting(true);
@@ -149,6 +150,8 @@ public class ShooterDefault extends Command {
                     s_ShooterSubsystem.setIsShooting(false);
                 }
             }
+        } else if (DriverStation.isAutonomousEnabled()) {
+            s_ShooterSubsystem.setIsShooting(false);
         }
     }
 
@@ -157,146 +160,162 @@ public class ShooterDefault extends Command {
 
         botPose = s_Swerve.getEstimatedPosition();
 
-        autoShooting();
+        if (s_IntakeExtensionSubsystem.getExtensionState()) {
 
-        if (operator.getRawButtonPressed(XboxController.Button.kRightStick.value)) {
-            isManual = !isManual;
-        }
-
-        if (isManual) {
-            double manualSwivel = 1 * MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kRightX.value), Constants.stickDeadband);
-            double manualHood = 5 * MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kRightY.value), Constants.stickDeadband);
-            s_ShooterSubsystem.setSwivelSetpoint(s_ShooterSubsystem.getSwivelSetpoint() - manualSwivel);
-            s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodSetpoint() - manualHood);
-            if (s_ShooterSubsystem.getIsShooting()) { 
-                s_ShooterSubsystem.setFlywheels(SmartDashboard.getNumber("FlywheelSpeed", 0));
-                s_ShooterSubsystem.setKicker(-.4);
-            } else {
-                s_ShooterSubsystem.setFlywheels(0);
-                s_ShooterSubsystem.setKicker(0);
+            if (operator.getRawButtonPressed(XboxController.Button.kRightStick.value)) {
+                isManual = !isManual;
             }
-            // attemptToShoot(motorSpeed);
-            return;
-        }
-        
-        boolean isInNeutral = s_Swerve.isInNeutral(botPose);
 
-        if (isInNeutral){
-            targetPose = getShuttleTargetPose();
-        }
-        else{
-            targetPose = getHubTargetPose();
-        }
-
-        // targetPose = getHubTargetPose();
-
-        TurretState initialState = calculateTurretWithPosition(targetPose);
-
-        double firstPeriod = (2*initialState.initialVelocity*(Math.sin(initialState.hoodDegrees))) / 9.81;
-        double botSpeedX = s_Swerve.getEstimatedFieldRelativeSpeeds().vxMetersPerSecond;
-        double botSpeedY = s_Swerve.getEstimatedFieldRelativeSpeeds().vyMetersPerSecond;
-
-        Pose3d secondPose = new Pose3d(targetPose.getX() + (botSpeedX*firstPeriod), targetPose.getY() + (botSpeedY*firstPeriod), targetPose.getZ(), new Rotation3d());
-        TurretState secondState = calculateTurretWithPosition(secondPose);
-        
-        double secondPeriod = (2*secondState.initialVelocity*(Math.sin(secondState.hoodDegrees))) / 9.81;
-        double periodError = firstPeriod - secondPeriod;
-
-        Pose3d thirdPose = new Pose3d(secondPose.getX() + (botSpeedX*(periodError)), secondPose.getY() + (botSpeedY*(periodError)), secondPose.getZ(), new Rotation3d());
-        TurretState thirdState = calculateTurretWithPosition(thirdPose);
-
-
-
-        // get the theta angle relative to robot rotation converted to encoder values
-        double robotRelativeAngleDegrees = (thirdState.turretDegrees) % 360; //  - botPose.getRotation().getDegrees() + Constants.turretPoseRobotReletive.getRotation().getDegrees()
-
-        if (robotRelativeAngleDegrees <= 0 && robotRelativeAngleDegrees >= -Constants.autoRotateRange) {
-            isWithinAutoTurn = true;
-        }
-      
-        if (robotRelativeAngleDegrees > 360) {
-            robotRelativeAngleDegrees -= 360;
-        }
-      
-        if (robotRelativeAngleDegrees < 0) {
-            robotRelativeAngleDegrees += 360;
-        }
-
-        SmartDashboard.putNumber("Turret State Degrees", thirdState.turretDegrees);
-
-        double distToTarget = Math.hypot(targetPose.toPose2d().relativeTo(thirdState.fieldRelativePose).getX(), targetPose.toPose2d().relativeTo(thirdState.fieldRelativePose).getY());
-
-        if (distToTarget < 1.5) {
-            robotRelativeAngleDegrees = 90;
-        }
-
-        SmartDashboard.putNumber("RRAngle Degrees", robotRelativeAngleDegrees);
-
-        double robotRelativeSwivelEncoder = robotRelativeAngleDegrees * Constants.swivelEncoderPerDegrees;
-
-        // TODO: Figure out velocity to motor speed scale irl (and if it's linear like this or not)
-        // double motorSpeed = 2 * ((0.0100928 * (thirdState.initialVelocity * thirdState.initialVelocity)) + (0.00755809 * thirdState.initialVelocity));
-        // double motorSpeed = shooterMap.get(thirdState.initialVelocity);
-        double motorSpeed = ((-8.13 * Math.pow(10, -3)) * (Math.pow(thirdState.initialVelocity, 2))) + (0.044 * thirdState.initialVelocity) - 0.411;
-
-        ledSubsystem.setIsRotationAligned(false);
-        ledSubsystem.setIsRotationNearUnaligned(false);
-
-       
-
-        double fieldRelativeAngleDegrees = thirdState.turretDegrees % 360;
-        double launchAngleDegrees = thirdState.hoodDegrees;
-
-        if (fieldRelativeAngleDegrees > 360) {
-            fieldRelativeAngleDegrees -= 360;
-        }
-        if (fieldRelativeAngleDegrees < 0) {
-            fieldRelativeAngleDegrees += 360;
-        }
-
-        // SmartDashboard.putNumber("ThetaDegrees", fieldRelativeAngleDegrees);
-
-        // if where the swivel should be is within full range
-        if (robotRelativeAngleDegrees >= 0 && robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees) {
-            ledSubsystem.setIsRotationAligned(true);
-            s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
-
-            // if where the swivel should be is within 20 degrees of being out of range (still in range)
-            if (robotRelativeAngleDegrees <= 20 && robotRelativeAngleDegrees >= 0 || robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees - 20) {
-                ledSubsystem.setIsRotationNearUnaligned(true);
+            if (isManual) {
+                double manualSwivel = 1 * MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kRightX.value), Constants.stickDeadband);
+                double manualHood = 1 * MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kRightY.value), Constants.stickDeadband);
+                s_ShooterSubsystem.setSwivelSetpoint(s_ShooterSubsystem.getSwivelSetpoint() - manualSwivel);
+                s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodSetpoint() - manualHood);
+                if (s_ShooterSubsystem.getIsShooting()) { 
+                    s_ShooterSubsystem.setFlywheels(SmartDashboard.getNumber("FlywheelSpeed", 0));
+                    s_ShooterSubsystem.setKicker(-.4);
+                } else {
+                    s_ShooterSubsystem.setFlywheels(0);
+                    s_ShooterSubsystem.setKicker(0);
+                }
+                // attemptToShoot(motorSpeed);
+                return;
             }
-        } // if where the swivel should be is within 60 degrees out of range towards minimum
-        else if (isWithinAutoTurn) {
-            s_ShooterSubsystem.setSwivelSetpoint(0);
-            isWithinAutoTurn = false;
-        } // if where the swivel should be is within 60 degrees out of range towards maximum
-        else if (robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees + Constants.autoRotateRange){
-            s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
-        } // if where the swivel should be is out of range more than 60 degrees both ways
-        else {
-            s_ShooterSubsystem.setSwivelSetpoint(robotRelativeSwivelEncoder);
+            
+            boolean isInNeutral = s_Swerve.isInNeutral(botPose);
+
+            if (isInNeutral){
+                targetPose = getShuttleTargetPose();
+            }
+            else{
+                targetPose = getHubTargetPose();
+            }
+
+            // autoShooting(isInNeutral);
+
+            // targetPose = getHubTargetPose();
+
+            TurretState initialState = calculateTurretWithPosition(targetPose);
+
+            // double firstPeriod = (2*initialState.initialVelocity*(Math.sin(initialState.hoodDegrees))) / 9.81;
+            // double botSpeedX = s_Swerve.getEstimatedFieldRelativeSpeeds().vxMetersPerSecond;
+            // double botSpeedY = s_Swerve.getEstimatedFieldRelativeSpeeds().vyMetersPerSecond;
+
+            // Pose3d secondPose = new Pose3d(targetPose.getX() + (botSpeedX*firstPeriod), targetPose.getY() + (botSpeedY*firstPeriod), targetPose.getZ(), new Rotation3d());
+            // TurretState secondState = calculateTurretWithPosition(secondPose);
+            
+            // double secondPeriod = (2*secondState.initialVelocity*(Math.sin(secondState.hoodDegrees))) / 9.81;
+            // double periodError = firstPeriod - secondPeriod;
+            // Pose3d secondPose = targetPose;
+            // double periodError = firstPeriod;
+
+            //Pose3d thirdPose = new Pose3d(secondPose.getX() + (botSpeedX*(periodError)), secondPose.getY() + (botSpeedY*(periodError)), secondPose.getZ(), new Rotation3d());
+            TurretState thirdState = initialState;//calculateTurretWithPosition(thirdPose);
+
+
+
+            // get the theta angle relative to robot rotation converted to encoder values
+            double robotRelativeAngleDegrees = ((thirdState.turretDegrees) - botPose.getRotation().getDegrees() + Constants.turretPoseRobotReletive.getRotation().plus(s_Swerve.getTurretHeading().times(2)).getDegrees()) % 360;
+
+            isWithinAutoTurn = robotRelativeAngleDegrees <= 0 && robotRelativeAngleDegrees >= -Constants.autoRotateRange;
+        
+            if (robotRelativeAngleDegrees > 360) {
+                robotRelativeAngleDegrees -= 360;
+            }
+        
+            if (robotRelativeAngleDegrees < 0) {
+                robotRelativeAngleDegrees += 360;
+            }
+
+            // SmartDashboard.putNumber("Turret State Degrees", thirdState.turretDegrees);
+
+            double distToTarget = Math.hypot(targetPose.toPose2d().relativeTo(thirdState.fieldRelativePose).getX(), targetPose.toPose2d().relativeTo(thirdState.fieldRelativePose).getY());
+
+            if (distToTarget < 0.75) {
+                robotRelativeAngleDegrees = 90;
+            }
+
+            SmartDashboard.putNumber("RRAngle Degrees", robotRelativeAngleDegrees);
+
+            double robotRelativeSwivelEncoder = robotRelativeAngleDegrees * Constants.swivelEncoderPerDegrees;
+
+            // TODO: Figure out velocity to motor speed scale irl (and if it's linear like this or not)
+            // double motorSpeed = 2 * ((0.0100928 * (thirdState.initialVelocity * thirdState.initialVelocity)) + (0.00755809 * thirdState.initialVelocity));
+            double speedMult = 1 + (SmartDashboard.getNumber("FlyWheel Mult", 25) * 0.01);
+            double motorSpeed = shooterMap.get(thirdState.initialVelocity) * speedMult;
+            // double motorSpeed = (-0.0432 * (Math.pow(thirdState.initialVelocity, 2))) + (0.468 * thirdState.initialVelocity) - 1.7;
+
+            SmartDashboard.putNumber("FlyWheel Calc Speed", motorSpeed);
+
+            ledSubsystem.setIsRotationAligned(false);
+            ledSubsystem.setIsRotationNearUnaligned(false);
+
+        
+
+            double fieldRelativeAngleDegrees = thirdState.turretDegrees % 360;
+            double launchAngleDegrees = thirdState.hoodDegrees;
+
+            SmartDashboard.putNumber("Launch Angle State", launchAngleDegrees);
+
+            if (fieldRelativeAngleDegrees > 360) {
+                fieldRelativeAngleDegrees -= 360;
+            }
+            if (fieldRelativeAngleDegrees < 0) {
+                fieldRelativeAngleDegrees += 360;
+            }
+
+            // SmartDashboard.putNumber("ThetaDegrees", fieldRelativeAngleDegrees);
+
+            // if where the swivel should be is within full range
+            if (robotRelativeAngleDegrees >= 0 && robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees) {
+                ledSubsystem.setIsRotationAligned(true);
+                s_ShooterSubsystem.setSwivelSetpoint(MathUtil.clamp(robotRelativeSwivelEncoder, Constants.minimumSwivelEncoder, Constants.maximumSwivelEncoder));
+
+                // if where the swivel should be is within 20 degrees of being out of range (still in range)
+                if (robotRelativeAngleDegrees <= 20 && robotRelativeAngleDegrees >= 0 || robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees - 20) {
+                    ledSubsystem.setIsRotationNearUnaligned(true);
+                }
+                isSwivelInBounds = true;
+            } // if where the swivel should be is within 60 degrees out of range towards minimum
+            else if (isWithinAutoTurn) {
+                s_ShooterSubsystem.setSwivelSetpoint(0);
+            } // if where the swivel should be is within 60 degrees out of range towards maximum
+            else if (robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees + Constants.autoRotateRange){
+                s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
+            } // if where the swivel should be is out of range more than 60 degrees both ways
+            else {
+                isSwivelInBounds = false;
+                s_ShooterSubsystem.setSwivelSetpoint(MathUtil.clamp(robotRelativeSwivelEncoder, Constants.minimumSwivelEncoder, Constants.maximumSwivelEncoder));
+            }
+
+            // s_ShooterSubsystem.setSwivelSetpoint(MathUtil.clamp(20, Constants.minimumSwivelEncoder, Constants.maximumSwivelEncoder));
+
+            ledSubsystem.setIsHoodReady(s_ShooterSubsystem.isHoodReadyToShoot());
+            ledSubsystem.setIsTurretAimed(s_ShooterSubsystem.isSwivelReadyToShoot());
+
+            isUnderTrench = false;
+
+            // if (((thirdState.fieldRelativePose.getX() >= Constants.redTrenchAreaLeftX && thirdState.fieldRelativePose.getX() <= Constants.redTrenchAreaRightX) || (thirdState.fieldRelativePose.getX() >= Constants.blueTrenchAreaLeftX && thirdState.fieldRelativePose.getX() <= Constants.blueTrenchAreaRightX)) && (thirdState.fieldRelativePose.getY() >= Constants.TrenchAreaTopY || thirdState.fieldRelativePose.getY() <= Constants.TrenchAreaBottomY)) {
+            //     s_ShooterSubsystem.setHoodSetpoint(launchAngleDegrees * Constants.hoodEncoderPerDegree);
+            //     isUnderTrench = true;
+            // } 
+            // else 
+            if (isInNeutral){
+                s_ShooterSubsystem.setHoodSetpoint(Constants.maximumHoodEncoder);
+            }
+            else {
+                s_ShooterSubsystem.setHoodSetpoint((Constants.totalHoodRangeDegrees - (launchAngleDegrees - Constants.minimumHoodAngle)) * Constants.hoodEncoderPerDegree);
+            }
+
+            // SmartDashboard.putNumber("Flywheel Speed", motorSpeed);
+            SmartDashboard.putNumber("Initial Velocity", thirdState.initialVelocity);
+
+            // attemptToShoot(SmartDashboard.getNumber("FlywheelSpeed", 0));
+            attemptToShoot(motorSpeed);
+        } else {
+            s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodEncoder());
+            s_ShooterSubsystem.setSwivelSetpoint(s_ShooterSubsystem.getSwivelEncoder());
         }
-
-        ledSubsystem.setIsHoodReady(s_ShooterSubsystem.isHoodReadyToShoot());
-        ledSubsystem.setIsTurretAimed(s_ShooterSubsystem.isSwivelReadyToShoot());
-
-        isUnderTrench = false;
-
-        if (((thirdState.fieldRelativePose.getX() >= Constants.redTrenchAreaLeftX && thirdState.fieldRelativePose.getX() <= Constants.redTrenchAreaRightX) || (thirdState.fieldRelativePose.getX() >= Constants.blueTrenchAreaLeftX && thirdState.fieldRelativePose.getX() <= Constants.blueTrenchAreaRightX)) && (thirdState.fieldRelativePose.getY() >= Constants.TrenchAreaTopY || thirdState.fieldRelativePose.getY() <= Constants.TrenchAreaBottomY)) {
-            s_ShooterSubsystem.setHoodSetpoint(Constants.minimumHoodEncoder);
-            isUnderTrench = true;
-        } 
-        else if (isInNeutral){
-            s_ShooterSubsystem.setHoodSetpoint(Constants.maximumHoodEncoder);
-        }
-        else {
-            s_ShooterSubsystem.setHoodSetpoint(Constants.minimumHoodEncoder);
-        }
-
-        SmartDashboard.putNumber("Flywheel Speed", motorSpeed);
-        SmartDashboard.putNumber("Initial Velocity", thirdState.initialVelocity);
-
-        attemptToShoot(motorSpeed);
 
     }
 
@@ -304,8 +323,11 @@ public class ShooterDefault extends Command {
 
         botPose = s_Swerve.getEstimatedPosition(); // TODO: Uncomment this line once Swerve is merged into main!!!
         // SmartDashboard.putNumber("EstimatorRot", s_Swerve.getEstimatedPosition().getRotation().getDegrees());
+        // SmartDashboard.putString("Calc BotPose", botPose.toString());
 
-        double botRotDegrees = botPose.getRotation().getDegrees() % 360;
+        Rotation2d botPoseRotation = botPose.getRotation().rotateBy(s_Swerve.getTurretHeading().times(-2));
+
+        double botRotDegrees = botPoseRotation.getDegrees() % 360;
 
         if (botRotDegrees > 360) {
             botRotDegrees -= 360;
@@ -314,76 +336,77 @@ public class ShooterDefault extends Command {
             botRotDegrees += 360;
         }
 
-        fieldTest.setRobotPose(botPose);
+        //fieldTest.setRobotPose(botPose);
         // SmartDashboard.putData("TestField", fieldTest);
 
 
-        double turretX = SmartDashboard.getNumber("TurretX", 0);
-        double turretY = SmartDashboard.getNumber("TurretY", 0);
-        double turretDist = Math.sqrt((turretY * turretY) + (turretX * turretX));
+        // double turretX = SmartDashboard.getNumber("TurretX", 0);
+        // double turretY = SmartDashboard.getNumber("TurretY", 0);
+        // double turretDist = Math.sqrt((turretY * turretY) + (turretX * turretX));
+        // double turretDist = Math.sqrt((Constants.turretPoseRobotReletive.getY() * Constants.turretPoseRobotReletive.getY()) + (Constants.turretPoseRobotReletive.getX() * Constants.turretPoseRobotReletive.getX()));
 
-        double turretTheta = Math.atan2(Constants.turretPoseRobotReletive.getY(), Constants.turretPoseRobotReletive.getX()) + botPose.getRotation().getRadians() - (Math.PI/2);
+        // double turretTheta = Math.atan2(Constants.turretPoseRobotReletive.getY(), Constants.turretPoseRobotReletive.getX()) + botPose.getRotation().getRadians() - (Math.PI/2);
         // double turretTheta = Rotation2d.fromRadians(Math.atan2(turretY,turretX) - (Math.PI/2)).getRadians();
-        SmartDashboard.putNumber("TurretTheta", turretTheta * (180/Math.PI));
+        // SmartDashboard.putNumber("TurretTheta", turretTheta * (180/Math.PI));
 
-        double botX = botPose.getX() + Math.cos(turretTheta) * turretDist;
-        double botY = botPose.getY() + Math.sin(turretTheta) * turretDist;
+        double turretOffsetX = Constants.turretPoseRobotReletive.getX();
+        double turretOffsetY = Constants.turretPoseRobotReletive.getY();
+        double botX = (turretOffsetX * botPoseRotation.getCos()) - (turretOffsetY * botPoseRotation.getSin());
+        double botY = (turretOffsetY * botPoseRotation.getCos()) + (turretOffsetX * botPoseRotation.getSin());
 
-        Pose2d turretPoseFieldRelative = new Pose2d(botX, botY, Rotation2d.fromDegrees(botRotDegrees + Constants.turretPoseRobotReletive.getRotation().getDegrees()));
-        SmartDashboard.putString("Turret Pose", turretPoseFieldRelative.toString());
+        Pose2d turretPoseFieldRelative = new Pose2d(botX + botPose.getX(), botY + botPose.getY(), Rotation2d.fromDegrees(botRotDegrees + Constants.turretPoseRobotReletive.getRotation().getDegrees()));
+        // SmartDashboard.putString("Turret Pose", turretPoseFieldRelative.toString());
 
         // Distance in x and y axis respectively
         double dx = targetPosition.getX() - turretPoseFieldRelative.getX();
         double dy = targetPosition.getY() - turretPoseFieldRelative.getY();
 
-        // SmartDashboard.putNumber("dX", dx);
-        // SmartDashboard.putNumber("dY", dy);
+        SmartDashboard.putNumber("dX", dx);
+        SmartDashboard.putNumber("dY", dy);
         // angle in radians of the theoretical setpoint while stood still.
-        // double thetaDegrees = Math.toDegrees(Math.atan2(dy, dx));
-        Rotation2d thetaDegrees = getTurretTargetAngle(botPose, targetPosition);
+        double thetaDegrees = Math.toDegrees(Math.atan2(dy, dx));
+        // SmartDashboard.putNumber("Theta Degrees", thetaDegrees);
+        //double thetaDegrees = getTurretTargetAngle(turretPoseFieldRelative, targetPosition).getDegrees();
+
+        // System.out.println("Bot Pose \n" + botPose);
+        // System.out.println("Target Pose \n" + targetPose);
 
         // distance away from center point of the turret to the center of the hub
         double distanceFromTarget = Math.hypot(dx, dy);
         SmartDashboard.putNumber("Distance From Hub", distanceFromTarget);
 
         // hypothetically, this math should give the launcher angle in degrees from 75 to 85 scaled to distance away from the center of the hub
-        double launchAngleDegrees = 65.0; //((hypotenuse - Constants.minimumHubDist) / (Constants.maximumHubDist - Constants.minimumHubDist)) * (Constants.maximumHoodAngle - Constants.minimumHoodAngle) + Constants.minimumHoodAngle;
+        double launchAngleDegrees = MathUtil.clamp(((1 - (distanceFromTarget / Constants.maximumHubDist)) * (Constants.maximumHoodShotDegrees - Constants.minimumHoodShotDegrees)) + Constants.minimumHoodShotDegrees, Constants.minimumHoodShotDegrees, Constants.maximumHoodShotDegrees);
+        //65.0; //((hypotenuse - Constants.minimumHubDist) / (Constants.maximumHubDist - Constants.minimumHubDist)) * (Constants.maximumHoodAngle - Constants.minimumHoodAngle) + Constants.minimumHoodAngle;
         // SmartDashboard.putNumber("Launch Angle", launchAngleDegrees);
 
         // Distance the ball needs to hit for the ball to hit the height and position of the hub along it's parabola
-        double shootingTargetDistance = distanceFromTarget + (targetPosition.getZ() / Math.tan(launchAngleDegrees));
+        double shootingTargetDistance = distanceFromTarget + (targetPosition.getZ() / Math.tan(Math.toRadians(launchAngleDegrees)));
 
         // Initial velocity in m/s that the ball should have to travel to score (9.81 is gravity)
         double vO = Math.sqrt((shootingTargetDistance * 9.81) / Math.sin(2 * Math.toRadians(launchAngleDegrees)));
 
-        return new TurretState(thetaDegrees.getDegrees(), launchAngleDegrees, vO, turretPoseFieldRelative);
+        return new TurretState(thetaDegrees, launchAngleDegrees, vO, turretPoseFieldRelative);
 
     }
 
-    public Rotation2d getTurretTargetAngle(Pose2d robotPose, Pose3d hubPose) {
+    public Rotation2d getTurretTargetAngle(Pose2d turretPose, Pose3d hubPose) {
 
         // Convert hub to 2D
         Pose2d hub2d = hubPose.toPose2d();
-
-        // Get turret pose relative to robot
-        Pose2d turretRelative = Constants.turretPoseRobotReletive;
-
-        // Convert turret pose into field coordinates
-        Pose2d turretFieldPose = robotPose.transformBy(
-            new Transform2d(
-                turretRelative.getTranslation(),
-                turretRelative.getRotation()
-            )
-        );
+        
 
         // Transform from turret -> hub
-        Transform2d turretToHub = new Transform2d(
-            turretFieldPose,
+        Transform2d turretToHubTransform = new Transform2d(
+            turretPose,
             hub2d
         );
+        Pose2d turretToHubPose = turretPose.relativeTo(hub2d);
 
         // Angle turret must rotate
-        return turretToHub.getTranslation().getAngle().plus(Rotation2d.fromDegrees(180));
+        // System.out.println("Turret Calculation Pose \n" + turretToHub);
+        // return turretToHubTransform.getRotation();
+        return turretToHubPose.getRotation();
     }
 
 }

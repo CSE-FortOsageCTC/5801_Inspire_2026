@@ -108,30 +108,31 @@ public class RobotContainer {
     autoChooser = new AutoChooser();
 
     // Add options to the chooser
+    autoChooser.addRoutine("Middle PreLoad", () -> s_choreoManager.preLoadAuto(false, false));
     // autoChooser.addRoutine("Middle Auto", s_choreoSubsystem::onePieceAuto);
-    autoChooser.addRoutine("SweepAuto No Climb", () -> s_choreoManager.sweepAuto(false, false));
-    autoChooser.addRoutine("SweepAuto Left Climb", () -> s_choreoManager.sweepAuto(true, false));
-    autoChooser.addRoutine("SweepAuto Right Climb", () -> s_choreoManager.sweepAuto(true, true));
+    // autoChooser.addRoutine("SweepAuto No Climb", () -> s_choreoManager.sweepAuto(false, false));
+    // autoChooser.addRoutine("SweepAuto Left Climb", () -> s_choreoManager.sweepAuto(true, false));
+    // autoChooser.addRoutine("SweepAuto Right Climb", () -> s_choreoManager.sweepAuto(true, true));
 
     autoChooser.addRoutine("RightAuto No Climb", () -> s_choreoManager.rightHalfAuto(false, false));
-    autoChooser.addRoutine("RightAuto Left Climb", () -> s_choreoManager.rightHalfAuto(true, false));
-    autoChooser.addRoutine("RightAuto Right Climb", () -> s_choreoManager.rightHalfAuto(true, true));
+    // autoChooser.addRoutine("RightAuto Left Climb", () -> s_choreoManager.rightHalfAuto(true, false));
+    // autoChooser.addRoutine("RightAuto Right Climb", () -> s_choreoManager.rightHalfAuto(true, true));
 
     autoChooser.addRoutine("LeftAuto No Climb", () -> s_choreoManager.leftAuto(false, false));
-    autoChooser.addRoutine("LeftAuto Left Climb", () -> s_choreoManager.leftAuto(true, false));
-    autoChooser.addRoutine("LeftAuto Right Climb", () -> s_choreoManager.leftAuto(true, true));
+    // autoChooser.addRoutine("LeftAuto Left Climb", () -> s_choreoManager.leftAuto(true, false));
+    // autoChooser.addRoutine("LeftAuto Right Climb", () -> s_choreoManager.leftAuto(true, true));
 
-    autoChooser.addRoutine("NonNeutral No Climb", () -> s_choreoManager.nonNeutralAuto(false, false));
-    autoChooser.addRoutine("NonNeutral Left Climb", () -> s_choreoManager.nonNeutralAuto(true, false));
-    autoChooser.addRoutine("NonNeutral Right Climb", () -> s_choreoManager.nonNeutralAuto(true, true));
+    // autoChooser.addRoutine("NonNeutral No Climb", () -> s_choreoManager.nonNeutralAuto(false, false));
+    // autoChooser.addRoutine("NonNeutral Left Climb", () -> s_choreoManager.nonNeutralAuto(true, false));
+    // autoChooser.addRoutine("NonNeutral Right Climb", () -> s_choreoManager.nonNeutralAuto(true, true));
 
-    autoChooser.addRoutine("LeftHalfTwice No Climb", () -> s_choreoManager.leftHalfTwice(false, false));
-    autoChooser.addRoutine("LeftHalfTwice Left Climb", () -> s_choreoManager.leftHalfTwice(true, false));
-    autoChooser.addRoutine("LeftHalfTwice Right Climb", () -> s_choreoManager.leftHalfTwice(true, true));
+    // autoChooser.addRoutine("LeftHalfTwice No Climb", () -> s_choreoManager.leftHalfTwice(false, false));
+    // autoChooser.addRoutine("LeftHalfTwice Left Climb", () -> s_choreoManager.leftHalfTwice(true, false));
+    // autoChooser.addRoutine("LeftHalfTwice Right Climb", () -> s_choreoManager.leftHalfTwice(true, true));
 
-    autoChooser.addRoutine("RightDoubleAuto No Climb", () -> s_choreoManager.rightDoubleAuto(false, false));
-    autoChooser.addRoutine("RightDoubleAuto Left Climb", () -> s_choreoManager.rightDoubleAuto(true, false));
-    autoChooser.addRoutine("RightDoubleAuto Right Climb", () -> s_choreoManager.rightDoubleAuto(true, true));
+    // autoChooser.addRoutine("RightDoubleAuto No Climb", () -> s_choreoManager.rightDoubleAuto(false, false));
+    // autoChooser.addRoutine("RightDoubleAuto Left Climb", () -> s_choreoManager.rightDoubleAuto(true, false));
+    // autoChooser.addRoutine("RightDoubleAuto Right Climb", () -> s_choreoManager.rightDoubleAuto(true, true));
     //autoChooser.addRoutine("L2 IJ", s_choreoSubsystem::twoPieceIJAutoL2); //If we need an L2 Auto
 
     // autoChooser.addCmd("Example Auto Command", this::exampleAutoCommand);

@@ -9,8 +9,12 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -36,6 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private TalonFX kicker;
   private TalonFX spinKicker;
   //TODO: Add kicker motor
+  private double lastSwivelSpeed = 0;
 
   public double swivelSetpoint = 0;
   public double hoodSetpoint = 0;
@@ -76,16 +81,15 @@ public class ShooterSubsystem extends SubsystemBase {
     // } catch (InterruptedException e) {
     //   e.printStackTrace();
     // }
-    
-    
+    swivel.configure(new SparkMaxConfig().idleMode(IdleMode.kBrake), ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     swivel.getEncoder().setPosition(0); // Make sure turret is hitting hard stop :)
     hood.getEncoder().setPosition(0);
 
     flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
     // spindexerFollower.setControl(new Follower(spindexerMaster.getDeviceID(), MotorAlignmentValue.Aligned));
-
+    //                                      0.09
     swivelPID = new ProfiledPIDController(0.09, 0.001, 0.001, new TrapezoidProfile.Constraints(500, 500));
-    swivelPID.setTolerance(0.25);
+    swivelPID.setTolerance(0.75);
 
     swivelFeedforward = new SimpleMotorFeedforward(0.01, 0.015);
 
@@ -105,11 +109,16 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelMaster.setVoltage(speed * Constants.maximumVoltage);
   }
 
+  public boolean isFlywheelReady(double motorSpeed) {
+    return Math.abs(flywheelMaster.getVelocity().getValueAsDouble() - (motorSpeed * Constants.flywheelMaxVelocity)) <= 2;
+  }
+
   public void setKicker(double speed) {
     kicker.set(speed);
   }
 
   private void privSetSwivel(double speed) {
+    lastSwivelSpeed = speed;
     if ((getSwivelEncoder() >= Constants.maximumSwivelEncoder && speed > 0) || (getSwivelEncoder() <= Constants.minimumSwivelEncoder && speed < 0)){
       System.out.println("WARNING: Above or below max Swivel value!!!! >:(");
       swivel.setVoltage(0);
@@ -137,7 +146,7 @@ public class ShooterSubsystem extends SubsystemBase {
       swivelPID.reset(getSwivelEncoder());
     }
 
-    double feed = swivelFeedforward.calculate(swivelPID.getSetpoint().velocity);
+    double feed = 0;//swivelFeedforward.calculate(swivelPID.getSetpoint().velocity);
 
     // if (!swivelPID.atSetpoint()) {
     //   privSetSwivel(MathUtil.clamp(calculation, -1, 1));
@@ -160,7 +169,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isSwivelReadyToShoot() {
-    return Math.abs(getSwivelEncoder() - swivelSetpoint) <= 1;
+    return Math.abs(getSwivelEncoder() - swivelSetpoint) <= 2 * Constants.swivelEncoderPerDegrees;
   }
 
   private void privSetHood(double speed) {
@@ -208,19 +217,21 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isHoodReadyToShoot() {
-    return Math.abs(getHoodEncoder() - hoodSetpoint) <= 1;
+    return Math.abs(getHoodEncoder() - hoodSetpoint) <= 0.5 * Constants.hoodEncoderPerDegree;
   }
 
   public void setSpindexer(double spinSpeed, double kickerSpeed){
-    if (unjammingCounter <= 25 && spinSpeed != 0) {
-      spindexerMaster.set(-0.15);
-      spinKicker.set(-0.1);
-      unjammingCounter += 1;
-    }
-    else {
-      spindexerMaster.set(spinSpeed);
-      spinKicker.set(kickerSpeed);
-    }
+    // if (unjammingCounter <= 25 && spinSpeed != 0) {
+    //   spindexerMaster.set(-0.15);
+    //   spinKicker.set(-0.1);
+    //   unjammingCounter += 1;
+    // }
+    // else {
+    //   spindexerMaster.set(spinSpeed);
+    //   spinKicker.set(kickerSpeed);
+    // }
+    spindexerMaster.set(spinSpeed);
+    spinKicker.set(kickerSpeed);
   }
   
   public boolean getIsShooting(){
@@ -252,7 +263,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Hood Internal Encoder", getHoodEncoder());
     SmartDashboard.putNumber("Hood Setpoint", hoodSetpoint);
 
-    // SmartDashboard.putNumber("Flywheel vel", flywheelMaster.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Flywheel vel", flywheelMaster.getVelocity().getValueAsDouble());
 
     if (Math.abs(spindexerMaster.getStatorCurrent().getValueAsDouble()) >= 60) {
       highSpindexterCurrentCounter += 1;
@@ -263,6 +274,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     if (highSpindexterCurrentCounter == 25) {
       unjammingCounter = 0;
+    }
+
+    double swivelEncoder = getSwivelEncoder();
+    if ((swivelEncoder >= Constants.maximumSwivelEncoder && lastSwivelSpeed > 0) || (swivelEncoder <= Constants.minimumSwivelEncoder && lastSwivelSpeed < 0)){
+      System.out.println("WARNING: Above or below max Swivel value!!!! >:(");
+      swivel.stopMotor();//.set(0);
     }
   }
 }

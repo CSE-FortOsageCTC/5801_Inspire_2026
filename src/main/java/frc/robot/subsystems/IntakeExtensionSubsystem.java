@@ -45,18 +45,18 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
        // extensionFollower.setControl(new Follower(extensionMaster.getDeviceID(), MotorAlignmentValue.Aligned));
     }
 
-    public void setExtension(){
+    public void resetExtension(){
         //extensionMaster.set(speed);
         if (!climbSubsystem.getPivotState()){
             intakeExtentionSolenoid.set(DoubleSolenoid.Value.kForward);
-            isExtended = true;
+            isExtended = false;
         }
 
     }
     
-    public void resetExtension(){
+    public void setExtension(){
         intakeExtentionSolenoid.set(DoubleSolenoid.Value.kReverse);
-        isExtended = false;
+        isExtended = true;
     }
 
     public boolean getExtensionState() {
