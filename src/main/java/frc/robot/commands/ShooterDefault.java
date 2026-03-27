@@ -60,7 +60,7 @@ public class ShooterDefault extends Command {
         SmartDashboard.putNumber("TurretX", 0);
         SmartDashboard.putNumber("TurretY", 0);
         SmartDashboard.putNumber("FlywheelSpeed", 0);
-        SmartDashboard.putNumber("FlyWheel Mult", 0);
+        SmartDashboard.putNumber("FlyWheel Mult", 25);
 
         shooterMap = new InterpolatingDoubleTreeMap();
 
@@ -241,7 +241,7 @@ public class ShooterDefault extends Command {
 
             // TODO: Figure out velocity to motor speed scale irl (and if it's linear like this or not)
             // double motorSpeed = 2 * ((0.0100928 * (thirdState.initialVelocity * thirdState.initialVelocity)) + (0.00755809 * thirdState.initialVelocity));
-            double speedMult = 1 + (SmartDashboard.getNumber("FlyWheel Mult", 0) * 0.01);
+            double speedMult = 1 + (SmartDashboard.getNumber("FlyWheel Mult", 25) * 0.01);
             double motorSpeed = shooterMap.get(thirdState.initialVelocity) * speedMult;
             // double motorSpeed = (-0.0432 * (Math.pow(thirdState.initialVelocity, 2))) + (0.468 * thirdState.initialVelocity) - 1.7;
 
