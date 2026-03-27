@@ -45,6 +45,7 @@ import frc.robot.AutoRotateUtil;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.SwerveModule;
+import frc.robot.VelocityEstimator;
 
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
@@ -82,6 +83,8 @@ public class Swerve extends SubsystemBase {
     private final PIDController autoXController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController autoYController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController autoHeadingController = new PIDController(0.085, 0.0, 0.0);
+
+    private VelocityEstimator velocityEstimator;
 
     public DriveParams autoPickupDriveParams;
 
@@ -140,6 +143,12 @@ public class Swerve extends SubsystemBase {
         // 0.5, Units.degreesToRadians(.5)));
 
         swerveEstimator.resetPosition(getGyroRot2d(), getModulePositions(), new Pose2d(8.77, 4.05, new Rotation2d()));
+
+        velocityEstimator = new VelocityEstimator(swerveEstimator.getEstimatedPosition());
+    }
+
+    public VelocityEstimator getVelocityEstimator() {
+        return velocityEstimator;
     }
 
     public void addInstruments(Orchestra orchestra){
@@ -626,6 +635,8 @@ public class Swerve extends SubsystemBase {
 
         setLimelightOdometryMT2(Constants.limelightFront);
         setLimelightOdometryMT2(Constants.limelightBack);
+        
+        velocityEstimator.setNextPosition(estimatedPose);
 
     }
 

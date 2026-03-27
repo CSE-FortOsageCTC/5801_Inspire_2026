@@ -168,6 +168,7 @@ public static final class Swerve {
         /** Meters per Second */
 
         public static final double maxSpeed = 11; // TODO: This must be tuned to specific robot
+        public static final double maxActualSpeed = 4.5;
 
 
         /** Radians per Second */

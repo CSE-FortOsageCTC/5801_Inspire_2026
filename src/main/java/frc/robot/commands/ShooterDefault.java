@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.TurretState;
+import frc.robot.VelocityEstimator;
 import frc.robot.subsystems.IntakeExtensionSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -198,6 +199,9 @@ public class ShooterDefault extends Command {
             TurretState initialState = calculateTurretWithPosition(targetPose);
 
             // double firstPeriod = (2*initialState.initialVelocity*(Math.sin(initialState.hoodDegrees))) / 9.81;
+            VelocityEstimator velocityEstimator = s_Swerve.getVelocityEstimator();
+            double botSpeedX = MathUtil.clamp(velocityEstimator.getVelocity().vxMetersPerSecond, -Constants.Swerve.maxActualSpeed, Constants.Swerve.maxActualSpeed);
+            double botSpeedY = MathUtil.clamp(velocityEstimator.getVelocity().vyMetersPerSecond, -Constants.Swerve.maxActualSpeed, Constants.Swerve.maxActualSpeed);
             // double botSpeedX = s_Swerve.getEstimatedFieldRelativeSpeeds().vxMetersPerSecond;
             // double botSpeedY = s_Swerve.getEstimatedFieldRelativeSpeeds().vyMetersPerSecond;
 
