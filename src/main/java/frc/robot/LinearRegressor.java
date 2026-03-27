@@ -22,7 +22,7 @@ public class LinearRegressor {
     public LinearRegressor(double initialValue) {
         queue = new LinkedList<>();
 
-        for(int i = 0; i < count; i++) {
+        for(int i = 1; i < count+1; i++) {
             queue.add(initialValue);
             ySum += initialValue;
             xxSum += i * i;
@@ -36,9 +36,10 @@ public class LinearRegressor {
         ySum -= lastX;
 
         xySum = 0;
-        int counter = 0;
+        int counter = 1;
         for (Double value : queue){
             xySum += value * counter;
+            counter ++;
         }
         slope = (count * xySum - xSum * ySum) / (count * xxSum - xSum * xSum);
         intercept = (ySum / count) - (slope * xSum) / count;
