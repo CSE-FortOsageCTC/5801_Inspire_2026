@@ -128,8 +128,9 @@ public class ChoreoManager {
                 new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
                 new IntakeExtensionCommand(),
                 new WaitCommand(2),
-                new IntakeCommand(true),
-                new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting())
+                new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
+                new IntakeCommand(true)
+                
                 // new AutoAlignClimb(alignPosition, 0)
 
         ));
