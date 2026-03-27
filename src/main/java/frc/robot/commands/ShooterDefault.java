@@ -200,8 +200,8 @@ public class ShooterDefault extends Command {
 
             // double firstPeriod = (2*initialState.initialVelocity*(Math.sin(initialState.hoodDegrees))) / 9.81;
             VelocityEstimator velocityEstimator = s_Swerve.getVelocityEstimator();
-            double botSpeedX = velocityEstimator.getVelocity().vxMetersPerSecond;
-            double botSpeedY = velocityEstimator.getVelocity().vyMetersPerSecond;
+            double botSpeedX = MathUtil.clamp(velocityEstimator.getVelocity().vxMetersPerSecond, -Constants.Swerve.maxActualSpeed, Constants.Swerve.maxActualSpeed);
+            double botSpeedY = MathUtil.clamp(velocityEstimator.getVelocity().vyMetersPerSecond, -Constants.Swerve.maxActualSpeed, Constants.Swerve.maxActualSpeed);
             // double botSpeedX = s_Swerve.getEstimatedFieldRelativeSpeeds().vxMetersPerSecond;
             // double botSpeedY = s_Swerve.getEstimatedFieldRelativeSpeeds().vyMetersPerSecond;
 
