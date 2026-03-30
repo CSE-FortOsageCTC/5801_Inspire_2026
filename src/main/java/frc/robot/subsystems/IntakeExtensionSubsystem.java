@@ -4,9 +4,15 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.SwerveModule;
 
 public class IntakeExtensionSubsystem extends SubsystemBase {
@@ -14,10 +20,17 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     // private static TalonFX extensionMaster;
     // private static TalonFX extensionFollower;
 
-    private DoubleSolenoid intakeExtentionSolenoid;
+    // private DoubleSolenoid intakeExtentionSolenoid;
 
     private static IntakeExtensionSubsystem intakeExtensionSubsystem;
     private static ClimbSubsystem climbSubsystem;
+
+    private ProfiledPIDController intakePID;
+
+    private double intakeSetpoint = 0;
+
+    private TalonFX intakeMotor;
+    
 
     private boolean isExtended;
 
@@ -31,35 +44,77 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     
     private IntakeExtensionSubsystem() {
 
-        intakeExtentionSolenoid = new DoubleSolenoid(41, PneumaticsModuleType.CTREPCM, 1, 0);
+        // intakeExtentionSolenoid = new DoubleSolenoid(41, PneumaticsModuleType.CTREPCM, 1, 0);
 
         isExtended = false;
 
         climbSubsystem = ClimbSubsystem.getInstance();
 
-        //TODO assign IDs
-        // extensionMaster = new TalonFX(0);
-        // extensionFollower = new TalonFX(0);
-        
-        //invert if needed
-       // extensionFollower.setControl(new Follower(extensionMaster.getDeviceID(), MotorAlignmentValue.Aligned));
+        // This is the same motor as what the black wheel kicker was
+        intakeMotor = new TalonFX(21);
+
+        intakePID = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0)); // TODO: Retune PID - The swivel is about 2x faster than it was before. Will need retuning
+        intakePID.setTolerance(0.75);
+
     }
 
     public void resetExtension(){
         //extensionMaster.set(speed);
         if (!climbSubsystem.getPivotState()){
-            intakeExtentionSolenoid.set(DoubleSolenoid.Value.kForward);
+            // intakeExtentionSolenoid.set(DoubleSolenoid.Value.kForward);
+            intakeSetpoint = 0; // TODO: Get "Zero'd" Position in encoder ticks
             isExtended = false;
         }
 
     }
-    
+
     public void setExtension(){
-        intakeExtentionSolenoid.set(DoubleSolenoid.Value.kReverse);
+        // intakeExtentionSolenoid.set(DoubleSolenoid.Value.kReverse);
+        intakeSetpoint = 0; // TODO: Get "Extended" Position in encoder ticks
         isExtended = true;
+    }
+
+    private void privSetIntake(double speed) {
+        intakeMotor.setVoltage(speed * Constants.maximumVoltage);
+    }
+
+    public double getIntakeSetpoint() {
+        return intakeSetpoint;
+    }
+
+    public void setIntakeSetpoint() {
+
+        // Take setpoint set from setExtension/resetExtension methods
+        intakeSetpoint = MathUtil.clamp(intakeSetpoint, Constants.minimumIntakeEncoder, Constants.maximumIntakeEncoder);
+
+        double calculation = 0;
+        intakePID.setGoal(intakeSetpoint);
+
+        if (!intakePID.atGoal()) {
+            calculation = intakePID.calculate(getIntakeEncoder());
+        } else {
+            intakePID.reset(getIntakeEncoder());
+        }
+
+        double feed = 0;
+
+        privSetIntake(MathUtil.clamp(feed + calculation, -1, 1));
+
+        SmartDashboard.putNumber("Intake Speed", calculation);
+    }
+
+    public double getIntakeEncoder() {
+        return intakeMotor.getPosition().getValueAsDouble();
     }
 
     public boolean getExtensionState() {
         return isExtended;
+    }
+
+    @Override
+    public void periodic() {
+
+        // Always call ts to update position/always calculate
+        setIntakeSetpoint();
     }
 }

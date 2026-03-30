@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
     
-    private static TalonFX intakeTop;
-    private static TalonFX intakeBottom;
+    private static TalonFX intakeMaster;
+    private static TalonFX intakeFollower;
 
     private boolean isIntaking = false;
 
@@ -27,16 +27,16 @@ public class IntakeSubsystem extends SubsystemBase {
     private IntakeSubsystem() {
 
         //TODO assign IDs
-        intakeTop = new TalonFX(24);
-        intakeBottom = new TalonFX(23);
+        intakeMaster = new TalonFX(24);
+        intakeFollower = new TalonFX(23);
         
         //invert if needed
-        // intakeFollower.setControl(new Follower(intakeMaster.getDeviceID(), MotorAlignmentValue.Opposed));
+        intakeFollower.setControl(new Follower(intakeMaster.getDeviceID(), MotorAlignmentValue.Opposed));
     }
 
-    public void setIntakeSpeed(double topSpeed, double bottomSpeed){
-        intakeTop.set(topSpeed);
-        intakeBottom.set(bottomSpeed);
+    public void setIntakeSpeed(double speed){
+        intakeMaster.set(speed);
+        // intakeFollower.set(bottomSpeed);
     }
 
     public void setIntaking(boolean intaking) {
@@ -48,7 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void addInstruments(Orchestra orchestra){
-        orchestra.addInstrument(intakeTop);
-        orchestra.addInstrument(intakeBottom);
+        orchestra.addInstrument(intakeMaster);
+        orchestra.addInstrument(intakeFollower);
     }
 }

@@ -124,15 +124,15 @@ public class ShooterDefault extends Command {
             s_ShooterSubsystem.setKicker(-0.2);
 
             if (s_ShooterSubsystem.isFlywheelReady(motorSpeed) && s_ShooterSubsystem.isHoodReadyToShoot() && s_ShooterSubsystem.isSwivelReadyToShoot() && isSwivelInBounds){ //another 0.5 sec delay
-                s_ShooterSubsystem.setSpindexer(0.4, 0.3);
+                s_ShooterSubsystem.setSpindexer(0.4);
             }
             else {
-                s_ShooterSubsystem.setSpindexer(0,0);
+                s_ShooterSubsystem.setSpindexer(0);
             }
         } else {
             s_ShooterSubsystem.setFlywheels(0);
             s_ShooterSubsystem.setKicker(0);
-            s_ShooterSubsystem.setSpindexer(0, 0);
+            s_ShooterSubsystem.setSpindexer(0);
         }
     }
 

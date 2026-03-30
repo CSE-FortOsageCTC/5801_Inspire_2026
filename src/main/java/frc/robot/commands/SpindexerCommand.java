@@ -10,7 +10,7 @@ public class SpindexerCommand extends Command{
     private ShooterSubsystem shooterSubsystem;
     public boolean feeding;
     public double spinSpeed = 0.4;
-    public double kickerSpeed = 0.1;
+    // public double kickerSpeed = 0.1;
 
     public SpindexerCommand(boolean feeding) {
         this.feeding = feeding;
@@ -23,16 +23,16 @@ public class SpindexerCommand extends Command{
     @Override
     public void execute(){
         if (feeding) {
-            shooterSubsystem.setSpindexer(spinSpeed, kickerSpeed);
+            shooterSubsystem.setSpindexer(spinSpeed);
         }
         else {
-            shooterSubsystem.setSpindexer(-spinSpeed, kickerSpeed);
+            shooterSubsystem.setSpindexer(-spinSpeed);
         }
         
     }
 
     @Override
     public void end(boolean isFinished) {
-        shooterSubsystem.setSpindexer(0, 0);
+        shooterSubsystem.setSpindexer(0);
     }
 }

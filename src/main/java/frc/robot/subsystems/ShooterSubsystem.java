@@ -38,7 +38,7 @@ public class ShooterSubsystem extends SubsystemBase {
   // private TalonFX spindexerFollower;
   private SparkMax hood;
   private TalonFX kicker;
-  private TalonFX spinKicker;
+  // private TalonFX spinKicker;
   //TODO: Add kicker motor
   private double lastSwivelSpeed = 0;
 
@@ -70,7 +70,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // spindexerFollower = new TalonFX(22);
     hood = new SparkMax(56, MotorType.kBrushless);
     kicker = new TalonFX(15);
-    spinKicker = new TalonFX(21);
+    // spinKicker = new TalonFX(21);
     //Change configs as need be
     
     /* Only need this logic if we are using an absolute encoder (which we just got rid of) */
@@ -88,7 +88,7 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
     // spindexerFollower.setControl(new Follower(spindexerMaster.getDeviceID(), MotorAlignmentValue.Aligned));
     //                                      0.09
-    swivelPID = new ProfiledPIDController(0.09, 0.001, 0.001, new TrapezoidProfile.Constraints(500, 500));
+    swivelPID = new ProfiledPIDController(0.09, 0.001, 0.001, new TrapezoidProfile.Constraints(500, 500)); // TODO: Retune PID - The swivel is about 2x faster than it was before. Will need retuning
     swivelPID.setTolerance(0.75);
 
     swivelFeedforward = new SimpleMotorFeedforward(0.01, 0.015);
@@ -220,7 +220,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return Math.abs(getHoodEncoder() - hoodSetpoint) <= 0.5 * Constants.hoodEncoderPerDegree;
   }
 
-  public void setSpindexer(double spinSpeed, double kickerSpeed){
+  public void setSpindexer(double spinSpeed){
     // if (unjammingCounter <= 25 && spinSpeed != 0) {
     //   spindexerMaster.set(-0.15);
     //   spinKicker.set(-0.1);
@@ -231,7 +231,7 @@ public class ShooterSubsystem extends SubsystemBase {
     //   spinKicker.set(kickerSpeed);
     // }
     spindexerMaster.set(spinSpeed);
-    spinKicker.set(kickerSpeed);
+    // spinKicker.set(kickerSpeed);
   }
   
   public boolean getIsShooting(){
