@@ -121,7 +121,7 @@ public class ShooterDefault extends Command {
     private void attemptToShoot(double motorSpeed){
         if (s_ShooterSubsystem.getIsShooting()) {
             s_ShooterSubsystem.setFlywheels(-motorSpeed);
-            s_ShooterSubsystem.setKicker(-0.2);
+            s_ShooterSubsystem.setKicker(0.2);
 
             if (s_ShooterSubsystem.isFlywheelReady(motorSpeed) && s_ShooterSubsystem.isHoodReadyToShoot() && s_ShooterSubsystem.isSwivelReadyToShoot() && isSwivelInBounds){ //another 0.5 sec delay
                 s_ShooterSubsystem.setSpindexer(0.4);
@@ -170,13 +170,13 @@ public class ShooterDefault extends Command {
             if (isManual) {
                 double manualSwivel = 1 * MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kRightX.value), Constants.stickDeadband);
                 double manualHood = 1 * MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kRightY.value), Constants.stickDeadband);
-                s_ShooterSubsystem.setSwivelSetpoint(s_ShooterSubsystem.getSwivelSetpoint() - manualSwivel);
-                s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodSetpoint() - manualHood);
+                // s_ShooterSubsystem.setSwivelSetpoint(s_ShooterSubsystem.getSwivelSetpoint() - manualSwivel);
+                // s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodSetpoint() - manualHood);
                 if (s_ShooterSubsystem.getIsShooting()) { 
-                    s_ShooterSubsystem.setFlywheels(SmartDashboard.getNumber("FlywheelSpeed", 0));
-                    s_ShooterSubsystem.setKicker(-.4);
+                    // s_ShooterSubsystem.setFlywheels(SmartDashboard.getNumber("FlywheelSpeed", 0));
+                    s_ShooterSubsystem.setKicker(0.4);
                 } else {
-                    s_ShooterSubsystem.setFlywheels(0);
+                    // s_ShooterSubsystem.setFlywheels(0);
                     s_ShooterSubsystem.setKicker(0);
                 }
                 // attemptToShoot(motorSpeed);
@@ -271,26 +271,26 @@ public class ShooterDefault extends Command {
             // SmartDashboard.putNumber("ThetaDegrees", fieldRelativeAngleDegrees);
 
             // if where the swivel should be is within full range
-            if (robotRelativeAngleDegrees >= 0 && robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees) {
-                ledSubsystem.setIsRotationAligned(true);
-                s_ShooterSubsystem.setSwivelSetpoint(MathUtil.clamp(robotRelativeSwivelEncoder, Constants.minimumSwivelEncoder, Constants.maximumSwivelEncoder));
+            // if (robotRelativeAngleDegrees >= 0 && robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees) {
+            //     ledSubsystem.setIsRotationAligned(true);
+            //     s_ShooterSubsystem.setSwivelSetpoint(MathUtil.clamp(robotRelativeSwivelEncoder, Constants.minimumSwivelEncoder, Constants.maximumSwivelEncoder));
 
-                // if where the swivel should be is within 20 degrees of being out of range (still in range)
-                if (robotRelativeAngleDegrees <= 20 && robotRelativeAngleDegrees >= 0 || robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees - 20) {
-                    ledSubsystem.setIsRotationNearUnaligned(true);
-                }
-                isSwivelInBounds = true;
-            } // if where the swivel should be is within 60 degrees out of range towards minimum
-            else if (isWithinAutoTurn) {
-                s_ShooterSubsystem.setSwivelSetpoint(0);
-            } // if where the swivel should be is within 60 degrees out of range towards maximum
-            else if (robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees + Constants.autoRotateRange){
-                s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
-            } // if where the swivel should be is out of range more than 60 degrees both ways
-            else {
-                isSwivelInBounds = false;
-                s_ShooterSubsystem.setSwivelSetpoint(MathUtil.clamp(robotRelativeSwivelEncoder, Constants.minimumSwivelEncoder, Constants.maximumSwivelEncoder));
-            }
+            //     // if where the swivel should be is within 20 degrees of being out of range (still in range)
+            //     if (robotRelativeAngleDegrees <= 20 && robotRelativeAngleDegrees >= 0 || robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees - 20) {
+            //         ledSubsystem.setIsRotationNearUnaligned(true);
+            //     }
+            //     isSwivelInBounds = true;
+            // } // if where the swivel should be is within 60 degrees out of range towards minimum
+            // else if (isWithinAutoTurn) {
+            //     s_ShooterSubsystem.setSwivelSetpoint(0);
+            // } // if where the swivel should be is within 60 degrees out of range towards maximum
+            // else if (robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees + Constants.autoRotateRange){
+            //     s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
+            // } // if where the swivel should be is out of range more than 60 degrees both ways
+            // else {
+            //     isSwivelInBounds = false;
+            //     s_ShooterSubsystem.setSwivelSetpoint(MathUtil.clamp(robotRelativeSwivelEncoder, Constants.minimumSwivelEncoder, Constants.maximumSwivelEncoder));
+            // }
 
             // s_ShooterSubsystem.setSwivelSetpoint(MathUtil.clamp(20, Constants.minimumSwivelEncoder, Constants.maximumSwivelEncoder));
 
@@ -304,12 +304,12 @@ public class ShooterDefault extends Command {
             //     isUnderTrench = true;
             // } 
             // else 
-            if (isInNeutral){
-                s_ShooterSubsystem.setHoodSetpoint(Constants.maximumHoodEncoder);
-            }
-            else {
-                s_ShooterSubsystem.setHoodSetpoint((Constants.totalHoodRangeDegrees - (launchAngleDegrees - Constants.minimumHoodAngle)) * Constants.hoodEncoderPerDegree);
-            }
+            // if (isInNeutral){
+            //     s_ShooterSubsystem.setHoodSetpoint(Constants.maximumHoodEncoder);
+            // }
+            // else {
+            //     s_ShooterSubsystem.setHoodSetpoint((Constants.totalHoodRangeDegrees - (launchAngleDegrees - Constants.minimumHoodAngle)) * Constants.hoodEncoderPerDegree);
+            // }
 
             // SmartDashboard.putNumber("Flywheel Speed", motorSpeed);
             SmartDashboard.putNumber("Initial Velocity", thirdState.initialVelocity);
@@ -317,8 +317,8 @@ public class ShooterDefault extends Command {
             // attemptToShoot(SmartDashboard.getNumber("FlywheelSpeed", 0));
             attemptToShoot(motorSpeed);
         } else {
-            s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodEncoder());
-            s_ShooterSubsystem.setSwivelSetpoint(s_ShooterSubsystem.getSwivelEncoder());
+            // s_ShooterSubsystem.setHoodSetpoint(s_ShooterSubsystem.getHoodEncoder());
+            // s_ShooterSubsystem.setSwivelSetpoint(s_ShooterSubsystem.getSwivelEncoder());
         }
 
     }

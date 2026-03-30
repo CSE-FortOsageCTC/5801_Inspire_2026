@@ -68,18 +68,18 @@ public final class Constants {
     public static final double maximumHoodShotDegrees = 80;
     public static final double totalHoodRangeDegrees = 40;
     public static final double minimumHoodEncoder = 0;
-    public static final double maximumHoodEncoder = 70;
-    public static final double hoodEncoderPerDegree = maximumHoodEncoder / totalHoodRangeDegrees;
+    public static final double maximumHoodEncoder = 70; // TODO: Figure this out!
+    public static final double hoodEncoderPerDegree = maximumHoodEncoder / totalHoodRangeDegrees; // TODO: Figure this out too!
     public static final double maximumBallSpeed = 7.7; // (in m/s) TODO: Test m/s of ball on release at max flywheel speed
     public static final double minimumSwivelEncoder = 0;
-    public static final double maximumSwivelEncoder = 175;
+    public static final double maximumSwivelEncoder = 175; // TODO: Find this out :)
     public static final double swivelEncoderToAbsolute = 49.2854;
-    public static final double totalSwivelRangeDegrees = 255; // In Degrees
+    public static final double totalSwivelRangeDegrees = 255; // In Degrees TODO: Find this out :)
     public static final double swivelEncoderPerDegrees = 0.67367; // maximumSwivelEncoder / totalSwivelRangeDegrees; 
     public static final Pose2d turretPoseRobotReletive = new Pose2d(-0.1016, 0.127, Rotation2d.fromDegrees(90));
     public static final double stickDeadband = 0.125;
     public static final double flywheelMaxVelocity = -83.5;
-    public static final double minimumIntakeEncoder = 0;
+    public static final double minimumIntakeEncoder = -8;
     public static final double maximumIntakeEncoder = 0; // TODO: Find this out :)
 
 

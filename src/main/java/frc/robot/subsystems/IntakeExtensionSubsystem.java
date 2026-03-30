@@ -29,7 +29,7 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
 
     private double intakeSetpoint = 0;
 
-    private TalonFX intakeMotor;
+    private TalonFX extensionMotor;
     
 
     private boolean isExtended;
@@ -51,10 +51,12 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
         climbSubsystem = ClimbSubsystem.getInstance();
 
         // This is the same motor as what the black wheel kicker was
-        intakeMotor = new TalonFX(21);
+        extensionMotor = new TalonFX(21);
+        extensionMotor.setPosition(0);
 
-        intakePID = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0)); // TODO: Retune PID - The swivel is about 2x faster than it was before. Will need retuning
-        intakePID.setTolerance(0.75);
+        intakePID = new ProfiledPIDController(0.02, 0, 0, new TrapezoidProfile.Constraints(0, 0)); // TODO: Tune :)
+        intakePID.setTolerance(0.15);
+        intakePID.reset(getIntakeEncoder());
 
     }
 
@@ -62,7 +64,7 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
         //extensionMaster.set(speed);
         if (!climbSubsystem.getPivotState()){
             // intakeExtentionSolenoid.set(DoubleSolenoid.Value.kForward);
-            intakeSetpoint = 0; // TODO: Get "Zero'd" Position in encoder ticks
+            intakeSetpoint = Constants.maximumIntakeEncoder; // TODO: Get "Zero'd" Position in encoder ticks
             isExtended = false;
         }
 
@@ -70,19 +72,19 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
 
     public void setExtension(){
         // intakeExtentionSolenoid.set(DoubleSolenoid.Value.kReverse);
-        intakeSetpoint = 0; // TODO: Get "Extended" Position in encoder ticks
+        intakeSetpoint = Constants.minimumIntakeEncoder; // TODO: Get "Extended" Position in encoder ticks
         isExtended = true;
     }
 
     private void privSetIntake(double speed) {
-        intakeMotor.setVoltage(speed * Constants.maximumVoltage);
+        extensionMotor.setVoltage(speed * Constants.maximumVoltage);
     }
 
     public double getIntakeSetpoint() {
         return intakeSetpoint;
     }
 
-    public void setIntakeSetpoint() {
+    private void setExtensionToSetpoint() {
 
         // Take setpoint set from setExtension/resetExtension methods
         intakeSetpoint = MathUtil.clamp(intakeSetpoint, Constants.minimumIntakeEncoder, Constants.maximumIntakeEncoder);
@@ -104,7 +106,7 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     }
 
     public double getIntakeEncoder() {
-        return intakeMotor.getPosition().getValueAsDouble();
+        return extensionMotor.getPosition().getValueAsDouble();
     }
 
     public boolean getExtensionState() {
@@ -115,6 +117,8 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     public void periodic() {
 
         // Always call ts to update position/always calculate
-        setIntakeSetpoint();
+        setExtensionToSetpoint();
+
+        SmartDashboard.putNumber("Intake Extension Encoder", getIntakeEncoder());
     }
 }
