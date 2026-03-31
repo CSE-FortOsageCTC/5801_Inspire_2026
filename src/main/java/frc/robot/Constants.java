@@ -75,10 +75,12 @@ public final class Constants {
     public static final double maximumSwivelEncoder = 175; // TODO: Find this out :)
     public static final double swivelEncoderToAbsolute = 49.2854;
     public static final double totalSwivelRangeDegrees = 255; // In Degrees TODO: Find this out :)
-    public static final double swivelEncoderPerDegrees = 0.67367; // maximumSwivelEncoder / totalSwivelRangeDegrees; // TODO: Find this out :)
-    public static final Pose2d turretPoseRobotReletive = new Pose2d(-0.1016, -0.1778, Rotation2d.fromDegrees(90)); // TODO: find x and y meters offset that the robot is from the center of the robot
+    public static final double swivelEncoderPerDegrees = 0.67367; // maximumSwivelEncoder / totalSwivelRangeDegrees; 
+    public static final Pose2d turretPoseRobotReletive = new Pose2d(-0.1016, 0.127, Rotation2d.fromDegrees(90));
     public static final double stickDeadband = 0.125;
     public static final double flywheelMaxVelocity = -83.5;
+    public static final double minimumIntakeEncoder = -8;
+    public static final double maximumIntakeEncoder = 0; // TODO: Find this out :)
 
 
     //Set Points
