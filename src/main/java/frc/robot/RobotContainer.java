@@ -136,7 +136,7 @@ public class RobotContainer {
 
     autoChooser.addRoutine("Right Auto With Human Player", () -> s_choreoManager.rightAutoWithHumanPlayer(false, false));
 
-    autoChooser.addRoutine("Depo Only Auto", () -> s_choreoManager.depoOnlyAuto(false, false));
+    autoChooser.addRoutine("Depot Only Auto", () -> s_choreoManager.depotOnlyAuto(false, false));
     //autoChooser.addRoutine("L2 IJ", s_choreoSubsystem::twoPieceIJAutoL2); //If we need an L2 Auto
 
     // autoChooser.addCmd("Example Auto Command", this::exampleAutoCommand);
