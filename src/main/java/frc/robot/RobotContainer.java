@@ -8,6 +8,7 @@ import choreo.auto.AutoChooser;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoAlignClimb;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeExtensionCommand;
 import frc.robot.commands.IntakeExtensionDefault;
 import frc.robot.commands.L1Climb;
 import frc.robot.commands.ShooterDefault;
@@ -167,7 +168,7 @@ public class RobotContainer {
     driver_A_Function.onTrue(new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()));
     driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
     driver_LeftBumper_Function.whileTrue(new IntakeCommand(false));
-    // driver_Start_Function.onTrue(new IntakeExtensionDefault());
+    driver_Start_Function.onTrue(new IntakeExtensionCommand());
     // driverLeftDpad.whileTrue(new AutoAlignClimb(AlignPosition.LeftOffset, 0));
     // driverRightDpad.whileTrue(new AutoAlignClimb(AlignPosition.RightOffset, 0));
     // driver_Y_Function.whileTrue(new L1Climb());

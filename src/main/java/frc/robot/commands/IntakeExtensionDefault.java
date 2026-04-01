@@ -26,20 +26,11 @@ public class IntakeExtensionDefault extends Command {
 
     @Override
     public void execute() {
-        if (driver.getRawButtonPressed(XboxController.Button.kStart.value)) {
-        
-            if (intakeExtensionSubsystem.getExtensionState()) {
-                System.out.println("Reset Extension");
-                intakeExtensionSubsystem.resetExtension();
-            } else {
-                System.out.println("Set Extenstion");
-                intakeExtensionSubsystem.setExtension();
-            }
-        } 
+
         if (driver.getPOV() == 0) {
-            setpoint += 0.1;
+            setpoint = intakeExtensionSubsystem.getIntakeSetpoint() + 0.1;
         } else if (driver.getPOV() == 180) {
-            setpoint -= 0.1;
+            setpoint = intakeExtensionSubsystem.getIntakeSetpoint() - 0.1;
         }
         // Always call ts to update position/always calculate
         intakeExtensionSubsystem.setExtensionSetpoint(setpoint);
