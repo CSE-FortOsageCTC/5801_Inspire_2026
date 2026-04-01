@@ -31,8 +31,6 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     private double intakeSetpoint = 0;
 
     private TalonFX extensionMotor;
-    
-    private Joystick driver;
 
     private boolean isExtended;
 
@@ -47,7 +45,6 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     private IntakeExtensionSubsystem() {
 
         // intakeExtentionSolenoid = new DoubleSolenoid(41, PneumaticsModuleType.CTREPCM, 1, 0);
-        driver = new Joystick(0);
         isExtended = false;
 
         climbSubsystem = ClimbSubsystem.getInstance();
