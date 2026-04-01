@@ -86,10 +86,10 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
         return intakeSetpoint;
     }
 
-    private void setExtensionToSetpoint() {
+    public void setExtensionSetpoint(double setpoint) {
 
         // Take setpoint set from setExtension/resetExtension methods
-        intakeSetpoint = MathUtil.clamp(intakeSetpoint, Constants.minimumIntakeEncoder, Constants.maximumIntakeEncoder);
+        intakeSetpoint = MathUtil.clamp(setpoint, Constants.minimumIntakeEncoder, Constants.maximumIntakeEncoder);
 
         double calculation = 0;
         intakePID.setGoal(intakeSetpoint);
@@ -118,13 +118,7 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if (driver.getPOV() == 0) {
-            intakeSetpoint += 0.1;
-        } else if (driver.getPOV() == 180) {
-            intakeSetpoint -= 0.1;
-        }
-        // Always call ts to update position/always calculate
-        setExtensionToSetpoint();
+        
 
         SmartDashboard.putNumber("Intake Extension Encoder", getIntakeEncoder());
     }
