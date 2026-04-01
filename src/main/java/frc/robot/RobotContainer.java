@@ -159,6 +159,7 @@ public class RobotContainer {
     s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(operator));
     // s_ClimbSubsystem.setDefaultCommand(new ClimbDefault(operator));
     operatorA.whileTrue(new SpindexerCommand(true));
+    operatorStart.onTrue(new InstantCommand(() -> s_ShooterSubsystem.zeroHoodEncoder()));
 
     driver_A_Function.onTrue(new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()));
     driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
