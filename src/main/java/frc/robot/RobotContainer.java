@@ -133,6 +133,10 @@ public class RobotContainer {
     // autoChooser.addRoutine("RightDoubleAuto No Climb", () -> s_choreoManager.rightDoubleAuto(false, false));
     // autoChooser.addRoutine("RightDoubleAuto Left Climb", () -> s_choreoManager.rightDoubleAuto(true, false));
     // autoChooser.addRoutine("RightDoubleAuto Right Climb", () -> s_choreoManager.rightDoubleAuto(true, true));
+
+    autoChooser.addRoutine("Right Auto With Human Player", () -> s_choreoManager.rightAutoWithHumanPlayer(false, false));
+
+    autoChooser.addRoutine("Depot Only Auto", () -> s_choreoManager.depotOnlyAuto(false, false));
     //autoChooser.addRoutine("L2 IJ", s_choreoSubsystem::twoPieceIJAutoL2); //If we need an L2 Auto
 
     // autoChooser.addCmd("Example Auto Command", this::exampleAutoCommand);
