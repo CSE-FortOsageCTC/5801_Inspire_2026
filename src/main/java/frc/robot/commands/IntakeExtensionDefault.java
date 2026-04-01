@@ -14,8 +14,6 @@ public class IntakeExtensionDefault extends Command {
 
     private Joystick driver;
 
-    private double setpoint = 0;
-
     public IntakeExtensionDefault(Joystick driver) {
 
         this.driver = driver;
@@ -26,11 +24,11 @@ public class IntakeExtensionDefault extends Command {
 
     @Override
     public void execute() {
-
+        double setpoint = intakeExtensionSubsystem.getIntakeSetpoint();
         if (driver.getPOV() == 0) {
-            setpoint = intakeExtensionSubsystem.getIntakeSetpoint() + 0.1;
+            setpoint += 0.1;
         } else if (driver.getPOV() == 180) {
-            setpoint = intakeExtensionSubsystem.getIntakeSetpoint() - 0.1;
+            setpoint -= 0.1;
         }
         // Always call ts to update position/always calculate
         intakeExtensionSubsystem.setExtensionSetpoint(setpoint);
