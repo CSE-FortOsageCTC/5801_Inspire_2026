@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,6 +32,7 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
 
     private TalonFX extensionMotor;
     
+    private Joystick driver;
 
     private boolean isExtended;
 
@@ -45,7 +47,7 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     private IntakeExtensionSubsystem() {
 
         // intakeExtentionSolenoid = new DoubleSolenoid(41, PneumaticsModuleType.CTREPCM, 1, 0);
-
+        driver = new Joystick(0);
         isExtended = false;
 
         climbSubsystem = ClimbSubsystem.getInstance();
@@ -116,6 +118,11 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
+        if (driver.getPOV() == 0) {
+            intakeSetpoint += 0.1;
+        } else if (driver.getPOV() == 180) {
+            intakeSetpoint -= 0.1;
+        }
         // Always call ts to update position/always calculate
         setExtensionToSetpoint();
 
