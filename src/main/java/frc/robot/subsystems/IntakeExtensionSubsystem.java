@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,7 +31,6 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     private double intakeSetpoint = 0;
 
     private TalonFX extensionMotor;
-    
 
     private boolean isExtended;
 
@@ -45,7 +45,6 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     private IntakeExtensionSubsystem() {
 
         // intakeExtentionSolenoid = new DoubleSolenoid(41, PneumaticsModuleType.CTREPCM, 1, 0);
-
         isExtended = false;
 
         climbSubsystem = ClimbSubsystem.getInstance();
@@ -84,10 +83,10 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
         return intakeSetpoint;
     }
 
-    private void setExtensionToSetpoint() {
+    public void setExtensionSetpoint(double setpoint) {
 
         // Take setpoint set from setExtension/resetExtension methods
-        intakeSetpoint = MathUtil.clamp(intakeSetpoint, Constants.minimumIntakeEncoder, Constants.maximumIntakeEncoder);
+        intakeSetpoint = MathUtil.clamp(setpoint, Constants.minimumIntakeEncoder, Constants.maximumIntakeEncoder);
 
         double calculation = 0;
         intakePID.setGoal(intakeSetpoint);
@@ -116,8 +115,7 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        // Always call ts to update position/always calculate
-        setExtensionToSetpoint();
+        
 
         SmartDashboard.putNumber("Intake Extension Encoder", getIntakeEncoder());
     }

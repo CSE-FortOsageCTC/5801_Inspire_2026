@@ -19,6 +19,7 @@ import frc.robot.commands.AutoAlignClimb;
 // import frc.robot.commands.AlignToApril; Error
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeExtensionCommand;
+import frc.robot.commands.IntakeExtensionDefault;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;

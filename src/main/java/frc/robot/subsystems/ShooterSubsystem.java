@@ -216,6 +216,10 @@ public class ShooterSubsystem extends SubsystemBase {
     return hood.getEncoder().getPosition();
   }
 
+  public void zeroHoodEncoder() {
+    hood.getEncoder().setPosition(0);
+  }
+
   public boolean isHoodReadyToShoot() {
     return Math.abs(getHoodEncoder() - hoodSetpoint) <= 0.5 * Constants.hoodEncoderPerDegree;
   }
