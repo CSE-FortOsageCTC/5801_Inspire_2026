@@ -101,7 +101,7 @@ public class Swerve extends SubsystemBase {
          gyro = new Pigeon2(Constants.Swerve.pigeonID);
 
         Pigeon2Configuration configuration = new Pigeon2Configuration();
-         configuration.withMountPose(new MountPoseConfigs().withMountPoseYaw(isRed? 180:0));
+         configuration.withMountPose(new MountPoseConfigs().withMountPoseYaw(isRed? 182:4));
          gyro.getConfigurator().apply(configuration);
 
 
@@ -167,7 +167,7 @@ public class Swerve extends SubsystemBase {
 
         // }
 
-        swerveEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroRot2d().rotateBy(Rotation2d.fromDegrees(isRed ? 180 : 0)), getModPos);
+        swerveEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroRot2d().rotateBy(Rotation2d.fromDegrees(isRed ? 182:4)), getModPos);
         // limeLightSwerveEstimator.updateWithTime(Timer.getFPGATimestamp(),
         // getGyroYaw(), getModPos);
     }
@@ -594,7 +594,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public boolean isInNeutral(Pose2d pose){
-        if (pose.getX() >= Constants.redAllianceLineX && pose.getX() <= Constants.blueAllianceLineX){
+        if (pose.getX() >= Constants.redAllianceLineX && DriverStation.getAlliance().get().equals(DriverStation.Alliance.Blue)){
+            return true;
+        }
+
+        if (pose.getX() <= Constants.blueAllianceLineX && DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red)) {
             return true;
         }
         

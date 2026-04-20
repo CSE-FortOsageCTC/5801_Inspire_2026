@@ -138,6 +138,40 @@ public class ChoreoManager {
         return routine;
     }
 
+    // MARK: Pre-Load Auto
+    public AutoRoutine rightPreLoad(boolean willClimb, boolean isRightClimb) {
+        // System.out.println("this is before the auto routine");
+        AutoRoutine routine = autoFactory.newRoutine("RightPreLoadAuto");
+
+        // System.out.println("this is the top of the auto code");
+
+        // Load the routine's trajectories
+        AutoTrajectory traj_PreLoadAuto = routine.trajectory("RightPreLoad");
+        // AlignPosition alignPosition = isRightClimb ? AlignPosition.RightOffset : AlignPosition.LeftOffset;
+        // if (!willClimb)
+        // {
+        //     alignPosition = AlignPosition.NoPos;
+        // }
+        // When the routine begins, reset odometry and start the first trajectory
+        routine.active().onTrue(
+            Commands.sequence(
+                traj_PreLoadAuto.resetOdometry(),
+                // new InstantCommand(%() ->
+                // ArmPosition.setPosition(ArmPosition.StartingConfig)),
+                new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
+                traj_PreLoadAuto.cmd().withTimeout(10),
+                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
+                new IntakeExtensionCommand(),
+                new WaitCommand(2),
+                new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
+                new IntakeCommand(true)
+                
+                // new AutoAlignClimb(alignPosition, 0)
+
+        ));
+        return routine;
+    }
+
     // MARK: Non Neutral Auto
     public AutoRoutine nonNeutralAuto(boolean willClimb, boolean isRightClimb) {
         // System.out.println("this is before the auto routine");

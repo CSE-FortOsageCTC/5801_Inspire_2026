@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 public class LinearRegressor {
     private Deque<Double> queue;
 
-    private int count = 5;
+    private int count = 10;
 
     private double xSum = (count * (1 + count))/2;
     private double ySum = 0;

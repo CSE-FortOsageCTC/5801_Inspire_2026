@@ -88,10 +88,10 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
     // spindexerFollower.setControl(new Follower(spindexerMaster.getDeviceID(), MotorAlignmentValue.Aligned));
     //                                      0.09
-    swivelPID = new ProfiledPIDController(0.09, 0.001, 0.001, new TrapezoidProfile.Constraints(500, 500)); // TODO: Retune PID - The swivel is about 2x faster than it was before. Will need retuning
-    swivelPID.setTolerance(0.75);
+    swivelPID = new ProfiledPIDController(0.075, 0.0, 0.0001, new TrapezoidProfile.Constraints(500, 500)); // TODO: Retune PID - The swivel is about 2x faster than it was before. Will need retuning
+    swivelPID.setTolerance(0.25);
 
-    swivelFeedforward = new SimpleMotorFeedforward(0.01, 0.015);
+    swivelFeedforward = new SimpleMotorFeedforward(0.001, 0.0015);
 
     hoodPID = new ProfiledPIDController(0.09, 0, 0, new TrapezoidProfile.Constraints(0, 0));
     hoodPID.setTolerance(0.5);
@@ -146,7 +146,7 @@ public class ShooterSubsystem extends SubsystemBase {
       swivelPID.reset(getSwivelEncoder());
     }
 
-    double feed = 0;//swivelFeedforward.calculate(swivelPID.getSetpoint().velocity);
+    double feed = swivelFeedforward.calculate(swivelPID.getSetpoint().velocity);
 
     // if (!swivelPID.atSetpoint()) {
     //   privSetSwivel(MathUtil.clamp(calculation, -1, 1));
@@ -169,7 +169,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isSwivelReadyToShoot() {
-    return Math.abs(getSwivelEncoder() - swivelSetpoint) <= 2 * Constants.swivelEncoderPerDegrees;
+    return Math.abs(getSwivelEncoder() - swivelSetpoint) <= 4 * Constants.swivelEncoderPerDegrees;
   }
 
   private void privSetHood(double speed) {

@@ -112,12 +112,13 @@ public class RobotContainer {
 
     // Add options to the chooser
     autoChooser.addRoutine("Middle PreLoad", () -> s_choreoManager.preLoadAuto(false, false));
+    autoChooser.addRoutine("Right PreLoad", () -> s_choreoManager.rightPreLoad(false, false));
     // autoChooser.addRoutine("Middle Auto", s_choreoSubsystem::onePieceAuto);
     // autoChooser.addRoutine("SweepAuto No Climb", () -> s_choreoManager.sweepAuto(false, false));
     // autoChooser.addRoutine("SweepAuto Left Climb", () -> s_choreoManager.sweepAuto(true, false));
     // autoChooser.addRoutine("SweepAuto Right Climb", () -> s_choreoManager.sweepAuto(true, true));
 
-    autoChooser.addRoutine("RightAuto No Climb", () -> s_choreoManager.rightHalfAuto(false, false));
+    // autoChooser.addRoutine("RightAuto No Climb", () -> s_choreoManager.rightHalfAuto(false, false));
     // autoChooser.addRoutine("RightAuto Left Climb", () -> s_choreoManager.rightHalfAuto(true, false));
     // autoChooser.addRoutine("RightAuto Right Climb", () -> s_choreoManager.rightHalfAuto(true, true));
 
@@ -137,9 +138,9 @@ public class RobotContainer {
     // autoChooser.addRoutine("RightDoubleAuto Left Climb", () -> s_choreoManager.rightDoubleAuto(true, false));
     // autoChooser.addRoutine("RightDoubleAuto Right Climb", () -> s_choreoManager.rightDoubleAuto(true, true));
 
-    autoChooser.addRoutine("Right Auto With Human Player", () -> s_choreoManager.rightAutoWithHumanPlayer(false, false));
+    // autoChooser.addRoutine("Right Auto With Human Player", () -> s_choreoManager.rightAutoWithHumanPlayer(false, false));
 
-    autoChooser.addRoutine("Depot Only Auto", () -> s_choreoManager.depotOnlyAuto(false, false));
+    // autoChooser.addRoutine("Depot Only Auto", () -> s_choreoManager.depotOnlyAuto(false, false));
     //autoChooser.addRoutine("L2 IJ", s_choreoSubsystem::twoPieceIJAutoL2); //If we need an L2 Auto
 
     // autoChooser.addCmd("Example Auto Command", this::exampleAutoCommand);
@@ -158,6 +159,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+
     s_Swerve.setDefaultCommand(new TeleopDrive(driver, operator));
     s_ShooterSubsystem.setDefaultCommand(new ShooterDefault(operator));
     s_IntakeExtensionSubsystem.setDefaultCommand(new IntakeExtensionDefault(driver));
