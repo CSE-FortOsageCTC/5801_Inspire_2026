@@ -175,7 +175,7 @@ public class RobotContainer {
     driver_Start_Function.onTrue(new IntakeExtensionCommand());
     driver_B_Function.onTrue(new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(true)));
     driver_B_Function.onFalse(new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(false)));
-    
+    driver_X_Function.whileTrue(new SpindexerCommand(false));
     // driverRightDpad.whileTrue(new AutoAlignClimb(AlignPosition.RightOffset, 0));
     // driver_Y_Function.whileTrue(new L1Climb());
   }
