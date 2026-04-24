@@ -8,8 +8,8 @@ public class IntakeCommand extends Command{
     
     private IntakeSubsystem intakeSubsystem;
     public boolean intaking;
-    public double speed = 0.25;
-    // public double bottomSpeed = 0.65;
+    public double speed = 0.35;
+    public double bottomSpeed = 0.65;
 
     public IntakeCommand(boolean intaking) {
         this.intaking = intaking;
@@ -30,7 +30,7 @@ public class IntakeCommand extends Command{
             intakeSubsystem.setIntakeSpeed(speed);
         }
         else {
-            intakeSubsystem.setIntakeSpeed(-speed);
+            intakeSubsystem.setIntakeSpeed(-bottomSpeed);
         }
         
     }

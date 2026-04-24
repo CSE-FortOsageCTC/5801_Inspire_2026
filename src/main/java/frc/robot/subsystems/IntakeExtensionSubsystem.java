@@ -35,6 +35,8 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
 
     private boolean isExtended;
 
+    private boolean isJiggling = false;
+
     public static IntakeExtensionSubsystem getInstance(){
         if (intakeExtensionSubsystem == null) {
             intakeExtensionSubsystem = new IntakeExtensionSubsystem();
@@ -54,7 +56,7 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
         extensionMotor = new TalonFX(21);
         extensionMotor.setPosition(0);
 
-        downIntakePID = new ProfiledPIDController(0.02, 0, 0, new TrapezoidProfile.Constraints(0, 0)); // TODO: Tune :)
+        downIntakePID = new ProfiledPIDController(0.03, 0, 0, new TrapezoidProfile.Constraints(0, 0)); // TODO: Tune :)
         downIntakePID.setTolerance(0.05);
         downIntakePID.reset(getIntakeEncoder());
 
@@ -86,6 +88,18 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
 
     public double getIntakeSetpoint() {
         return intakeSetpoint;
+    }
+
+    public void setIsJiggling(boolean jiggling) {
+        isJiggling = jiggling;
+        if (!jiggling) {
+            intakeSetpoint = Constants.minimumIntakeEncoder;
+        }
+        
+    }
+
+    public boolean getIsJiggling() {
+        return isJiggling;
     }
 
     public void setExtensionSetpoint(double setpoint) {

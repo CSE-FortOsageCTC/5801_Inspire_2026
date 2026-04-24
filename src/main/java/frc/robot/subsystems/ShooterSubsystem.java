@@ -21,6 +21,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -54,6 +55,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private SimpleMotorFeedforward swivelFeedforward;
   
   private boolean isShooting = false;
+
+  public double autoFlywheelModifier = 1;
  
   public static ShooterSubsystem getInstance(){
         if (shooterSubsystem == null){
@@ -105,6 +108,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setFlywheels(double speed){
+    if (DriverStation.isAutonomousEnabled()) {
+      speed *= autoFlywheelModifier;
+    }
+    
     speed = MathUtil.clamp(speed, -1, 1);
     flywheelMaster.setVoltage(speed * Constants.maximumVoltage);
   }

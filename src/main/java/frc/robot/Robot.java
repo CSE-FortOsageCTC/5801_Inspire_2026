@@ -138,6 +138,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    // ShooterSubsystem.getInstance().toggleIsShooting();
+    IntakeExtensionSubsystem.getInstance().setIsJiggling(false);
   }
 
   /** This function is called periodically during operator control. */

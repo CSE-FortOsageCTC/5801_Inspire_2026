@@ -112,7 +112,9 @@ public class RobotContainer {
 
     // Add options to the chooser
     autoChooser.addRoutine("Middle PreLoad", () -> s_choreoManager.preLoadAuto(false, false));
-    autoChooser.addRoutine("Right PreLoad", () -> s_choreoManager.rightPreLoad(false, false));
+    autoChooser.addRoutine("Left Double Sweep", () -> s_choreoManager.leftSweepAuto(false, false));
+    autoChooser.addRoutine("Right Double Sweep", () -> s_choreoManager.rightSweepAuto(false, false));
+    // autoChooser.addRoutine("Right PreLoad", () -> s_choreoManager.rightPreLoad(false, false));
     // autoChooser.addRoutine("Middle Auto", s_choreoSubsystem::onePieceAuto);
     // autoChooser.addRoutine("SweepAuto No Climb", () -> s_choreoManager.sweepAuto(false, false));
     // autoChooser.addRoutine("SweepAuto Left Climb", () -> s_choreoManager.sweepAuto(true, false));
@@ -122,7 +124,7 @@ public class RobotContainer {
     // autoChooser.addRoutine("RightAuto Left Climb", () -> s_choreoManager.rightHalfAuto(true, false));
     // autoChooser.addRoutine("RightAuto Right Climb", () -> s_choreoManager.rightHalfAuto(true, true));
 
-    autoChooser.addRoutine("LeftAuto No Climb", () -> s_choreoManager.leftAuto(false, false));
+    // autoChooser.addRoutine("LeftAuto No Climb", () -> s_choreoManager.leftAuto(false, false));
     // autoChooser.addRoutine("LeftAuto Left Climb", () -> s_choreoManager.leftAuto(true, false));
     // autoChooser.addRoutine("LeftAuto Right Climb", () -> s_choreoManager.leftAuto(true, true));
 
@@ -171,7 +173,9 @@ public class RobotContainer {
     driver_RightBumper_Function.whileTrue(new IntakeCommand(true));
     driver_LeftBumper_Function.whileTrue(new IntakeCommand(false));
     driver_Start_Function.onTrue(new IntakeExtensionCommand());
-    // driverLeftDpad.whileTrue(new AutoAlignClimb(AlignPosition.LeftOffset, 0));
+    driver_B_Function.onTrue(new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(true)));
+    driver_B_Function.onFalse(new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(false)));
+    
     // driverRightDpad.whileTrue(new AutoAlignClimb(AlignPosition.RightOffset, 0));
     // driver_Y_Function.whileTrue(new L1Climb());
   }

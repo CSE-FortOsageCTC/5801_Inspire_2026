@@ -46,7 +46,7 @@ public class ShooterDefault extends Command {
 
     private boolean isSwivelInBounds = false;
 
-    private boolean isManual = true;
+    private boolean isManual = false;
 
     public ShooterDefault(Joystick operator) {
         s_ShooterSubsystem = ShooterSubsystem.getInstance();

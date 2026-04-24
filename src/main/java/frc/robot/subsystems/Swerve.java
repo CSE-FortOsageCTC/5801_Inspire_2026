@@ -82,7 +82,7 @@ public class Swerve extends SubsystemBase {
 
     private final PIDController autoXController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController autoYController = new PIDController(10.0, 0.0, 0.0);
-    private final PIDController autoHeadingController = new PIDController(0.085, 0.0, 0.0);
+    private final PIDController autoHeadingController = new PIDController(4, 0.0, 0.0);
 
     private VelocityEstimator velocityEstimator;
 
@@ -260,10 +260,10 @@ public class Swerve extends SubsystemBase {
         // MathUtil.angleModulus(pose.getRotation().getRadians()));
         // SmartDashboard.putNumber("auto Setpoint",
         // MathUtil.angleModulus(sample.heading));
-        s_AutoRotateUtil.updateTargetAngle(Math.toDegrees(swerveEstimator.getEstimatedPosition().getRotation().getRadians() - sample.heading));
+        
         // Apply the generated speeds
-        drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), (s_AutoRotateUtil.calculateRotationSpeed() * 2) + sample.omega,
-                true, true);
+        drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), speeds.omegaRadiansPerSecond,//(s_AutoRotateUtil.calculateRotationSpeed() * 2) + sample.omega,
+                true, false);
     } 
 
     public void setAutoDriveParams(Translation2d translation, double rotation, boolean fieldRelative,
