@@ -82,7 +82,7 @@ public class Swerve extends SubsystemBase {
 
     private final PIDController autoXController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController autoYController = new PIDController(10.0, 0.0, 0.0);
-    private final PIDController autoHeadingController = new PIDController(0.085, 0.0, 0.0);
+    private final PIDController autoHeadingController = new PIDController(4, 0.0, 0.0);
 
     private VelocityEstimator velocityEstimator;
 
@@ -101,7 +101,7 @@ public class Swerve extends SubsystemBase {
          gyro = new Pigeon2(Constants.Swerve.pigeonID);
 
         Pigeon2Configuration configuration = new Pigeon2Configuration();
-         configuration.withMountPose(new MountPoseConfigs().withMountPoseYaw(isRed? 180:0));
+         configuration.withMountPose(new MountPoseConfigs().withMountPoseYaw(isRed? 182:4));
          gyro.getConfigurator().apply(configuration);
 
 
@@ -167,7 +167,7 @@ public class Swerve extends SubsystemBase {
 
         // }
 
-        swerveEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroRot2d().rotateBy(Rotation2d.fromDegrees(isRed ? 180 : 0)), getModPos);
+        swerveEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroRot2d().rotateBy(Rotation2d.fromDegrees(isRed ? 182:4)), getModPos);
         // limeLightSwerveEstimator.updateWithTime(Timer.getFPGATimestamp(),
         // getGyroYaw(), getModPos);
     }
@@ -260,10 +260,10 @@ public class Swerve extends SubsystemBase {
         // MathUtil.angleModulus(pose.getRotation().getRadians()));
         // SmartDashboard.putNumber("auto Setpoint",
         // MathUtil.angleModulus(sample.heading));
-        s_AutoRotateUtil.updateTargetAngle(Math.toDegrees(swerveEstimator.getEstimatedPosition().getRotation().getRadians() - sample.heading));
+        
         // Apply the generated speeds
-        drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), (s_AutoRotateUtil.calculateRotationSpeed() * 2) + sample.omega,
-                true, true);
+        drive(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond), speeds.omegaRadiansPerSecond,//(s_AutoRotateUtil.calculateRotationSpeed() * 2) + sample.omega,
+                true, false);
     } 
 
     public void setAutoDriveParams(Translation2d translation, double rotation, boolean fieldRelative,
@@ -594,7 +594,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public boolean isInNeutral(Pose2d pose){
-        if (pose.getX() >= Constants.redAllianceLineX && pose.getX() <= Constants.blueAllianceLineX){
+        if (pose.getX() >= Constants.redAllianceLineX && DriverStation.getAlliance().get().equals(DriverStation.Alliance.Blue)){
+            return true;
+        }
+
+        if (pose.getX() <= Constants.blueAllianceLineX && DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red)) {
             return true;
         }
         

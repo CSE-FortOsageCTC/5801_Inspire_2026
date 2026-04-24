@@ -43,7 +43,7 @@ public final class Constants {
     public static final double climbingDx = Units.inchesToMeters(16.125); //TODO: adjust values as needed
     public static final double climbingDy = Units.inchesToMeters(39); //TODO: adjust values as needed
 
-    public static final double autoRotateRange = 60;
+    public static final double autoRotateRange = 20;
 
     // position (x and y) of the hub from a top down perspective. height (z) of target of the hub
     public static final Pose3d redHubPosition = new Pose3d(11.901424, 4.034536, 1.8288, new Rotation3d());
@@ -62,24 +62,26 @@ public final class Constants {
     public static final double blueTrenchAreaRightX = 12.563094;
     public static final double minimumHubDist = 0.61; // in meters
     public static final double maximumHubDist = 5.4; // in meters
-    public static final double minimumHoodAngle = 50; // in degrees
-    public static final double maximumHoodAngle = 90; // in degrees
+    public static final double minimumHoodAngle = 42; // in degrees
+    public static final double maximumHoodAngle = 81; // in degrees
     public static final double minimumHoodShotDegrees = 45;
     public static final double maximumHoodShotDegrees = 80;
-    public static final double totalHoodRangeDegrees = 40;
+    public static final double totalHoodRangeDegrees = 39;
     public static final double minimumHoodEncoder = 0;
-    public static final double maximumHoodEncoder = 70; // TODO: Figure this out!
+    public static final double maximumHoodEncoder = 97; // TODO: Figure this out!
     public static final double hoodEncoderPerDegree = maximumHoodEncoder / totalHoodRangeDegrees; // TODO: Figure this out too!
     public static final double maximumBallSpeed = 7.7; // (in m/s) TODO: Test m/s of ball on release at max flywheel speed
-    public static final double minimumSwivelEncoder = 0;
-    public static final double maximumSwivelEncoder = 175; // TODO: Find this out :)
     public static final double swivelEncoderToAbsolute = 49.2854;
-    public static final double totalSwivelRangeDegrees = 255; // In Degrees TODO: Find this out :)
-    public static final double swivelEncoderPerDegrees = 0.67367; // maximumSwivelEncoder / totalSwivelRangeDegrees; 
-    public static final Pose2d turretPoseRobotReletive = new Pose2d(-0.1016, 0.127, Rotation2d.fromDegrees(90));
+    public static final double totalSwivelRangeDegrees = 348.7; // In Degrees TODO: Find this out :)
+    public static final double swivelEncoderPerDegrees = 0.38769;
+    public static final double minimumSwivelEncoder = -95;
+    public static final double maximumSwivelEncoder = 40.2; // TODO: Find this out :)
+    public static final double minimumSwivelAngle = minimumSwivelEncoder / swivelEncoderPerDegrees;
+    public static final double maximumSwivelAngle = maximumSwivelEncoder / swivelEncoderPerDegrees; // maximumSwivelEncoder / totalSwivelRangeDegrees; 
+    public static final Pose2d turretPoseRobotReletive = new Pose2d(-0.1016, 0.127, Rotation2d.fromDegrees(90)); // + (minimumSwivelEncoder / swivelEncoderPerDegrees)
     public static final double stickDeadband = 0.125;
     public static final double flywheelMaxVelocity = -83.5;
-    public static final double minimumIntakeEncoder = -8;
+    public static final double minimumIntakeEncoder = -6.8;
     public static final double maximumIntakeEncoder = 0; // TODO: Find this out :)
 
 

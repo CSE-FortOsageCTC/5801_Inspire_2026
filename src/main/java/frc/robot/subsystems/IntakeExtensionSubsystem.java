@@ -26,13 +26,16 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     private static IntakeExtensionSubsystem intakeExtensionSubsystem;
     private static ClimbSubsystem climbSubsystem;
 
-    private ProfiledPIDController intakePID;
+    private ProfiledPIDController downIntakePID;
+    private ProfiledPIDController upIntakePID;
 
     private double intakeSetpoint = 0;
 
     private TalonFX extensionMotor;
 
     private boolean isExtended;
+
+    private boolean isJiggling = false;
 
     public static IntakeExtensionSubsystem getInstance(){
         if (intakeExtensionSubsystem == null) {
@@ -53,9 +56,13 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
         extensionMotor = new TalonFX(21);
         extensionMotor.setPosition(0);
 
-        intakePID = new ProfiledPIDController(0.02, 0, 0, new TrapezoidProfile.Constraints(0, 0)); // TODO: Tune :)
-        intakePID.setTolerance(0.15);
-        intakePID.reset(getIntakeEncoder());
+        downIntakePID = new ProfiledPIDController(0.03, 0, 0, new TrapezoidProfile.Constraints(0, 0)); // TODO: Tune :)
+        downIntakePID.setTolerance(0.05);
+        downIntakePID.reset(getIntakeEncoder());
+
+        upIntakePID = new ProfiledPIDController(0.04, 0, 0, new TrapezoidProfile.Constraints(0, 0)); // TODO: Tune :)
+        upIntakePID.setTolerance(0.05);
+        upIntakePID.reset(getIntakeEncoder());
 
     }
 
@@ -83,21 +90,38 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
         return intakeSetpoint;
     }
 
+    public void setIsJiggling(boolean jiggling) {
+        isJiggling = jiggling;
+        if (!jiggling) {
+            intakeSetpoint = Constants.minimumIntakeEncoder;
+        }
+        
+    }
+
+    public boolean getIsJiggling() {
+        return isJiggling;
+    }
+
     public void setExtensionSetpoint(double setpoint) {
 
         // Take setpoint set from setExtension/resetExtension methods
         intakeSetpoint = MathUtil.clamp(setpoint, Constants.minimumIntakeEncoder, Constants.maximumIntakeEncoder);
 
-        double calculation = 0;
-        intakePID.setGoal(intakeSetpoint);
+        double downCalculation = 0;
+        double upCalculation = 0;
+        downIntakePID.setGoal(intakeSetpoint);
+        upIntakePID.setGoal(intakeSetpoint);
 
-        if (!intakePID.atGoal()) {
-            calculation = intakePID.calculate(getIntakeEncoder());
+        if (!downIntakePID.atGoal()) {
+            downCalculation = downIntakePID.calculate(getIntakeEncoder());
+            upCalculation = upIntakePID.calculate(getIntakeEncoder());
         } else {
-            intakePID.reset(getIntakeEncoder());
+            downIntakePID.reset(getIntakeEncoder());
+            upIntakePID.reset(getIntakeEncoder());
         }
 
         double feed = 0;
+        double calculation = intakeSetpoint > getIntakeEncoder() ? upCalculation : downCalculation;
 
         privSetIntake(MathUtil.clamp(feed + calculation, -1, 1));
 
@@ -115,7 +139,8 @@ public class IntakeExtensionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        
+        // Always call ts to update position/always calculate
+        // setExtensionToSetpoint();
 
         SmartDashboard.putNumber("Intake Extension Encoder", getIntakeEncoder());
     }

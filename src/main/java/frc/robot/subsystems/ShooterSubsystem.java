@@ -21,6 +21,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -54,6 +55,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private SimpleMotorFeedforward swivelFeedforward;
   
   private boolean isShooting = false;
+
+  public double autoFlywheelModifier = 1;
  
   public static ShooterSubsystem getInstance(){
         if (shooterSubsystem == null){
@@ -88,10 +91,10 @@ public class ShooterSubsystem extends SubsystemBase {
     flywheelFollower.setControl(new Follower(flywheelMaster.getDeviceID(), MotorAlignmentValue.Opposed));
     // spindexerFollower.setControl(new Follower(spindexerMaster.getDeviceID(), MotorAlignmentValue.Aligned));
     //                                      0.09
-    swivelPID = new ProfiledPIDController(0.09, 0.001, 0.001, new TrapezoidProfile.Constraints(500, 500)); // TODO: Retune PID - The swivel is about 2x faster than it was before. Will need retuning
-    swivelPID.setTolerance(0.75);
+    swivelPID = new ProfiledPIDController(0.075, 0.0, 0.0001, new TrapezoidProfile.Constraints(500, 500)); // TODO: Retune PID - The swivel is about 2x faster than it was before. Will need retuning
+    swivelPID.setTolerance(0.25);
 
-    swivelFeedforward = new SimpleMotorFeedforward(0.01, 0.015);
+    swivelFeedforward = new SimpleMotorFeedforward(0.001, 0.0015);
 
     hoodPID = new ProfiledPIDController(0.09, 0, 0, new TrapezoidProfile.Constraints(0, 0));
     hoodPID.setTolerance(0.5);
@@ -105,6 +108,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setFlywheels(double speed){
+    if (DriverStation.isAutonomousEnabled()) {
+      speed *= autoFlywheelModifier;
+    }
+    
     speed = MathUtil.clamp(speed, -1, 1);
     flywheelMaster.setVoltage(speed * Constants.maximumVoltage);
   }
@@ -146,7 +153,7 @@ public class ShooterSubsystem extends SubsystemBase {
       swivelPID.reset(getSwivelEncoder());
     }
 
-    double feed = 0;//swivelFeedforward.calculate(swivelPID.getSetpoint().velocity);
+    double feed = swivelFeedforward.calculate(swivelPID.getSetpoint().velocity);
 
     // if (!swivelPID.atSetpoint()) {
     //   privSetSwivel(MathUtil.clamp(calculation, -1, 1));
@@ -169,7 +176,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isSwivelReadyToShoot() {
-    return Math.abs(getSwivelEncoder() - swivelSetpoint) <= 2 * Constants.swivelEncoderPerDegrees;
+    return Math.abs(getSwivelEncoder() - swivelSetpoint) <= 4 * Constants.swivelEncoderPerDegrees;
   }
 
   private void privSetHood(double speed) {

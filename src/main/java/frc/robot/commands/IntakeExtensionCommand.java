@@ -16,7 +16,7 @@ public class IntakeExtensionCommand extends Command {
 
         intakeExtensionSubsystem = IntakeExtensionSubsystem.getInstance();
 
-        addRequirements(intakeExtensionSubsystem);
+        // addRequirements(intakeExtensionSubsystem);
     }
 
     @Override
