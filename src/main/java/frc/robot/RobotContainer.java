@@ -112,10 +112,12 @@ public class RobotContainer {
 
     // Add options to the chooser
     autoChooser.addRoutine("Middle PreLoad", () -> s_choreoManager.preLoadAuto(false, false));
-    autoChooser.addRoutine("Left Double Sweep", () -> s_choreoManager.leftSweepAuto(false, false));
-    autoChooser.addRoutine("Right Double Sweep", () -> s_choreoManager.rightSweepAuto(false, false));
+    autoChooser.addRoutine("Left Single Sweep", () -> s_choreoManager.leftSweepAuto(false, false));
+    autoChooser.addRoutine("Right Single Sweep", () -> s_choreoManager.rightSweepAuto(false, false));
+    autoChooser.addRoutine("Left Double Sweep", () -> s_choreoManager.leftWSweepAuto(false, false));
+    autoChooser.addRoutine("Right Double Sweep", () -> s_choreoManager.rightWSweepAuto(false, false));
     // autoChooser.addRoutine("Right PreLoad", () -> s_choreoManager.rightPreLoad(false, false));
-    // autoChooser.addRoutine("Middle Auto", s_choreoSubsystem::onePieceAuto);
+    // autoChooser.addRoutine("Middle Aut-o", s_choreoSubsystem::onePieceAuto);
     // autoChooser.addRoutine("SweepAuto No Climb", () -> s_choreoManager.sweepAuto(false, false));
     // autoChooser.addRoutine("SweepAuto Left Climb", () -> s_choreoManager.sweepAuto(true, false));
     // autoChooser.addRoutine("SweepAuto Right Climb", () -> s_choreoManager.sweepAuto(true, true));

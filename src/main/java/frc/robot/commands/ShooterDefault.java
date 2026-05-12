@@ -254,8 +254,8 @@ public class ShooterDefault extends Command {
 
             // TODO: Figure out velocity to motor speed scale irl (and if it's linear like this or not)
             // double motorSpeed = ((-0.0116 * (thirdState.initialVelocity * thirdState.initialVelocity)) + (0.119 * thirdState.initialVelocity) - 0.654);
-            double speedMult = 1 + (SmartDashboard.getNumber("FlyWheel Mult", 25) * 0.01);
-            double motorSpeed = shooterMap.get(thirdState.initialVelocity); // * speedMult;
+            double speedMult = 1.02; //(SmartDashboard.getNumber("FlyWheel Mult", 25) * 0.01);
+            double motorSpeed = shooterMap.get(thirdState.initialVelocity) * speedMult;
             // double motorSpeed = (-0.0432 * (Math.pow(thirdState.initialVelocity, 2))) + (0.468 * thirdState.initialVelocity) - 1.7;
 
             SmartDashboard.putNumber("FlyWheel Calc Speed", motorSpeed);

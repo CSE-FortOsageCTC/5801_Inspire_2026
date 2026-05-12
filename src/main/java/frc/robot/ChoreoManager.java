@@ -182,15 +182,16 @@ public class ChoreoManager {
                 new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
                 new WaitCommand(2),
                 new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(true)),
-                new WaitCommand(2),
-                new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
-                new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(false)),
-                traj_LeftSweep.cmd(),
-                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
-                new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
-                new WaitCommand(2),
-                new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(true)),
                 new IntakeCommand(true)
+                // new WaitCommand(2),
+                // new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
+                // new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(false)),
+                // traj_LeftSweep.cmd(),
+                // new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
+                // new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
+                // new WaitCommand(2),
+                // new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(true)),
+                // new IntakeCommand(true)
                 
                 // new AutoAlignClimb(alignPosition, 0)
 
@@ -230,7 +231,106 @@ public class ChoreoManager {
                 new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
                 new WaitCommand(2),
                 new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(true)),
+                new IntakeCommand(true)
+                // new WaitCommand(2),
+                // new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
+                // new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(false)),
+                // traj_LeftSweep.cmd(),
+                // new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
+                // new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
+                // new WaitCommand(2),
+                // new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(true)),
+                // new IntakeCommand(true)
+                
+                // new AutoAlignClimb(alignPosition, 0)
+
+        ));
+        
+        return routine;
+    }
+
+    // MARK: Left Sweep Auto
+    public AutoRoutine leftWSweepAuto(boolean willClimb, boolean isRightClimb) {
+        // System.out.println("this is before the auto routine");
+        AutoRoutine routine = autoFactory.newRoutine("LeftSweepAuto");
+
+        // System.out.println("this is the top of the auto code");
+
+        // Load the routine's trajectories
+        AutoTrajectory traj_LeftSweep = routine.trajectory("LeftSweep");
+        // AlignPosition alignPosition = isRightClimb ? AlignPosition.RightOffset : AlignPosition.LeftOffset;
+        // if (!willClimb)
+        // {
+        //     alignPosition = AlignPosition.NoPos;
+        // }
+
+        
+
+        // When the routine begins, reset odometry and start the first trajectory
+        routine.active().onTrue(
+            Commands.sequence(
+                traj_LeftSweep.resetOdometry(),
+                // new InstantCommand(%() ->
+                // ArmPosition.setPosition(ArmPosition.StartingConfig)),
+                new InstantCommand(() -> {s_ShooterSubsystem.autoFlywheelModifier = 1.04;}),
+                new IntakeExtensionCommand(),
+                new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
+                traj_LeftSweep.cmd(),
+                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
+                new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
                 new WaitCommand(2),
+                new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(true)),
+                new WaitCommand(2),
+                new IntakeCommand(false),
+                new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
+                new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(false)),
+                traj_LeftSweep.cmd(),
+                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
+                new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
+                new WaitCommand(2),
+                new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(true)),
+                new IntakeCommand(true)
+                
+                // new AutoAlignClimb(alignPosition, 0)
+
+        ));
+        
+        return routine;
+    }
+
+    // MARK: Right Sweep Auto
+    public AutoRoutine rightWSweepAuto(boolean willClimb, boolean isRightClimb) {
+        // System.out.println("this is before the auto routine");
+        AutoRoutine routine = autoFactory.newRoutine("RightSweepAuto");
+
+        // System.out.println("this is the top of the auto code");
+
+        // Load the routine's trajectories
+        AutoTrajectory traj_LeftSweep = routine.trajectory("LeftSweep").mirrorY();
+        // AlignPosition alignPosition = isRightClimb ? AlignPosition.RightOffset : AlignPosition.LeftOffset;
+        // if (!willClimb)
+        // {
+        //     alignPosition = AlignPosition.NoPos;
+        // }
+
+        
+
+        // When the routine begins, reset odometry and start the first trajectory
+        routine.active().onTrue(
+            Commands.sequence(
+                traj_LeftSweep.resetOdometry(),
+                // new InstantCommand(%() ->
+                // ArmPosition.setPosition(ArmPosition.StartingConfig)),
+                new InstantCommand(() -> {s_ShooterSubsystem.autoFlywheelModifier = 1.02;}),
+                new IntakeExtensionCommand(),
+                new InstantCommand(() -> s_Swerve.setHeading(Rotation2d.fromDegrees(0))),
+                traj_LeftSweep.cmd(),
+                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0, 0), 0, true, true)),
+                new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
+                new WaitCommand(2),
+                new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(true)),
+                new WaitCommand(2),
+                new IntakeCommand(false),
                 new InstantCommand(() -> s_ShooterSubsystem.toggleIsShooting()),
                 new InstantCommand(() -> s_IntakeExtensionSubsystem.setIsJiggling(false)),
                 traj_LeftSweep.cmd(),
