@@ -120,6 +120,7 @@ public class ShooterDefault extends Command {
 
 
     private void attemptToShoot(double motorSpeed){
+       // motorSpeed = -0.35;
         if (s_ShooterSubsystem.getIsShooting()) {
             s_ShooterSubsystem.setFlywheels(-motorSpeed);
             s_ShooterSubsystem.setKicker(0.2);
@@ -129,6 +130,7 @@ public class ShooterDefault extends Command {
             }
             else {
                 s_ShooterSubsystem.setSpindexer(0);
+                System.out.println("Warning: turret not in position. Check hood/turret connection");
             }
         } else {
             s_ShooterSubsystem.setFlywheels(0);
@@ -291,7 +293,7 @@ public class ShooterDefault extends Command {
                 isSwivelInBounds = true;
             } // if where the swivel should be is within 60 degrees out of range towards minimum
             else if (isWithinAutoTurn) {
-                s_ShooterSubsystem.setSwivelSetpoint(0);
+               s_ShooterSubsystem.setSwivelSetpoint(0);
             } // if where the swivel should be is within 60 degrees out of range towards maximum
             // else if (robotRelativeAngleDegrees >= Constants.totalSwivelRangeDegrees && robotRelativeAngleDegrees <= Constants.totalSwivelRangeDegrees + Constants.autoRotateRange){
             //     s_ShooterSubsystem.setSwivelSetpoint(Constants.maximumSwivelEncoder);
